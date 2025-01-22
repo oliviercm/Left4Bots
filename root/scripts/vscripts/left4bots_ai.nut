@@ -2770,6 +2770,11 @@ enum AI_AIM_TYPE {
 			local weaponId = Left4Utils.GetWeaponId(ent);
 			if ((weaponId in WeaponsToSearch) && entIndex != L4B.GiveItemIndex1 && entIndex != L4B.GiveItemIndex2 && L4B.IsValidPickup(ent))
 			{
+				if (weaponId == Left4Utils.WeaponId.weapon_ammo) // prioritize weapon_ammo
+				{
+					return ent;
+				}
+
 				// If we are moving to defib a dead survivor and we have a defibrillator in our inventory, ignore the medkit or we'll loop replacing our defibrillator with the medkit over and over again
 				if (MoveType != AI_MOVE_TYPE.Defib || weaponId != Left4Utils.WeaponId.weapon_first_aid_kit || !Left4Utils.HasDefib(self))
 				{
