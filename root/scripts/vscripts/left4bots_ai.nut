@@ -1886,6 +1886,43 @@ enum AI_AIM_TYPE {
 
 	//lxc lock func
 	BotLockShoot();
+
+	if (self.GetHealth() < 40 && Left4Utils.HasMedkit(self))
+	{
+		local availableMedkits = 0;
+		local requiredMedkits = 1;
+
+		foreach (surv in Left4Bots.GetOtherAliveSurvivors(self.GetPlayerUserId()))
+		{
+			local holding = surv.GetActiveWeapon();
+			if ((holding && holding.IsValid() && holding.GetClassname() == "weapon_first_aid_kit") || !::Left4Utils.HasMedkit(surv) || surv.GetHealth() < self.GetHealth() || (!IsPlayerABot(surv) && surv.GetHealth() < 40))
+			{
+				requiredMedkits++;
+			}
+		}
+
+		local ent = null;
+		while (ent = Entities.FindByClassnameWithin(ent, "weapon_first_aid_kit*", self.GetOrigin(), 500))
+		{
+			if (Left4Bots.IsValidPickup(ent))
+			{
+				availableMedkits++;
+			}
+		}
+		if (availableMedkits >= requiredMedkits && !NetProps.GetPropInt(self, "m_hasVisibleThreats") && !Left4Bots.HasAngryCommonsWithin(Origin, 1, 400, 100) && !Left4Bots.SurvivorsHeldOrIncapped() && !Left4Bots.HasVisibleSpecialInfectedWithin(self, Origin, 400) && !Left4Bots.HasTanksWithin(Origin, 800) && !Left4Bots.HasWitchesWithin(Origin, 300, 100) && (GetCurrentFlowPercentForPlayer(self) < 90 || Left4Bots.IsSurvivorInCheckpoint(self)))
+		{
+			local holding = self.GetActiveWeapon();
+			local holdingKit = holding && holding.IsValid() && holding.GetClassname() == "weapon_first_aid_kit";
+			if (!holdingKit)
+			{
+				self.SwitchToItem("weapon_first_aid_kit");
+			}
+			else
+			{
+				Left4Timers.AddTimer(null, 0.2, ::Left4Bots.ExtraMedkitBotHeal.bindenv(::Left4Bots), { bot = self });
+			}
+		}
+	}
 }
 
 // Handles the bot's enemy melee/shove/shoot logics
