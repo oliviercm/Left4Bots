@@ -2756,6 +2756,12 @@ enum AI_AIM_TYPE {
 		priAmmoPercent = Left4Utils.GetAmmoPercent(pri);
 	}
 
+	local area = self.GetLastKnownArea();
+	if (area && area.HasSpawnAttributes(NAVAREA_SPAWNATTR_CHECKPOINT))
+	{
+		radius = radius + 500;
+	}
+
 	if (WeaponsToSearch.len() > 0)
 	{
 		while (ent = Entities.FindByClassnameWithin(ent, "weapon_*", orig, radius)) // TODO: SLOW! We should find another way to do this
