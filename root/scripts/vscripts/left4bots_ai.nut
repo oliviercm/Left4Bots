@@ -1224,6 +1224,8 @@ enum AI_AIM_TYPE {
 		}
 	}
 
+	BotManualAttack();
+
 	return L4B.Settings.bot_think_interval;
 }
 
@@ -1879,9 +1881,6 @@ enum AI_AIM_TYPE {
 		if (groundEnt && groundEnt.IsValid() && groundEnt.GetClassname() == "prop_car_alarm")
 			L4B.TriggerCarAlarm(self, groundEnt);
 	}
-
-	//lxc Move from BotThink_Main to here, almost no difference about kill infected, and it can also save performance
-	BotManualAttack();
 
 	//lxc lock func
 	BotLockShoot();
