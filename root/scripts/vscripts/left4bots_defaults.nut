@@ -181,6 +181,12 @@ PlayerImWithYou = bots automation all,botname automation all";
 
 	// -------------------------------------------------------
 
+	defaults["left4bots2/cfg/weapons/all.txt"] <- @"rifle_ak47,rifle_sg552,rifle_desert,rifle,autoshotgun,shotgun_spas,sniper_military,hunting_rifle,rifle_m60,grenade_launcher,sniper_scout,sniper_awp,smg_mp5,smg_silenced,shotgun_chrome,smg,pumpshotgun
+*,machete,golfclub,katana,fireaxe,crowbar,cricket_bat,baseball_bat,tonfa,riotshield,shovel,electric_guitar,knife,frying_pan,pitchfork,pistol_magnum,pistol,chainsaw
+pipe_bomb,molotov,vomitjar
+first_aid_kit,defibrillator,upgradepack_explosive,upgradepack_incendiary
+pain_pills,adrenaline";
+
 	// Default weapon preference file for Bill
 	defaults["left4bots2/cfg/weapons/bill.txt"] <- @"rifle_ak47,rifle_sg552,rifle_desert,rifle,autoshotgun,shotgun_spas,sniper_military,hunting_rifle,rifle_m60,grenade_launcher,sniper_scout,sniper_awp,smg_mp5,smg_silenced,shotgun_chrome,smg,pumpshotgun
 *,machete,golfclub,katana,fireaxe,crowbar,cricket_bat,baseball_bat,tonfa,riotshield,shovel,electric_guitar,knife,frying_pan,pitchfork,pistol_magnum,pistol,chainsaw
