@@ -1226,7 +1226,7 @@ Msg("Including left4bots_events...\n");
 		return;
 
 	local slot = Left4Utils.FindSlotForItemClass(attacker, attackerItem.GetClassname());
-	if (!(slot == INV_SLOT_THROW && Settings.give_humans_nades) && !(slot == INV_SLOT_PILLS && Settings.give_humans_meds))
+	if (!(slot == INV_SLOT_THROW && Settings.give_humans_nades) && !(slot == INV_SLOT_PILLS && Settings.give_humans_meds) && !(slot == INV_SLOT_MEDKIT && Settings.give_humans_meds) && !(slot == INV_SLOT_SECONDARY && Settings.give_humans_meds && (attacker.GetButtonMask() & BUTTON_USE) != 0) && !(slot == INV_SLOT_PRIMARY && Settings.give_humans_meds && (attacker.GetButtonMask() & BUTTON_USE) != 0))
 		return;
 
 	local attackerItemClass = attackerItem.GetClassname();
@@ -1238,29 +1238,30 @@ Msg("Including left4bots_events...\n");
 	if (((attackerItemClass == "weapon_pipe_bomb" || attackerItemClass == "weapon_vomitjar") && (t - LastNadeTime) < 1.5) || (attackerItemClass == "weapon_molotov" && (t - LastMolotovTime) < 1.5))
 		return; // Preventing an exploit that allows you to give the item you just threw away. Throw the nade and press RMB immediately, the item is still seen in the players inventory (Drop event comes after a second), so the item was duplicated.
 
-	local victim = Left4Utils.GetPickerEntity(attacker, 270, 0.95, true, null, Settings.tracemask_others);
+	local victim = Left4Utils.GetPickerEntity(attacker, L4B.Settings.give_max_range, 0.95, true, null, Settings.tracemask_others);
 	if (!victim || !victim.IsValid() || victim.GetClassname() != "player" || !victim.IsSurvivor())
 		return;
 
 	Logger.Debug("OnShovePressed - attacker: " + attacker.GetPlayerName() + " - victim: " + victim.GetPlayerName() + " - weapon: " + attackerItemClass + " - skin: " + attackerItemSkin);
 
 	local victimItem = Left4Utils.GetInventoryItemInSlot(victim, slot);
-	if (!victimItem && slot == INV_SLOT_THROW)
+	if (!victimItem)
 	{
 		DoEntFire("!self", "SpeakResponseConcept", "PlayerAlertGiveItem", 0, null, attacker);
+		DoEntFire("!self", "SpeakResponseConcept", "PlayerThanks", 1, null, victim);
 
 		GiveItemIndex1 = attackerItem.GetEntityIndex();
 
-		attacker.DropItem(attackerItemClass);
+		Left4Bots.DropItem(attacker, attackerItem, attackerItemClass);
 
 		//Left4Utils.GiveItemWithSkin(victim, attackerItemClass, attackerItemSkin);
 
-		Left4Timers.AddTimer(null, 0.3, ::Left4Bots.ItemGiven.bindenv(::Left4Bots), { player1 = attacker, item = attackerItem, player2 = victim });
+		Left4Bots.ItemSwapped({ item1 = null, player1 = attacker, item2 = attackerItem, player2 = victim, });
 
 		if (IsPlayerABot(victim))
 			LastGiveItemTime = Time();
 	}
-	else if (victimItem && IsPlayerABot(victim))
+	else
 	{
 		// Swap
 
@@ -1270,7 +1271,7 @@ Msg("Including left4bots_events...\n");
 			local victimItemClass = victimItem.GetClassname();
 			local victimItemSkin = NetProps.GetPropInt(victimItem, "m_nSkin");
 
-			if (victimItemClass != attackerItemClass || victimItemSkin != attackerItemSkin)
+			if ((victimItemClass != attackerItemClass || slot == INV_SLOT_PRIMARY) || victimItemSkin != attackerItemSkin || (victimItemClass == "weapon_pistol" && attackerItemClass == "weapon_pistol" && (NetProps.GetPropInt(victimItem, "m_isDualWielding") != NetProps.GetPropInt(attackerItem, "m_isDualWielding"))))
 			{
 				DoEntFire("!self", "SpeakResponseConcept", "PlayerAlertGiveItem", 0, null, attacker);
 				DoEntFire("!self", "SpeakResponseConcept", "PlayerAlertGiveItem", 0, null, victim);
@@ -1278,13 +1279,13 @@ Msg("Including left4bots_events...\n");
 				GiveItemIndex1 = attackerItem.GetEntityIndex();
 				GiveItemIndex2 = victimItem.GetEntityIndex();
 
-				attacker.DropItem(attackerItemClass);
-				victim.DropItem(victimItemClass);
+				Left4Bots.DropItem(attacker, attackerItem, attackerItemClass);
+				Left4Bots.DropItem(victim, victimItem, victimItemClass);
 
 				//Left4Utils.GiveItemWithSkin(attacker, victimItemClass, victimItemSkin);
 				//Left4Utils.GiveItemWithSkin(victim, attackerItemClass, attackerItemSkin);
 
-				Left4Timers.AddTimer(null, 0.3, ::Left4Bots.ItemSwapped.bindenv(::Left4Bots), { item1 = victimItem, player1 = attacker, item2 = attackerItem, player2 = victim, });
+				Left4Bots.ItemSwapped({ item1 = victimItem, player1 = attacker, item2 = attackerItem, player2 = victim, });
 			}
 		}
 	}
@@ -1628,7 +1629,7 @@ Msg("Including left4bots_events...\n");
 			if (SurvivorFlow[userid].isBot)
 				continue;
 
-			if ((surv.GetButtonMask() & BUTTON_SHOVE) != 0 || (NetProps.GetPropInt(surv, "m_afButtonPressed") & BUTTON_SHOVE) != 0) // <- With med items (pills and adrenaline) the shove button is disabled when looking at teammates and GetButtonMask never sees the button down but m_afButtonPressed still does
+			if ((surv.GetButtonMask() & BUTTON_RELOAD) != 0 || (NetProps.GetPropInt(surv, "m_afButtonPressed") & BUTTON_RELOAD) != 0) // <- With med items (pills and adrenaline) the shove button is disabled when looking at teammates and GetButtonMask never sees the button down but m_afButtonPressed still does
 			{
 				if (!(userid in BtnStatus_Shove) || !BtnStatus_Shove[userid])
 				{
