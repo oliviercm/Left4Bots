@@ -1063,6 +1063,18 @@ enum AI_AIM_TYPE {
 		if (AimType != AI_AIM_TYPE.None)
 			BotUnSetAim();
 
+		if (self.IsIncapacitated())
+		{
+			local tgt = L4B.FindBotNearestEnemy(self, Origin, L4B.Settings.manual_attack_radius, L4B.Settings.manual_attack_mindot);
+			if (tgt)
+			{
+				BotSetAim(AI_AIM_TYPE.Shoot, tgt.ent, 0.2, 0, 0, tgt.head);
+				BotAim();
+
+				Left4Utils.PlayerForceButton(self, BUTTON_ATTACK);
+			}
+		}
+
 		return L4B.Settings.bot_think_interval;
 	}
 
