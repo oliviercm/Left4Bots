@@ -1944,6 +1944,7 @@ enum AI_AIM_TYPE {
 	if (AimType >= AI_AIM_TYPE.Melee)
 		return;
 
+	local hasMelee = Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_SECONDARY) && Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_SECONDARY).GetClassname() == "weapon_melee";
 	local canMelee = ActiveWeapon && ActiveWeapon.GetClassname() == "weapon_melee" && CurTime >= NetProps.GetPropFloat(ActiveWeapon, "m_flNextPrimaryAttack");
 											//lxc chainsaw won't set 'IsFiringWeapon()' to true
 	local canShove = !self.IsFiringWeapon() && ActiveWeaponId != Left4Utils.WeaponId.weapon_chainsaw && CurTime >= NetProps.GetPropFloat(self, "m_flNextShoveTime"); // TODO: add shove penalty?
