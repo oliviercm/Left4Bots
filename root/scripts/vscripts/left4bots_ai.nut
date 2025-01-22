@@ -1959,7 +1959,7 @@ enum AI_AIM_TYPE {
 					Left4Utils.PlayerForceButton(self, BUTTON_ATTACK);
 				}
 				// Bots always reload for no reason while executing a MOVE command. Don't let them if there are visible threats and still rounds in the magazine
-				if ((tgt || !NetProps.GetPropInt(self, "m_isCalm")) && ActiveWeapon.Clip1() >= 5)
+				if ((tgt || !NetProps.GetPropInt(self, "m_isCalm")) && ActiveWeapon.Clip1() > 0)
 				{
 					Left4Utils.PlayerDisableButton(self, BUTTON_RELOAD);
 					return;
