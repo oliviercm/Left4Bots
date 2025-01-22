@@ -2161,7 +2161,47 @@ settings
 
 		if (Settings.vocalizer_commands && lvl >= Settings.userlevel_orders)
 		{
-			if (concept == "PlayerLook" || concept == "PlayerLookHere")
+			if (concept == "iMT_PlayerSuggestHealth")
+			{
+				// Bot selection
+				if (subjectid != null)
+					subject = g_MapScript.GetPlayerFromUserID(subjectid);
+				else if (subject)
+				{
+					//lxc
+					// "m_vocalizationSubject" will updated at the same time as the vocalizer fires if someone in my vision.
+					// "subject" and "m_vocalizationSubject" are not always the same, but "m_vocalizationSubject" is definitely what we are looking at within 400 radius.
+					if ((NetProps.GetPropFloat(who, "m_vocalizationSubjectTimer.m_timestamp") - NetProps.GetPropFloat(who, "m_vocalizationSubjectTimer.m_duration")) == Time())
+					{
+						subject = NetProps.GetPropEntity(who, "m_vocalizationSubject");
+						//printl(subject.GetPlayerName());
+					}
+					else
+						subject = GetSurvivorFromActor(subject);
+				}
+
+				if (IsHandledBot(subject))
+				{
+					VocalizerBotSelection[who.GetPlayerUserId()] <- { bot = subject, time = Time() };
+
+					Logger.Debug(who.GetPlayerName() + " selected bot " + subject.GetPlayerName());
+				}
+
+				local cmd = VocalizerCommands[concept].all;
+				local userid = who.GetPlayerUserId();
+				if ((userid in VocalizerBotSelection) && (Time() - VocalizerBotSelection[userid].time) <= Settings.vocalize_botselect_timeout && VocalizerBotSelection[userid].bot && VocalizerBotSelection[userid].bot.IsValid())
+				{
+					local botname = VocalizerBotSelection[userid].bot.GetPlayerName().tolower();
+					cmd = Left4Utils.StringReplace(VocalizerCommands[concept].one, "botname ", botname + " ");
+
+					//lxc should be deleted here, otherwise, vocalizer command cannot be used on other bots until it times out or use "PlayerLook" again.
+					delete VocalizerBotSelection[userid];
+				}
+				cmd = "!l4b " + cmd;
+				local args = split(cmd, " ");
+				HandleCommand(who, args[1], args, cmd);
+			}
+			else if (concept == "PlayerLook" || concept == "PlayerLookHere")
 			{
 				//lxc filter automatically triggered "Look" vocalizer
 				// "smartlooktype = auto|manual"
