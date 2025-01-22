@@ -1108,6 +1108,23 @@ Msg("Including left4bots_events...\n");
 	}
 }
 
+::Left4Bots.Events.OnGameEvent_player_left_safe_area <- function (params)
+{
+	local allBots = true;
+	foreach (id, surv in Left4Bots.Survivors)
+	{
+		if (surv.IsValid() && !IsPlayerABot(surv))
+		{
+			allBots = false;
+		}
+	}
+
+	if (allBots)
+	{
+		Left4Bots.Automation.StartTasks(true);
+	}
+}
+
 // -----
 
 ::Left4Bots.OnPostPlayerSpawn <- function (player, userid)
