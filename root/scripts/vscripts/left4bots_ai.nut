@@ -277,6 +277,9 @@ enum AI_AIM_TYPE {
 	{
 		case "lead":
 		{
+			if (from)
+				SpeakRandomVocalize(bot, VocalizerLeadStart, RandomFloat(0.2, 0.5));
+
 			order.DestRadius <- Settings.move_end_radius_lead;
 			order.MaxSeparation <- Settings.lead_max_separation;
 			break;
@@ -284,7 +287,7 @@ enum AI_AIM_TYPE {
 		case "witch":
 		{
 			if (from)
-				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.5, 1.0));
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
 
 			order.DestRadius <- Settings.move_end_radius_witch;
 			order.MaxSeparation <- 0;
@@ -292,8 +295,8 @@ enum AI_AIM_TYPE {
 		}
 		case "heal":
 		{
-			//if (from)
-			//	SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.5, 1.0));
+			if (from)
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
 
 			order.DestRadius <- Settings.move_end_radius_heal;
 			order.MaxSeparation <- 0;
@@ -301,8 +304,8 @@ enum AI_AIM_TYPE {
 		}
 		case "tempheal":
 		{
-			//if (from)
-			//	SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.5, 1.0));
+			if (from)
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
 
 			order.DestRadius <- Settings.move_end_radius;
 			order.MaxSeparation <- 0;
@@ -311,7 +314,7 @@ enum AI_AIM_TYPE {
 		case "use":
 		{
 			if (from)
-				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.5, 1.0));
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
 
 			local entClass = destEnt.GetClassname();
 			if (entClass.find("weapon_") != null || entClass.find("prop_physics") != null)
@@ -330,6 +333,9 @@ enum AI_AIM_TYPE {
 			if (Left4Utils.GetWeaponSlotById(wId) != 5)
 				return null; // Not a carriable item
 
+			if (from)
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
+
 			order.Param1 <- wId;
 			order.DestRadius <- Settings.move_end_radius_scavenge;
 			order.MaxSeparation <- 0;
@@ -342,7 +348,7 @@ enum AI_AIM_TYPE {
 				return null; // Not a carriable item
 
 			if (from)
-				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.5, 1.0));
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
 
 			order.Param1 <- wId;
 			order.DestRadius <- Settings.pickups_pick_range;
@@ -352,7 +358,7 @@ enum AI_AIM_TYPE {
 		case "deploy":
 		{
 			if (from)
-				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.5, 1.0));
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
 
 			order.DestRadius <- Settings.pickups_pick_range;
 			order.MaxSeparation <- 0;
@@ -360,6 +366,9 @@ enum AI_AIM_TYPE {
 		}
 		case "follow":
 		{
+			if (from)
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
+
 			order.DestRadius <- Settings.move_end_radius_follow;
 			order.MaxSeparation <- 0;
 			break;
@@ -367,7 +376,7 @@ enum AI_AIM_TYPE {
 		case "wait":
 		{
 			if (from)
-				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.5, 1.0));
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
 
 			order.DestRadius <- Settings.move_end_radius_wait;
 			order.MaxSeparation <- 0;
@@ -376,7 +385,7 @@ enum AI_AIM_TYPE {
 		case "destroy":
 		{
 			if (from)
-				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.5, 1.0));
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
 
 			order.DestRadius <- Settings.move_end_radius;
 			order.MaxSeparation <- 0;
@@ -385,7 +394,7 @@ enum AI_AIM_TYPE {
 		default:
 		{
 			if (from)
-				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.5, 1.0));
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
 
 			order.DestRadius <- Settings.move_end_radius;
 			order.MaxSeparation <- 0;
