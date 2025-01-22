@@ -3527,6 +3527,13 @@ if (activator && isWorthPickingUp)
 	local ammoType = NetProps.GetPropInt(weapon, "m_iPrimaryAmmoType");
 	local extraAmmo = NetProps.GetPropIntArray(player, "m_iAmmo", ammoType);
 	//printl(extraAmmo);
+	local dual = false;
+	if (weaponClass == "weapon_pistol")
+	{
+		dual = NetProps.GetPropInt(weapon, "m_hasDualWeapons");
+		NetProps.SetPropInt(weapon, "m_hasDualWeapons", 0);
+		NetProps.SetPropInt(weapon, "m_isDualWielding", 0);
+	}
 
 	player.DropItem(weaponClass);
 
@@ -3537,6 +3544,11 @@ if (activator && isWorthPickingUp)
 	{
 		//set the correct index //https://forums.alliedmods.net/showthread.php?p=1621340#post1621340
 		NetProps.SetPropInt(weapon, "m_iWorldModelIndex", GetModelIndex(weapon.GetModelName()));
+	}
+	if (dual)
+	{
+		NetProps.SetPropInt(weapon, "m_hasDualWeapons", 1);
+		NetProps.SetPropInt(weapon, "m_isDualWielding", 1);
 	}
 }
 
