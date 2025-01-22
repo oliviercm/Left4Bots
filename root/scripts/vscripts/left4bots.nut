@@ -1249,7 +1249,15 @@ if (activator && isWorthPickingUp)
 	//	DoEntFire("!self", "Kill", "", 0, null, item1);
 
 	if (item1 && player1 && item1.IsValid() && player1.IsValid())
+	{
 		DoEntFire("!self", "Use", "", 0, player1, item1);
+		if (IsPlayerABot(player1) && !IsPlayerABot(player2))
+		{
+			local wId = Left4Utils.GetWeaponId(item1);
+			local wSlot = Left4Utils.GetWeaponSlotById(wId);
+			Left4Timers.AddTimer(null, 0.01, ::Left4Bots.ItemSwappedUseWeapon.bindenv(::Left4Bots), { bot = player1, wId = wId, wSlot = wSlot });
+		}
+	}
 
 	GiveItemIndex1 = 0;
 
@@ -1260,7 +1268,15 @@ if (activator && isWorthPickingUp)
 	//	DoEntFire("!self", "Kill", "", 0, null, item2);
 
 	if (item2 && player2 && item2.IsValid() && player2.IsValid())
+	{
 		DoEntFire("!self", "Use", "", 0, player2, item2);
+		if (!IsPlayerABot(player1) && IsPlayerABot(player2))
+		{
+			local wId = Left4Utils.GetWeaponId(item2);
+			local wSlot = Left4Utils.GetWeaponSlotById(wId);
+			Left4Timers.AddTimer(null, 0.01, ::Left4Bots.ItemSwappedUseWeapon.bindenv(::Left4Bots), { bot = player2, wId = wId, wSlot = wSlot });
+		}
+	}
 
 	GiveItemIndex2 = 0;
 
