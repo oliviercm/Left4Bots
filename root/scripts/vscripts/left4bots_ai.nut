@@ -1923,6 +1923,17 @@ enum AI_AIM_TYPE {
 			}
 		}
 	}
+
+	local witch = Left4Bots.HasWitchesWithin(Origin, 500, 100);
+	if (witch && witch.IsValid())
+	{
+		local rage = NetProps.GetPropFloat(witch, "m_rage") + NetProps.GetPropFloat(witch, "m_wanderrage");
+		local dist = (Origin - witch.GetOrigin()).Length();
+		if (rage > 0.5 || dist <= 100)
+		{
+			Left4Utils.BotCmdRetreat(self, witch);
+		}
+	}
 }
 
 // Handles the bot's enemy melee/shove/shoot logics
