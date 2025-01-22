@@ -623,15 +623,7 @@ IncludeScript("left4bots_settings");
 // Will the vanilla AI use meds?
 ::Left4Bots.BotWillUseMeds <- function (bot)
 {
-	local totalHealth = bot.GetHealth() + bot.GetHealthBuffer();
-	if (totalHealth >= 45) // It's actually < 50 for the pills/adrenaline
-		return false;
-
-	local inv = {};
-	GetInvTable(bot, inv);
-
-	// It's actually < 30 for the medkit
-	return ((INV_SLOT_PILLS in inv) || (totalHealth < 29 && (INV_SLOT_MEDKIT in inv) && inv[INV_SLOT_MEDKIT].GetClassname() == "weapon_first_aid_kit"));
+	return false;
 }
 
 // Are there at least 'num' angry commons within 'radius' and 'maxAltDiff' from 'orig'?
