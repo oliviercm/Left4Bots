@@ -2348,7 +2348,7 @@ enum AI_AIM_TYPE {
 		}
 
 		// If ammo percent < 95 and no laser/ammo upgrade, add the current weapon too so we can get one with full ammo
-		if (currWeps[slotIdx] > Left4Utils.WeaponId.none && priAmmoPercent < 95 && !hasLaserSight && !hasAmmoUpgrade)
+		if (currWeps[slotIdx] > Left4Utils.WeaponId.none && priAmmoPercent < L4B.Settings.pickups_wep_ammo_replenish && !hasLaserSight && !hasAmmoUpgrade)
 			WeaponsToSearch[currWeps[slotIdx]] <- 0;
 
 		// SECONDARY
