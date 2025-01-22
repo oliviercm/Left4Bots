@@ -1930,6 +1930,9 @@ enum AI_AIM_TYPE {
 	}
 	else if (target && canShove) // TODO: add dot?
 	{
+		if (ActiveWeapon && (ActiveWeaponSlot == 0 || ActiveWeaponSlot == 1) && ActiveWeapon.Clip1() == 0)
+			L4B.PlayerPressButton(self, BUTTON_RELOAD);
+
 		//lxc z_gun_swing_duration: 0.2 ** How long shove attack is active (can shove an entities)
 		BotSetAim(AI_AIM_TYPE.Shove, L4B.GetHitPos(target), 0.3);
 		L4B.PlayerPressButton(self, BUTTON_SHOVE);
