@@ -854,6 +854,11 @@ enum AI_AIM_TYPE {
 
 	local scope = bot.GetScriptScope();
 
+	if (scope.Waiting)
+	{
+		return false;
+	}
+
 	if (SurvivorCantMove(bot, scope.Waiting))
 	{
 		Logger.Debug("[AI]" + bot.GetPlayerName() + " can't execute High Priority MOVE now; bot can't move");
@@ -1371,6 +1376,9 @@ enum AI_AIM_TYPE {
 
 	// So, we have an item to pickup but it's not close enough yet. Should we move for it?
 
+	if (Waiting)
+		return;
+
 	// Do it here
 	if (MoveType > AI_MOVE_TYPE.Pickup)
 		return; // Do not move for the item if there is an ongoing MOVE with higher priority
@@ -1420,6 +1428,9 @@ enum AI_AIM_TYPE {
 // Handles the bot's defib logic
 ::Left4Bots.AIFuncs.BotThink_Defib <- function ()
 {
+	if (Waiting)
+		return;
+
 	if (MoveType > AI_MOVE_TYPE.Defib)
 		return; // Do nothing if there is an ongoing MOVE with higher priority
 

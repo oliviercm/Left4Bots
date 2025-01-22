@@ -2134,6 +2134,10 @@ if (activator && isWorthPickingUp)
 	{
 		if (bot.IsValid())
 		{
+			if (bot.GetScriptScope().Waiting)
+			{
+				continue;
+			}
 			local distance = (bot.GetCenter() - MyPos).Length();
 			if (distance <= 1500 && !l4b.SurvivorCantMove(bot, bot.GetScriptScope().Waiting) && Left4Utils.CanTraceTo(bot, self, l4b.Settings.tracemask_others))
 			{
