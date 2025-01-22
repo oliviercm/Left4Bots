@@ -1471,10 +1471,20 @@ if (activator && isWorthPickingUp)
 
 	// No, go on...
 
+	local allBots = true;
+	foreach (surv in Left4Bots.GetOtherAliveSurvivors(userid))
+	{
+		if (!IsPlayerABot(surv))
+		{
+			allBots = false;
+			break;
+		}
+	}
+
 	if (throwableClass == "weapon_molotov")
 	{
 		// Can we actually throw molotovs?
-		if (!Settings.throw_molotov || (Time() - LastMolotovTime) < Settings.throw_molotov_interval)
+		if (!(Settings.throw_molotov || allBots) || (Time() - LastMolotovTime) < Settings.throw_molotov_interval)
 			return null; // No
 
 		// Yes, but can we throw them at tanks right now?
@@ -1496,7 +1506,7 @@ if (activator && isWorthPickingUp)
 	else if (throwableClass == "weapon_vomitjar")
 	{
 		// Can we actually throw bile jars?
-		if (!Settings.throw_vomitjar || (Time() - LastNadeTime) < Settings.throw_nade_interval)
+		if (!(Settings.throw_vomitjar || allBots) || (Time() - LastNadeTime) < Settings.throw_nade_interval)
 			return null; // No
 
 		// Yes, but can we throw them at tanks right now?
@@ -1536,7 +1546,7 @@ if (activator && isWorthPickingUp)
 	else //if (throwableClass == "weapon_pipe_bomb")
 	{
 		// Can we actually throw pipe bombs?
-		if (!Settings.throw_pipebomb || (Time() - LastNadeTime) < Settings.throw_nade_interval)
+		if (!(Settings.throw_pipebomb || allBots) || (Time() - LastNadeTime) < Settings.throw_nade_interval)
 			return null; // No
 
 		// Yes, but can we throw them at hordes right now?
@@ -1569,6 +1579,16 @@ if (activator && isWorthPickingUp)
 
 	// No, go on...
 
+	local allBots = true;
+	foreach (surv in Left4Bots.GetOtherAliveSurvivors(userid))
+	{
+		if (!IsPlayerABot(surv))
+		{
+			allBots = false;
+			break;
+		}
+	}
+
 	if (throwType == AI_THROW_TYPE.Tank)
 	{
 		// Is someone else already going to throw this?
@@ -1576,7 +1596,7 @@ if (activator && isWorthPickingUp)
 			return false;
 
 		// Can we actually throw this item?
-		if ((throwClass == "weapon_molotov" && (!Settings.throw_molotov || (Time() - LastMolotovTime) < Settings.throw_molotov_interval)) || (throwClass == "weapon_vomitjar" && (!Settings.throw_vomitjar || (Time() - LastNadeTime) < Settings.throw_nade_interval)))
+		if ((throwClass == "weapon_molotov" && (!(Settings.throw_molotov || allBots) || (Time() - LastMolotovTime) < Settings.throw_molotov_interval)) || (throwClass == "weapon_vomitjar" && (!(Settings.throw_vomitjar || allBots) || (Time() - LastNadeTime) < Settings.throw_nade_interval)))
 			return false; // No
 
 		// Is the tank still a valid target?
@@ -1591,7 +1611,7 @@ if (activator && isWorthPickingUp)
 			return false;
 
 		// Can we actually throw this item?
-		if ((throwClass == "weapon_pipe_bomb" && !Settings.throw_pipebomb) || (throwClass == "weapon_vomitjar" && !Settings.throw_vomitjar) || (Time() - LastNadeTime) < Settings.throw_nade_interval)
+		if ((throwClass == "weapon_pipe_bomb" && !(Settings.throw_pipebomb || allBots)) || (throwClass == "weapon_vomitjar" && !(Settings.throw_vomitjar || allBots)) || (Time() - LastNadeTime) < Settings.throw_nade_interval)
 			return false; // No
 
 		// Is there an actual horde?
