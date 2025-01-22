@@ -1,0 +1,10 @@
+Left4Bots.Settings.bot_think_interval = -1;
+Left4Bots.Settings.manual_attack_skill = 3;
+Left4Bots.Settings.manual_attack_always = 1;
+Left4Bots.Settings.manual_attack_common_head_radius = 1000;
+Left4Bots.Settings.manual_attack_dual_pistol_nerf = 0;
+Left4Bots.Settings.manual_attack_mindot = 0;
+Left4Bots.Settings.manual_attack_radius = 1000;
+Left4Bots.Settings.manual_attack_saccade_speed = 0;
+Left4Bots.Settings.manual_attack_special_head_radius = 1000;
+Left4Bots.Settings.manual_attack_wandering = 1;
