@@ -1194,13 +1194,14 @@ if (activator && isWorthPickingUp)
 
 	GiveItemIndex1 = item.GetEntityIndex();
 
-	bot.DropItem(itemClass);
+	Left4Bots.DropItem(bot, item, itemClass);
 
 	//Left4Utils.GiveItemWithSkin(survDest, itemClass, itemSkin);
 
-	Left4Timers.AddTimer(null, 0.3, ::Left4Bots.ItemGiven.bindenv(::Left4Bots), { player1 = bot, item = item, player2 = survDest });
+	Left4Bots.ItemSwapped({ item1 = null, player1 = bot, item2 = item, player2 = survDest, });
 
 	DoEntFire("!self", "SpeakResponseConcept", "PlayerAlertGiveItem", 0, null, bot);
+	DoEntFire("!self", "SpeakResponseConcept", "PlayerThanks", 1, null, survDest);
 
 	Logger.Debug("GiveInventoryItem - " + bot.GetPlayerName() + " -> " + item + " -> " + survDest.GetPlayerName());
 
