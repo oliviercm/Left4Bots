@@ -1944,6 +1944,8 @@ enum AI_AIM_TYPE {
 		{
 			if (ActiveWeapon.Clip1() == 0 || ActiveWeapon.GetClassname().find("shotgun"))
 				L4B.PlayerPressButton(self, BUTTON_RELOAD);
+			if (ActiveWeaponSlot == 1 && Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_PRIMARY) && Left4Utils.GetAmmoPercent(Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_PRIMARY)) > 0 && !self.IsFiringWeapon() && !(hasMelee && CurTime < NetProps.GetPropFloat(ActiveWeapon, "m_flNextPrimaryAttack")) && !(ActiveWeapon && NetProps.GetPropInt(ActiveWeapon, "m_bInReload")))
+				self.SwitchToItem(Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_PRIMARY).GetClassname());
 			// This check fixes weapon can't fire when holding the ATTACK btton during deploy, any reason for switching weapons may cause it.
 			if (self.IsFiringWeapon() || CurTime >= NetProps.GetPropFloat(ActiveWeapon, "m_flNextPrimaryAttack"))
 			{
