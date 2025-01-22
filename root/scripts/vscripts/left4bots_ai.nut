@@ -1925,7 +1925,7 @@ enum AI_AIM_TYPE {
 	if (target && canMelee && dot >= L4B.Settings.manual_attack_mindot)
 	{
 		//lxc
-		BotSetAim(AI_AIM_TYPE.Melee, target, 0.3);
+		BotSetAim(AI_AIM_TYPE.Melee, L4B.GetHitPos(target), 0.3);
 		L4B.PlayerPressButton(self, BUTTON_ATTACK);
 	}
 	else if (target && canShove) // TODO: add dot?
