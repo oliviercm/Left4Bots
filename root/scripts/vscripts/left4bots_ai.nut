@@ -1922,7 +1922,7 @@ enum AI_AIM_TYPE {
 	}
 
 	// If we have a close target that we can either melee or shove then melee/shove it
-	if (target && canMelee && dot >= 0.6)
+	if (target && canMelee && dot >= L4B.Settings.manual_attack_mindot)
 	{
 		//lxc
 		BotSetAim(AI_AIM_TYPE.Melee, target, 0.3);
