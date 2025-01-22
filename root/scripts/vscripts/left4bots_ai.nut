@@ -1942,6 +1942,8 @@ enum AI_AIM_TYPE {
 		// If no close target or we cannot melee or shove it at the moment, then handle manual shooting to targets in our field of view
 		if (ActiveWeapon && (ActiveWeaponSlot == 0 || ActiveWeaponSlot == 1) && !NetProps.GetPropInt(ActiveWeapon, "m_bInReload"))
 		{
+			if (ActiveWeapon.Clip1() == 0 || ActiveWeapon.GetClassname().find("shotgun"))
+				L4B.PlayerPressButton(self, BUTTON_RELOAD);
 			// This check fixes weapon can't fire when holding the ATTACK btton during deploy, any reason for switching weapons may cause it.
 			if (self.IsFiringWeapon() || CurTime >= NetProps.GetPropFloat(ActiveWeapon, "m_flNextPrimaryAttack"))
 			{
