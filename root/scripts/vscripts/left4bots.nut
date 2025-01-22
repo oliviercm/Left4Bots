@@ -3736,6 +3736,19 @@ if (activator && isWorthPickingUp)
 	printl("--------------------------------------------");
 }
 
+::Left4Bots.ExtraMedkitBotHeal <- function (params)
+{
+	Left4Bots.PlayerPressButton(params.bot, BUTTON_ATTACK, 0, null, 0, 0, true);
+}
+
+::Left4Bots.ItemSwappedUseWeapon <- function (params)
+{
+	if (params.bot && params.wSlot && params.wId && params.bot.IsValid() && (params.wId == 13 || params.wId == 14 || params.wId == 25))
+	{
+		params.bot.GetScriptScope().UseWeapons[params.wSlot] <- params.wId;
+	}
+}
+
 //
 
 ::Left4Bots.ModeName = Director.GetGameMode();
