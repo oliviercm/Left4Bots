@@ -48,7 +48,7 @@ class ::Left4Bots.Automation.Task
 				}
 			}
 		}
-		
+
 		/*
 			_target = "bots"				-> _allBots = true,  _targetBot = "*", 			_targetBots = [] 						-> All bots
 			_target = "bot"					-> _allBots = false, _targetBot = "*", 			_targetBots = [] 						-> Any bot
@@ -56,45 +56,45 @@ class ::Left4Bots.Automation.Task
 			_target = "botname1,botname2,*"	-> _allBots = false, _targetBot = "*", 			_targetBots = [botname1, botname2, *]	-> One available bot in that order (* = any)
 		*/
 	}
-	
+
 	function _typeof()
 	{
 		return "Left4Bots.Automation.Task";
 	}
-	
+
 	function _tostring()
 	{
 		return "Left4Bots.Automation.Task { target: " + _target + ", order: " + _order + ", destEnt: " + _destEnt + ", destPos: " + _destPos + ", destLookAtPos: " + _destLookAtPos + ", holdTime: " + _holdTime + ", canPause: " + _canPause + ", param1: " + _param1 + ", cancelAllOnBegin: " + _cancelAllOnBegin + ", cancelAllOnEnd: " + _cancelAllOnEnd + " }";
 	}
-	
+
 	function _cmp(other)
 	{
 		if (!other || (typeof other) != "Left4Bots.Automation.Task" || !("_target" in other) || !("_order" in other) || !("_destEnt" in other) || !("_destPos" in other) || !("_destLookAtPos" in other))
 			return -1;
-		
+
 		if (other._target != _target || other._order != _order || other._destEnt != _destEnt || other._destPos != _destPos || other._destLookAtPos != _destLookAtPos)
 			return 1;
-		
+
 		return 0;
 	}
-	
+
 	function Start()
 	{
 		if (_started)
 			return;
-		
+
 		_started = true;
-		
+
 		_l4b.Logger.Debug("Task started " + tostring());
 	}
-	
+
 	function Stop()
 	{
 		if (!_started)
 			return;
-		
+
 		_started = false;
-		
+
 		if (_cancelAllOnEnd)
 		{
 			foreach (bot in _l4b.Bots)
@@ -103,15 +103,15 @@ class ::Left4Bots.Automation.Task
 					bot.GetScriptScope().BotCancelAll();
 			}
 		}
-		
+
 		_l4b.Logger.Debug("Task stopped " + tostring());
 	}
-	
+
 	function IsStarted()
 	{
 		return _started;
 	}
-	
+
 	function CheckStartBot(bot)
 	{
 		if (_l4b.BotHasOrder(bot, _order, _destEnt, _destPos))
@@ -119,26 +119,26 @@ class ::Left4Bots.Automation.Task
 
 		if (_cancelAllOnBegin)
 			bot.GetScriptScope().BotCancelAll();
-		
+
 		_l4b.BotOrderAdd(bot, _order, null, _destEnt, _destPos, _destLookAtPos, _holdTime, _canPause, _param1);
 	}
-	
+
 	function Think()
 	{
 		if (!_started || !_order || (_destEnt && !_destEnt.IsValid()))
 			return;
-		
+
 		_l4b.Logger.Debug("Task thinking " + tostring());
-		
+
 		if (_allBots)
 		{
 			/*
 			_target = "bots"					-> _allBots = true,  _targetBot = "*", 			_targetBots = [] 						-> All bots
 			*/
-			
+
 			foreach (bot in _l4b.Bots)
 				CheckStartBot(bot);
-			
+
 			return;
 		}
 
@@ -147,10 +147,10 @@ class ::Left4Bots.Automation.Task
 		_target = "botname"				-> _allBots = false, _targetBot = "botname", 	_targetBots = [] 						-> That one bot
 		_target = "botname1,botname2,*"	-> _allBots = false, _targetBot = "*", 			_targetBots = [botname1, botname2, *]	-> One available bot in that order (* = any)
 		*/
-			
+
 		if (_l4b.BotsHaveOrder(_order, _destEnt, _destPos, _destLookAtPos))
 			return; // Someone is already doing this task
-		
+
 		local bot = null;
 		if (_targetBot != "*")
 			bot = _l4b.GetBotByName(_targetBot); // That one bot
@@ -174,19 +174,19 @@ class ::Left4Bots.Automation.Task
 					break;
 			}
 		}
-		
+
 		if (!bot)
 		{
 			_l4b.Logger.Debug("No available bot for task: " + tostring());
 			return;
 		}
-		
+
 		if (_cancelAllOnBegin)
 			bot.GetScriptScope().BotCancelAll();
-		
+
 		_l4b.BotOrderAdd(bot, _order, null, _destEnt, _destPos, _destLookAtPos, _holdTime, _canPause, _param1);
 	}
-	
+
 	_target = "bot";
 	_order = null;
 	_destEnt = null;
@@ -211,17 +211,17 @@ class ::Left4Bots.Automation.HealInSaferoom extends ::Left4Bots.Automation.Task
 	{
 		// 'target' and 'order' are only used for the task identification (GetTaskId), not for the actual orders
 		base.constructor("bots", "HealInSaferoom", null, null, null, 0.0, true, null, false, false);
-		
+
 		_ordersSent = false;
 	}
-	
+
 	function Think()
 	{
 		if (!_started)
 			return;
-		
+
 		_l4b.Logger.Debug("Task thinking " + tostring());
-		
+
 		if (!_ordersSent)
 		{
 			foreach (bot in _l4b.Bots)
@@ -233,7 +233,7 @@ class ::Left4Bots.Automation.HealInSaferoom extends ::Left4Bots.Automation.Task
 			_ordersSent = true;
 			return;
 		}
-		
+
 		// Make sure the bots completed their previously assigned orders (heal and goto) before continuing
 		/*
 		foreach (bot in _l4b.Bots)
@@ -242,12 +242,12 @@ class ::Left4Bots.Automation.HealInSaferoom extends ::Left4Bots.Automation.Task
 				return;
 		}
 		*/
-		
+
 		// Task is complete. Remove it from CurrentTasks
 		_l4b.Automation.DeleteTasks(_target, _order, _destEnt, _destPos, _destLookAtPos);
 		_l4b.Logger.Debug("Task complete");
 	}
-	
+
 	_ordersSent = false;
 }
 
@@ -259,7 +259,7 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 		// 'target' and 'order' are only used for the task identification (GetTaskId), not for the actual orders
 		base.constructor("bots", "Scavenge", null, useTargetPos, onTankPos, 0.0, onTankCanPause, null, false, false);
 		// constructor(target, order, destEnt = null, destPos = null, destLookAtPos = null, holdTime = 0.0, canPause = true, param1 = null, cancelAllOnBegin = false, cancelAllOnEnd = true)
-		
+
 		if (useTargetPos)
 		{
 			// This is optional, it's just to set a better ScavengeUseTargetPos than the autocalculated one
@@ -275,14 +275,14 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 			_l4b.ScavengeUseTargetPos = null;
 		}
 	}
-	
+
 	function Stop()
 	{
 		if (!_started)
 			return;
-		
+
 		_started = false;
-		
+
 		_l4b.ScavengeUseTarget = null;
 		_l4b.ScavengeUseTargetPos = null;
 		_l4b.ScavengeUseType = 0;
@@ -302,7 +302,7 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 
 		_l4b.Logger.Debug("Task stopped " + tostring());
 	}
-	
+
 	function CountAutofollowBots()
 	{
 		local c = 0;
@@ -313,7 +313,7 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 		}
 		return c;
 	}
-	
+
 	function CountFollowers(target)
 	{
 		local c = 0;
@@ -324,7 +324,7 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 		}
 		return c;
 	}
-	
+
 	function GetAutofollowTarget()
 	{
 		local ret = null;
@@ -340,7 +340,7 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 		}
 		return ret;
 	}
-	
+
 	function SetScavengeUseTarget()
 	{
 		if (_l4b.ScavengeUseTarget && _l4b.ScavengeUseTarget.IsValid())
@@ -348,7 +348,7 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 
 		return _l4b.SetScavengeUseTarget();
 	}
-	
+
 	function UpdateScavengeBots(num)
 	{
 		local update_autofollow = false;
@@ -359,7 +359,7 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 			if (!bot || !bot.IsValid() || bot.IsDead() || bot.IsDying())
 			{
 				delete _l4b.ScavengeBots[id];
-				
+
 				if (bot && bot.IsValid())
 				{
 					// Stop autofollowing this bot
@@ -381,7 +381,7 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 			_l4b.Logger.Info("Added scavenge order slot for bot " + bot.GetPlayerName());
 
 			_l4b.SpeakRandomVocalize(bot, _l4b.VocalizerYes, RandomFloat(0.2, 1.0));
-			
+
 			update_autofollow = true;
 		}
 
@@ -394,17 +394,17 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 			delete _l4b.ScavengeBots[id];
 
 			_l4b.Logger.Info("Removed scavenge order slot for bot " + bot.GetPlayerName());
-			
+
 			// Stop autofollowing this bot
 			foreach (followbot in _l4b.Bots)
 				followbot.GetScriptScope().BotCancelAutoOrders("follow", bot);
-			
+
 			update_autofollow = true;
 		}
 
 		return _l4b.ScavengeBots.len();
 	}
-	
+
 	function UpdateScavengeAutofollowBots()
 	{
 		_l4b.Logger.Debug("Scavenge.UpdateScavengeAutofollowBots - Updating autofollowers...");
@@ -417,25 +417,25 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 				_l4b.Logger.Debug("Scavenge.UpdateScavengeAutofollowBots - Noone to autofollow");
 				break;
 			}
-			
+
 			local follower = _l4b.GetFirstAvailableBotForOrder("follow", null, target.GetOrigin());
 			if (!follower)
 			{
 				_l4b.Logger.Debug("Scavenge.UpdateScavengeAutofollowBots - No more followers available");
 				break;
 			}
-			
+
 			_l4b.Logger.Debug("Scavenge.UpdateScavengeAutofollowBots - Sending " + follower.GetPlayerName() + " to follow " + target.GetPlayerName());
 			if (_l4b.BotOrderAdd(follower, "follow", null, target) >= 0)
 				afbCount++;
 		}
 	}
-	
+
 	function GetScavengeItems()
 	{
 		return _l4b.GetAvailableScavengeItems();
 	}
-	
+
 	function GetNextItemIdx(player, entList, linear = false)
 	{
 		local ret = null;
@@ -472,14 +472,14 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 		}
 		return ret;
 	}
-	
+
 	function Think()
 	{
 		if (!_started)
 			return;
-		
+
 		_l4b.Logger.Debug("Task thinking " + tostring());
-		
+
 		if (_destLookAtPos != null && _l4b.Tanks.len() > 0)
 		{
 			// There are tank alive and the onTankPos position was given. Cancel any previous order and go wait at onTankPos
@@ -505,16 +505,16 @@ class ::Left4Bots.Automation.Scavenge extends ::Left4Bots.Automation.Task
 		}
 
 		// No tanks or no onTankPos given. Do scavenge
-		
+
 		// Set the scavenge use target (if not set)
 		SetScavengeUseTarget();
-		
+
 		// Retrieve the list of scavenge items
 		local scavengeItems = GetScavengeItems();
-		
+
 		// Assign the scavenge bot slots
 		UpdateScavengeBots(::Left4Utils.Min(_l4b.Settings.scavenge_max_bots, scavengeItems.len()));
-		
+
 		// Assign the auto follow bots to the available scavenge bots
 		UpdateScavengeAutofollowBots();
 
@@ -554,20 +554,20 @@ class ::Left4Bots.Automation.HealAndGoto extends ::Left4Bots.Automation.Task
 	{
 		// 'target' and 'order' are only used for the task identification (GetTaskId), not for the actual orders
 		base.constructor("bots", "HealAndGoto", null, null, null, 0.0, true, null, false, false);
-		
+
 		_ordersSent = false;
-		
+
 		for (local i = 0; i < pos.len(); i++)
 			_goto_pos.append(pos[i]);
 	}
-	
+
 	function Think()
 	{
 		if (!_started)
 			return;
-		
+
 		_l4b.Logger.Debug("Task thinking " + tostring());
-		
+
 		if (!_ordersSent)
 		{
 			foreach (bot in _l4b.Bots)
@@ -575,7 +575,7 @@ class ::Left4Bots.Automation.HealAndGoto extends ::Left4Bots.Automation.Task
 				// Heal if needed
 				if (bot.GetHealth() <= 98 && ::Left4Utils.HasMedkit(bot))
 					_l4b.BotOrderAdd(bot, "heal", null, bot, null, null, 0, false);
-				
+
 				// Goto the given locations
 				for (local i = 0; i < _goto_pos.len(); i++)
 					_l4b.BotOrderAdd(bot, "goto", null, null, _goto_pos[i]);
@@ -583,19 +583,19 @@ class ::Left4Bots.Automation.HealAndGoto extends ::Left4Bots.Automation.Task
 			_ordersSent = true;
 			return;
 		}
-		
+
 		// Make sure the bots completed their previously assigned orders (heal and goto) before continuing
 		foreach (bot in _l4b.Bots)
 		{
 			if (_l4b.BotOrdersCount(bot) > 0)
 				return;
 		}
-		
+
 		// Task is complete. Remove it from CurrentTasks
 		_l4b.Automation.DeleteTasks(_target, _order, _destEnt, _destPos, _destLookAtPos);
 		_l4b.Logger.Debug("Task complete");
 	}
-	
+
 	_ordersSent = false;
 	_goto_pos = [];
 }
@@ -607,42 +607,42 @@ class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 	{
 		// 'target' and 'order' are only used for the task identification (GetTaskId), not for the actual orders
 		base.constructor("bots", "RegroupAt", null, null, null, 0.0, true, null, false, false);
-		
+
 		_ordersSent = false;
 		_gotoPos = pos;
 	}
-	
+
 	function Think()
 	{
 		if (!_started)
 			return;
-		
+
 		_l4b.Logger.Debug("Task thinking " + tostring());
-		
+
 		if (!_ordersSent)
 		{
 			foreach (bot in _l4b.Bots)
 				_l4b.BotOrderAdd(bot, "wait", null, null, _gotoPos);
-			
+
 			_ordersSent = true;
 			return;
 		}
-		
+
 		// Make sure that all the bots are in the 'Waiting' status before continuing
 		foreach (bot in _l4b.Bots)
 		{
 			if (!bot.GetScriptScope().Waiting)
 				return;
 		}
-		
+
 		// Task is complete. Cancel the 'wait' order and remove the task from CurrentTasks
 		foreach (bot in _l4b.Bots)
 			bot.GetScriptScope().BotCancelOrders("wait");
-		
+
 		_l4b.Automation.DeleteTasks(_target, _order, _destEnt, _destPos, _destLookAtPos);
 		_l4b.Logger.Debug("Task complete");
 	}
-	
+
 	_ordersSent = false;
 	_gotoPos = null;
 }
@@ -655,34 +655,34 @@ class ::Left4Bots.Automation.HoldAt extends ::Left4Bots.Automation.Task
 		// 'target' and 'order' are only used for the task identification (GetTaskId), not for the actual orders
 		base.constructor("bots", "HoldAt", null, holdPos, onTankPos, holdTime, canPause);
 		// constructor(target, order, destEnt = null, destPos = null, destLookAtPos = null, holdTime = 0.0, canPause = true, param1 = null, cancelAllOnBegin = false, cancelAllOnEnd = true)
-		
+
 		_holdStart = null;
 	}
-	
+
 	function Stop()
 	{
 		if (!_started)
 			return;
-		
+
 		_started = false;
 		_holdStart = null;
-		
+
 		foreach (bot in _l4b.Bots)
 		{
 			if (_l4b.BotHasOrder(bot, "wait", null, _destPos) || (_destLookAtPos != null && _l4b.BotHasOrder(bot, "wait", null, _destLookAtPos)))
 				bot.GetScriptScope().BotCancelOrders("wait");
 		}
-		
+
 		_l4b.Logger.Debug("Task stopped " + tostring());
 	}
-	
+
 	function Think()
 	{
 		if (!_started)
 			return;
-		
+
 		_l4b.Logger.Debug("Task thinking " + tostring());
-		
+
 		if (_holdStart == null)
 			_holdStart = Time();
 		else if (_holdTime > 0 && (Time() - _holdStart) > _holdTime)
@@ -690,13 +690,13 @@ class ::Left4Bots.Automation.HoldAt extends ::Left4Bots.Automation.Task
 			// Task is complete. Cancel the 'wait' order and remove the task from CurrentTasks
 			foreach (bot in _l4b.Bots)
 				bot.GetScriptScope().BotCancelOrders("wait");
-			
+
 			_l4b.Automation.DeleteTasks(_target, _order, _destEnt, _destPos, _destLookAtPos);
 			_l4b.Logger.Debug("Task complete");
-			
+
 			return;
 		}
-		
+
 		local pos = _l4b.Tanks.len() > 0 ? _destLookAtPos : _destPos;
 		foreach (bot in _l4b.Bots)
 		{
@@ -707,7 +707,7 @@ class ::Left4Bots.Automation.HoldAt extends ::Left4Bots.Automation.Task
 			}
 		}
 	}
-	
+
 	_holdStart = null;
 }
 
@@ -718,39 +718,39 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 	{
 		// 'target' and 'order' are only used for the task identification (GetTaskId), not for the actual orders
 		base.constructor("bots", "GotoAndIdle", null, null, null, 0.0, true, null, false, false);
-		
+
 		_ordersSent = false;
 		_gotoPos = pos;
 	}
-	
+
 	function Think()
 	{
 		if (!_started)
 			return;
-		
+
 		_l4b.Logger.Debug("Task thinking " + tostring());
-		
+
 		if (!_ordersSent)
 		{
 			foreach (bot in _l4b.Bots)
 				_l4b.BotOrderAdd(bot, "goto", null, null, _gotoPos);
-			
+
 			_ordersSent = true;
 			return;
 		}
-		
+
 		// Make sure the bots completed their previously assigned orders (goto) before continuing
 		foreach (bot in _l4b.Bots)
 		{
 			if (_l4b.BotOrdersCount(bot) > 0)
 				return;
 		}
-		
+
 		// Task is complete. Remove it from CurrentTasks
 		_l4b.Automation.DeleteTasks(_target, _order, _destEnt, _destPos, _destLookAtPos);
 		_l4b.Logger.Debug("Task complete");
 	}
-	
+
 	_ordersSent = false;
 	_gotoPos = null;
 }
@@ -810,7 +810,7 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 	local id = GetTaskId(target, order, destEnt, destPos, destLookAtPos);
 	if (id < 0)
 		return null;
-	
+
 	return CurrentTasks[id];
 }
 
@@ -833,10 +833,10 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 {
 	if (TaskExists(target, "lead"))
 		return false;
-	
+
 	ResetTasks();
 	AddTask(target, "lead");
-	
+
 	return true;
 }
 
@@ -848,7 +848,7 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 
 	ResetTasks();
 	AddTask(target, "use", ent, usePos, null, holdTime, canPause);
-	
+
 	return true;
 }
 
@@ -860,13 +860,13 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 		::Left4Bots.Logger.Error("Automation.DoUseNoName - " + entClass + " not found near " + usePos);
 		return false;
 	}
-	
+
 	if (TaskExists(target, "use", ent))
 		return false;
-	
+
 	ResetTasks();
 	AddTask(target, "use", ent, usePos, null, 0.0, canPause);
-	
+
 	return true;
 }
 
@@ -878,7 +878,7 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 
 	ResetTasks();
 	AddTask(target, "destroy", ent, destroyPos, null, 0.0, canPause);
-	
+
 	return true;
 }
 
@@ -889,7 +889,7 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 
 	ResetTasks();
 	AddTask(target, "wait", null, waitPos, null, 0.0, canPause);
-		
+
 	return true;
 }
 
@@ -897,10 +897,10 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 {
 	if (TaskExists("bots", "HoldAt"))
 		return false;
-	
+
 	ResetTasks();
 	AddCustomTask(HoldAt(holdPos, onTankPos, holdTime, canPause));
-		
+
 	return true;
 }
 
@@ -908,10 +908,10 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 {
 	if (TaskExists("bots", "RegroupAt"))
 		return false;
-	
+
 	ResetTasks();
 	AddCustomTask(RegroupAt(pos));
-		
+
 	return true;
 }
 
@@ -919,10 +919,10 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 {
 	if (TaskExists("bots", "GotoAndIdle"))
 		return false;
-	
+
 	ResetTasks();
 	AddCustomTask(GotoAndIdle(pos));
-		
+
 	return true;
 }
 
@@ -930,10 +930,10 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 {
 	if (TaskExists("bots", "HealInSaferoom"))
 		return false;
-	
+
 	ResetTasks();
 	AddCustomTask(HealInSaferoom());
-		
+
 	return true;
 }
 
@@ -941,10 +941,10 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 {
 	if (TaskExists("bots", "HealAndGoto"))
 		return false;
-	
+
 	ResetTasks();
 	AddCustomTask(HealAndGoto(posList));
-		
+
 	return true;
 }
 
@@ -952,12 +952,12 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 {
 	if (::Left4Bots.Automation.TaskExists("bots", "Scavenge"))
 		return false;
-	
+
 	::Left4Bots.Automation.ResetTasks();
 	local task = ::Left4Bots.Automation.AddCustomTask(::Left4Bots.Automation.Scavenge(useTargetPos, onTankPos, onTankCanPause));
 	if (::Left4Bots.Settings.scavenge_campaign_autostart)
 		task.Start();
-	
+
 	return true;
 }
 
@@ -965,11 +965,11 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 {
 	if (!Settings.automation)
 		return;
-	
+
 	local newFlow = GetFlowPercent();
 	Automation.OnFlow(Automation.PrevFlow, newFlow);
 	Automation.PrevFlow = newFlow;
-	
+
 	// Automatically start the current tasks if AutoStart is true or there is no human survivor in the team
 	if (Automation.AutoStart || Bots.len() == Survivors.len())
 	{
@@ -979,7 +979,7 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 				task.Start();
 		}
 	}
-	
+
 	foreach (task in Automation.CurrentTasks)
 		task.Think();
 }
@@ -1043,17 +1043,17 @@ if (!IncludeScript(path + ::Left4Bots.MapName))
 		player = g_MapScript.GetPlayerFromUserID(params["userid"]);
 	if (!player || !player.IsValid() || GetCurrentFlowPercentForPlayer(player) < 80)
 		return;
-	
+
 	if (::Left4Bots.Automation.step == 999999)
 		return; // Already did it
-	
+
 	::Left4Bots.Logger.Debug("::Left4Bots.Automation.Events.OnGameEvent_player_entered_checkpoint");
-	
+
 	::Left4Bots.Automation.step = 999999;
 	::Left4Bots.Automation.CurrentTasks.clear();
 	if (!::Left4Bots.Settings.automation_stay_in_end_saferoom)
 		return;
-	
+
 	local mapAreas = {};
 	::Left4Utils.FindMapAreas(mapAreas);
 	if (mapAreas["checkpointB_in"])

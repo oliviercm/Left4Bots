@@ -106,12 +106,12 @@ IncludeScript("left4bots_requirements");
 	OnTankCvars = {}
 	OnTankCvarsBak = {}
 	AIFuncs = {}
-	
+
 	//lxc check infected's status, is there a better way?
 	InfectedCalmAct =
 	[
 		"", //empty when spawn
-		
+
 		//Basically includes all calm actions
 		"ACT_TERROR_IDLE_NEUTRAL",
 		"ACT_TERROR_FACE_RIGHT_NEUTRAL",
@@ -138,9 +138,9 @@ IncludeScript("left4bots_requirements");
 		"ACT_TERROR_LEAN_BACKWARD_IDLE",
 		"ACT_TERROR_LEAN_LEFTWARD_IDLE",
 		"ACT_TERROR_LEAN_FORWARD_IDLE",
-		
+
 		//"ACT_TERROR_IDLE_ACQUIRE", //Indicates that the infected has set a target. If you shoot it from a distance, this actions may be played. Otherwise, the following actions will be played.
-		
+
 		//Here's where the infected find the threat, but have no clear target
 		"ACT_TERROR_IDLE_ALERT",
 		"ACT_TERROR_IDLE_ALERT_BEHIND",
@@ -169,9 +169,9 @@ IncludeScript("left4bots_settings");
 
 	Logger.Info("Loading settings...");
 	Left4Utils.LoadSettingsFromFileNew("left4bots2/cfg/settings.txt", "Left4Bots.Settings.", Logger);
-	
+
 	Logger.LogLevel(Settings.loglevel);
-	
+
 	Left4Utils.SaveSettingsToFileNew("left4bots2/cfg/settings.txt", Settings, Logger);
 
 	// Create the missing config files with their default values
@@ -209,7 +209,7 @@ IncludeScript("left4bots_settings");
 		Logger.Info("Loading vocalizer command mapping from file: " + Settings.file_vocalizer);
 		VocalizerCommands = LoadVocalizerCommandsFromFile(Settings.file_vocalizer);
 		Logger.Info("Loaded " + VocalizerCommands.len() + " mappings");
-		
+
 		//Left4Utils.PrintTable(VocalizerCommands); // TODO: remove
 	}
 	else
@@ -854,42 +854,42 @@ IncludeScript("left4bots_settings");
 ::Left4Bots.FindBotNearestEnemy <- function (bot, orig, radius, minDot = 0.96)
 {
 	local ret_array = [];
-	
+
 	local botFacing = bot.EyeAngles().Forward();
 	local tracemask_others = Settings.tracemask_others;
-	
+
 	// [NEW] Perhaps we could add `foreach (ent in Dominators)` here so SurvivorBots can prioritize killing special infected that are grabbing survivors if they are within radius.
-	
+
 	foreach (ent in Specials)
 	{
 		if (ent.IsValid() && !ent.IsGhost())
 		{
 			local toEnt = ent.GetOrigin() - orig;
 			local dist = toEnt.Norm();
-			
+
 			if (dist < radius && botFacing.Dot(toEnt) >= minDot)
 			{
 				ret_array.append([dist, ent]);
 			}
 		}
 	}
-	
+
 	// [NEW] Sort the array from closest to farthest special infected so the `CanTraceTo` function doesn't have to perform as many traces.
-	
+
 	ret_array.sort(function (a, b) {return a[0] - b[0]});
-	
+
 	foreach (ret_data in ret_array)
 	{
 		local ret = ret_data[1];
-		
+
 		if (ret && Left4Utils.CanTraceTo(bot, ret, tracemask_others))
 		{
 			return { ent = ret, head = ret_data[0] <= Settings.manual_attack_special_head_radius };
 		}
 	}
-	
+
 	ret_array.clear();
-	
+
 	//lxc kill raged Witch if no Specials nearby
 	foreach (witch in Witches)
 	{
@@ -903,25 +903,25 @@ IncludeScript("left4bots_settings");
 			}
 		}
 	}
-	
+
 	// [NEW] Sort the array from closest to farthest Witch so the `CanTraceTo` function doesn't have to perform as many traces.
-	
+
 	ret_array.sort(function (a, b) {return a[0] - b[0]});
-	
+
 	foreach (ret_data in ret_array)
 	{
 		local ret = ret_data[1];
-		
+
 		if (ret && Left4Utils.CanTraceTo(bot, ret, tracemask_others))
 		{
 			return { ent = ret, head = true };
 		}
 	}
-	
+
 	ret_array.clear();
-	
+
 	// [NEW] Added Tanks to the list of targets for SurvivorBots to shoot so they don't take too long to react to its presence.
-	
+
 	foreach (tank in Tanks)
 	{
 		if (tank.IsValid() && !tank.IsIncapacitated() && NetProps.GetPropInt(tank, "m_lookatPlayer") >= 0) //Aggroed
@@ -933,18 +933,18 @@ IncludeScript("left4bots_settings");
 			}
 		}
 	}
-	
+
 	local tank = null;
 	local newRadius = radius;
-	
+
 	// [NEW] Sort the array from closest to farthest Tank so the `CanTraceTo` function doesn't have to perform as many traces.
-	
+
 	ret_array.sort(function (a, b) {return a[0] - b[0]});
-	
+
 	foreach (ret_data in ret_array)
 	{
 		local ret = ret_data[1];
-		
+
 		if (ret && Left4Utils.CanTraceTo(bot, ret, tracemask_others))
 		{
 			tank = ret;
@@ -953,9 +953,9 @@ IncludeScript("left4bots_settings");
 			break;
 		}
 	}
-	
+
 	ret_array.clear();
-	
+
 	local ent = null;
 	while (ent = Entities.FindByClassnameWithin(ent, "infected", orig, newRadius)) // If only we had a infected_spawned event for the commons...
 	{
@@ -963,28 +963,28 @@ IncludeScript("left4bots_settings");
 		{
 			local toEnt = ent.GetOrigin() - orig;
 			local dist = toEnt.Norm();
-			
+
 			if (botFacing.Dot(toEnt) >= minDot)
 			{
 				ret_array.append([dist, ent]);
 			}
 		}
 	}
-	
+
 	// [NEW] Sort the array from closest to farthest common infected so the `CanTraceTo` function doesn't have to perform as many traces.
-	
+
 	ret_array.sort(function (a, b) {return a[0] - b[0]});
-	
+
 	foreach (ret_data in ret_array)
 	{
 		local ret = ret_data[1];
-		
+
 		if (ret && (Settings.manual_attack_wandering || IsInfectedAngry(ret)) && !IsRiotPolice(ret, orig) && Left4Utils.CanTraceTo(bot, ret, tracemask_others))
 		{
 			return { ent = ret, head = ret_data[0] <= Settings.manual_attack_common_head_radius };
 		}
 	}
-	
+
 	return tank ? { ent = tank, head = true } : tank;
 }
 
@@ -1012,15 +1012,15 @@ if (activator && isWorthPickingUp)
 	//lxc if use this method, will set context to ent, so other bots will ignore it until context deleted
 	item.SetContext("skip_use", "true", -1);
 	DoEntFire("!self", "RemoveContext", "skip_use", 0.2, null, item);
-	
+
 	item.ValidateScriptScope(); //lxc avoid [the index 'activator' does not exist]
-	
+
 	//"weapon_smg, weapon_smg_silenced, weapon_shotgun_chrome, weapon_pumpshotgun, weapon_rifle, weapon_rifle_desert, weapon_rifle_ak47, weapon_rifle_sg552, weapon_shotgun_spas, weapon_autoshotgun, weapon_hunting_rifle, weapon_sniper_military, weapon_smg_mp5, weapon_sniper_scout, weapon_sniper_awp, weapon_grenade_launcher, weapon_rifle_m60, weapon_pistol, weapon_pistol_magnum"
 	//By Inputs "Use" to pickup weapon, weapons in the list above never fire "item_pickup" or "player_use" event, the remaining weapons and all spawn ent only fire "item_pickup" event.
-	
+
 	//lxc if "PlayerPressButton" succeed, "item_pickup" or "player_use" event will always fire before 'DoEntFire()', so use -1 delay is safe.
 	DoEntFire("!self", "RunScriptCode", PickupFailsafeVerbatimCode, -1, bot, item);
-	
+
 	/*
 	if (!bot || !bot.IsValid() || !IsValidPickup(item))
 		return;
@@ -1069,7 +1069,7 @@ if (activator && isWorthPickingUp)
 {
 	if (!(userid1 in SurvivorFlow) || !(userid2 in SurvivorFlow))
 		return -1;
-	
+
 	return abs(SurvivorFlow[userid1].flow - SurvivorFlow[userid2].flow);
 }
 
@@ -1079,10 +1079,10 @@ if (activator && isWorthPickingUp)
 {
 	if (maxSeparation <= 0 || SurvivorFlow.len() < 2 || !(userid in SurvivorFlow))
 		return false;
-	
+
 	local hasHumans = Survivors.len() > Bots.len();
 	local myFlow = SurvivorFlow[userid].flow;
-	
+
 	foreach (id, f in SurvivorFlow)
 	{
 		if (id != userid && (!hasHumans || !f.isBot) && abs(myFlow - f.flow) <= maxSeparation)
@@ -1097,10 +1097,10 @@ if (activator && isWorthPickingUp)
 {
 	if (Settings.pickups_max_separation <= 0 || SurvivorFlow.len() < 2 || !(userid in SurvivorFlow))
 		return false;
-	
+
 	local hasHumans = Survivors.len() > Bots.len();
 	local myFlow = SurvivorFlow[userid].flow;
-	
+
 	foreach (id, f in SurvivorFlow)
 	{
 		if (id != userid && (!hasHumans || !f.isBot) && f.flow < (myFlow + Settings.pickups_max_separation))
@@ -1303,20 +1303,20 @@ if (activator && isWorthPickingUp)
 
 		case "follow":
 			return (!BotHasOrderOfType(bot, orderType) && !(bot.GetPlayerUserId() in ScavengeBots));
-		
+
 		case "witch": // bot must be holding a shotgun
 			return (botScope.ActiveWeapon && botScope.ActiveWeapon.GetClassname().find("shotgun") != null);
-		
+
 		case "scavenge": // bot can't be an automatic scavenge bot
 			return !(bot.GetPlayerUserId() in ScavengeBots);
-		
+
 		case "destroy":
 			return (botScope.ActiveWeapon && IsRangedWeapon(botScope.ActiveWeaponId, botScope.ActiveWeaponSlot) && Left4Utils.GetAmmoPercent(botScope.ActiveWeapon) >= 2);
-		
+
 		default: // bot can't have another order of the same type in the queue
 			return !BotHasOrderOfType(bot, orderType);
 	}
-	
+
 	return true;
 }
 
@@ -1378,10 +1378,10 @@ if (activator && isWorthPickingUp)
 					// If we are going to give a medkit/defib, check if the user level of the receiver is high enough
 					if (slot != INV_SLOT_MEDKIT && slot != INV_SLOT_PRIMARY && slot != INV_SLOT_SECONDARY)
 						return bot;
-					
+
 					if (slot == INV_SLOT_MEDKIT && ((itemClass != "weapon_first_aid_kit" && itemClass != "weapon_defibrillator") || (Settings.give_bots_medkits && userlevel >= Settings.userlevel_give_medkit)))
 						return bot;
-					
+
 					if ((slot == INV_SLOT_PRIMARY || slot == INV_SLOT_SECONDARY) && Settings.give_bots_weapons && userlevel >= Settings.userlevel_give_weapons)
 						return bot;
 				}
@@ -1462,7 +1462,7 @@ if (activator && isWorthPickingUp)
 		return null; // Yes
 
 	// No, go on...
-	
+
 	if (throwableClass == "weapon_molotov")
 	{
 		// Can we actually throw molotovs?
@@ -1560,7 +1560,7 @@ if (activator && isWorthPickingUp)
 		return false;
 
 	// No, go on...
-	
+
 	if (throwType == AI_THROW_TYPE.Tank)
 	{
 		// Is someone else already going to throw this?
@@ -1889,7 +1889,7 @@ if (activator && isWorthPickingUp)
 		}
 	}
 	*/
-	
+
 	foreach (id, f in SurvivorFlow)
 	{
 		if (id != userid && !f.inCheckpoint)
@@ -1918,7 +1918,7 @@ if (activator && isWorthPickingUp)
 	{
 		if (surv.GetHealth() < 75 || !::Left4Utils.HasMedkit(surv))
 			requiredMedkits++;
-		
+
 		if (surv.GetHealth() < me.GetHealth())
 			haveLowestHP = false;
 	}
@@ -1936,7 +1936,7 @@ if (activator && isWorthPickingUp)
 				return true;
 		}
 	}
-	
+
 	return (haveLowestHP && count > 0);
 }
 
@@ -2157,14 +2157,14 @@ if (activator && isWorthPickingUp)
 					if (aw && aw.IsValid() && (bot.IsFiringWeapon() || Time() >= NetProps.GetPropFloat(aw, "m_flNextPrimaryAttack")) && distance <= l4b.GetWeaponRangeById(Left4Utils.GetWeaponId(aw)))
 					{
 						//l4b.PlayerPressButton(bot, BUTTON_ATTACK, 0.0, self.GetCenter() + (fwd * l4b.Settings.shoot_rock_ahead), 0, 0, true); // Try to shoot slightly in front of the rock
-						
+
 						//lxc no need freeze bot anymore
 						local scope = bot.GetScriptScope();
 						if (scope.AimType <= AI_AIM_TYPE.Rock)
 						{
 							scope.BotSetAim(AI_AIM_TYPE.Rock, self, 0.5); //need refresh target, if can't see rock, will pasue aim and shoot after this delay
 							Left4Utils.PlayerForceButton(bot, BUTTON_ATTACK);
-							
+
 							l4b.Logger.Debug(bot.GetPlayerName() + " shooting at rock " + self.GetEntityIndex());
 						}
 					}
@@ -2183,7 +2183,7 @@ if (activator && isWorthPickingUp)
 	// WeapPref array has one sub-array for each inventory slot
 	// Each sub-array contains the weapons from the highest to the lowest priority one for that inventory slot
 	scope.WeapPref <- [[], [], [], [], []];
-	
+
 	// WeapNoPref array contains a flag for each inventory slot
 	// The flag indicates whether the priority of the weapons in WeapPref for that slot must be ignored
 	scope.WeapNoPref <- [false, false, false, false, false];
@@ -2213,7 +2213,7 @@ if (activator && isWorthPickingUp)
 			{
 				//delete space characters which cause bug
 				local wp = strip(weaps[x]);
-				
+
 				if (x == 0 && wp == "*")
 					scope.WeapNoPref[i] = true;
 				else
@@ -2507,7 +2507,7 @@ if (activator && isWorthPickingUp)
 		local melee_range = Convars.GetFloat("melee_range");
 		return Settings.manual_attack_radius < melee_range ? Settings.manual_attack_radius : melee_range; // TODO: maybe we should make it a setting
 	}
-	
+
 	if (weaponId == Left4Utils.WeaponId.weapon_pumpshotgun || weaponId == Left4Utils.WeaponId.weapon_autoshotgun || weaponId == Left4Utils.WeaponId.weapon_shotgun_chrome || weaponId == Left4Utils.WeaponId.weapon_shotgun_spas)
 		return Settings.manual_attack_radius < 600 ? Settings.manual_attack_radius : 600;
 
@@ -2567,7 +2567,7 @@ if (activator && isWorthPickingUp)
 	local t = {};
 	if (!ScavengeUseTarget || !ScavengeUseTarget.IsValid())
 		return t;
-	
+
 	//	- Spawned gascans have class "weapon_gascan" when they have been picked up by players; after spawn too but i'm not 100% sure.
 	//	  They can have different m_nSkin (default is 0).
 	//	  In scavenge maps (regardless the gamemode) they are spawned by weapon_scavenge_item_spawn
@@ -2592,7 +2592,7 @@ if (activator && isWorthPickingUp)
 
 ::Left4Bots.ScavengeStop <- function ()
 {
-	// TODO: 
+	// TODO:
 }
 
 // Makes the given 'player' (likely a survivor bot) trigger the given 'alarm' (prop_car_alarm)
@@ -2897,7 +2897,7 @@ if (activator && isWorthPickingUp)
 	//lxc clear progress bar and revive animation for survivor, if 'subject' is human, it's necessary
 	NetProps.SetPropFloat(bot, "m_flProgressBarDuration", 0);
 	NetProps.SetPropFloat(subject, "m_flProgressBarDuration", 0);
-	
+
 	Left4Utils.BotCmdReset(bot);
 
 	//BotThrow(bot, pos);
@@ -2950,7 +2950,7 @@ if (activator && isWorthPickingUp)
 			local scope = bot.GetScriptScope();
 			if (scope.AimType > AI_AIM_TYPE.Shoot)
 				continue;
-			
+
 			//Left4Utils.BotCmdAttack(bot, smoker);
 
 			//lxc ValidWeaponForSmoker() can not match "weapon_autoshotgun"
@@ -2970,18 +2970,18 @@ if (activator && isWorthPickingUp)
 						//lxc no need freeze bot anymore
 						scope.BotSetAim(AI_AIM_TYPE.Shoot, p, 0.6);
 						Left4Utils.PlayerForceButton(bot, BUTTON_ATTACK);
-					
+
 						Logger.Info(bot.GetPlayerName() + " shooting the smoker's tongue");
 
 						//DebugDrawCircle(p, Vector(255, 0, 0), 255, 2, true, 1.5);
 						if (duck)
 							PlayerPressButton(bot, BUTTON_DUCK, 1.5);
-						
+
 						/*PlayerPressButton(bot, BUTTON_ATTACK, 0, p, 0, 0, true);
 						Left4Timers.AddTimer(null, 0.5, @(params) PlayerPressButton(params.bot, params.button, params.holdTime, params.destination, params.deltaPitch, params.deltaYaw, params.lockLook), { bot = bot, button = BUTTON_ATTACK, holdTime = 0, destination = p, deltaPitch = 0, deltaYaw = 0, lockLook = true });
 						Left4Timers.AddTimer(null, 0.9, @(params) PlayerPressButton(params.bot, params.button, params.holdTime, params.destination, params.deltaPitch, params.deltaYaw, params.lockLook), { bot = bot, button = BUTTON_ATTACK, holdTime = 0, destination = p, deltaPitch = 0, deltaYaw = 0, lockLook = true });
 						Left4Timers.AddTimer(null, 1.4, @(params) PlayerPressButton(params.bot, params.button, params.holdTime, params.destination, params.deltaPitch, params.deltaYaw, params.lockLook), { bot = bot, button = BUTTON_ATTACK, holdTime = 0, destination = p, deltaPitch = 0, deltaYaw = 0, lockLook = true });*/
-						
+
 						break;
 					}
 					//else
@@ -3095,10 +3095,10 @@ if (activator && isWorthPickingUp)
 ::Left4Bots.CarryItemStart <- function(bot)
 {
 	Logger.Debug("CarryItemStart - bot: " + bot.GetPlayerName());
-	
+
 	if (!Left4Utils.IsButtonDisabled(bot, BUTTON_ATTACK))
 		Left4Utils.PlayerDisableButton(bot, BUTTON_ATTACK);
-		
+
 	local w = Left4Utils.GetInventoryItemInSlot(bot, INV_SLOT_PRIMARY);
 	if (w)
 		NetProps.SetPropEntity(w, "m_hOwner", null); // This prevents the bot from switching to this weapon (and dropping the held item)
@@ -3111,7 +3111,7 @@ if (activator && isWorthPickingUp)
 ::Left4Bots.CarryItemStop <- function(bot)
 {
 	Logger.Debug("CarryItemStop - bot: " + bot.GetPlayerName());
-	
+
 	if (Left4Utils.IsButtonDisabled(bot, BUTTON_ATTACK))
 		Left4Utils.PlayerEnableButton(bot, BUTTON_ATTACK);
 
@@ -3137,14 +3137,14 @@ if (activator && isWorthPickingUp)
 ::Left4Bots.GetClosestCarriableByWeaponIdWhithin <- function(origin, weaponId, range = 0, availCheck = true)
 {
 	local ret = null;
-	
+
 	local modelToSearch = Left4Utils.GetCarriableModelById(weaponId);
 	if (!modelToSearch)
 	{
 		Logger.Error("GetClosestCarriableByWeaponIdWhithin - No model for item with weaponId: " + weaponId);
 		return ret;
 	}
-	
+
 	local minDist = 1000000;
 	local ent = null;
 	while (ent = Entities.FindByModel(ent, modelToSearch))
@@ -3171,7 +3171,7 @@ if (activator && isWorthPickingUp)
 	}
 	if (str == "")
 		str = "[]";
-	
+
 	Left4Hud.SetHudText("l4b2automation", "Flow: " + Automation.PrevFlow + " - Tasks: " + str);
 }
 
@@ -3209,7 +3209,7 @@ if (activator && isWorthPickingUp)
 				txt += ", " + scope.Orders[i].OrderType;
 		}
 		txt += ")";
-		
+
 		Left4Hud.SetHudText("l4b2orders" + i, txt);
 	}
 }
@@ -3219,7 +3219,7 @@ if (activator && isWorthPickingUp)
 {
 	if (!bot || !bot.IsValid() || (bot.GetHealth() + bot.GetHealthBuffer()) < 50)
 		return;
-		
+
 	local activeWeapon = bot.GetActiveWeapon();
 	if (activeWeapon && activeWeapon.GetClassname() == item)
 		BotSwitchToAnotherWeapon(bot);
@@ -3232,7 +3232,7 @@ if (activator && isWorthPickingUp)
 
 	if (NetProps.GetPropInt(player, "movetype") == 0)
 		NetProps.SetPropInt(player, "movetype", 2);
-	
+
 	CarryItemStop(player);
 
 	NetProps.SetPropInt(player, "m_fFlags", NetProps.GetPropInt(player, "m_fFlags") & ~(1 << 5)); // unset FL_FROZEN
@@ -3251,7 +3251,7 @@ if (activator && isWorthPickingUp)
 		//lxc keep frozen if needed
 		if (lockLook)
 			NetProps.SetPropInt(bot, "m_fFlags", NetProps.GetPropInt(bot, "m_fFlags") | (1 << 5));
-		
+
 		//repeat every 0.1s
 		DoEntFire("!self", "RunScriptCode", format("Left4Bots.CheckReleaseButton(self, %d, %d);", button, lockLook), 0.099, null, bot);
 	}
@@ -3276,7 +3276,7 @@ if (activator && isWorthPickingUp)
 		//lxc keep frozen if needed
 		if (lockLook)
 			NetProps.SetPropInt(bot, "m_fFlags", NetProps.GetPropInt(bot, "m_fFlags") | (1 << 5));
-		
+
 		//repeat every 0.1s
 		DoEntFire("!self", "RunScriptCode", format("Left4Bots.ReleaseButton(self, %d, %f, %d);", button, endtime, lockLook), 0.099, null, bot);
 	}
@@ -3316,12 +3316,12 @@ if (activator && isWorthPickingUp)
 		}
 		else if (head == null) // foot, use for weapons like grenade launcher
 			return victim.GetOrigin();
-		
+
 		// Fast Headcrab (Jockey) https://steamcommunity.com/sharedfiles/filedetails/?id=3121830019
 		// this model use custom named bone, and cannot hit Center pos
 		return victim.GetBoneOrigin(0);
 	}
-	
+
 	//lxc center should be better
 	//return victim.GetOrigin();
 	return victim.GetCenter();
@@ -3332,17 +3332,17 @@ if (activator && isWorthPickingUp)
 {
 	if (!player || !player.IsValid())
 		return;
-	
+
 	if (lockLook)
 	{
 		// make bot look at target
 		local scope = player.GetScriptScope();
 		scope.BotUnSetAim();
-		
+
 		local aimtype = AI_AIM_TYPE.Order;
 		// Make the bot keep looking at the target At least 0.5s even after the order is completed, making them looks like the vanilla AI
 		local aimtime = 0.5;
-		
+
 		// don't freeze if throw grenade
 		if (unlockLookDelay == 0)
 			NetProps.SetPropInt(player, "m_fFlags", NetProps.GetPropInt(player, "m_fFlags") | (1 << 5)); // set FL_FROZEN
@@ -3354,25 +3354,25 @@ if (activator && isWorthPickingUp)
 			aimtype = AI_AIM_TYPE.Throw;
 			aimtime = unlockLookDelay;
 		}
-		
+
 		// fix bots rotating when pick up item
 		local aimtarget = (typeof(destination) == "instance" && !("GetLastKnownArea" in destination)) ? destination.GetOrigin() : destination;
-		
+
 		scope.BotSetAim(aimtype, aimtarget, aimtime, deltaPitch, deltaYaw);
 	}
-	
+
 	if (destination != null || deltaPitch != 0 || deltaYaw != 0)
 		Left4Utils.BotLookAt(player, destination, deltaPitch, deltaYaw);
-	
+
 	// prevent release the button in wrong way
 	if (button == BUTTON_ATTACK)
 	{
 		local scope = player.GetScriptScope();
 		scope.AttackButtonForced = true;
 	}
-	
+
 	Left4Utils.PlayerForceButton(player, button);
-	
+
 	if (holdTime == 0.0)
 	{
 		DoEntFire("!self", "RunScriptCode", format("Left4Bots.CheckReleaseButton(self, %d, %d);", button, lockLook.tointeger()), 0.099, null, player);
@@ -3445,7 +3445,7 @@ if (activator && isWorthPickingUp)
 ::Left4Bots.FindSpitterDeathPool <- function (spitterpos)
 {
 	local spit = null;
-	
+
 	for (local ent; ent = Entities.FindByClassnameWithin(ent, "insect_swarm", spitterpos, 300); )
 	{
 		//lxc compare pos to find the dead spitter's acid
@@ -3455,21 +3455,21 @@ if (activator && isWorthPickingUp)
 			break;
 		}
 	}
-	
+
 	if (!spit)
 		return;
-	
+
 	Logger.Debug("Find Spitter Death Pool - acid pool: " + spit);
-	
+
 	if (!Settings.dodge_spit)
 		return;
-	
+
 	foreach (bot in Bots)
 	{
 		if (bot.IsValid() && !SurvivorCantMove(bot, bot.GetScriptScope().Waiting))
 			TryDodgeSpit(bot, spit);
 	}
-	
+
 	//lxc if script_nav_blocker already created and bots in it's radius, 'TryGetPathableLocationWithin()' can not find pos.
 	//Is it possible to use "wait" command instead?
 	if (Settings.spit_block_nav)
@@ -3487,7 +3487,7 @@ if (activator && isWorthPickingUp)
 {
 	if (!(userid in SurvivorFlow))
 		return true;
-	
+
 	local myFlow = SurvivorFlow[userid].flow + threshold;
 	foreach (id, f in SurvivorFlow)
 	{
@@ -3501,16 +3501,16 @@ if (activator && isWorthPickingUp)
 ::Left4Bots.ShouldCloseSaferoomDoor <- function (userid, range = 0)
 {
 	Logger.Debug("ShouldCloseSaferoomDoor - userid: " + userid);
-	
+
 	if (range == 0)
 		return OtherSurvivorsInCheckpoint(userid);
-	
+
 	if (!(userid in SurvivorFlow))
 	{
 		Logger.Debug("ShouldCloseSaferoomDoor - userid: " + userid + " - FALSE");
 		return false;
 	}
-	
+
 	local myFlow = SurvivorFlow[userid].flow;
 	foreach (id, f in SurvivorFlow)
 	{
@@ -3520,7 +3520,7 @@ if (activator && isWorthPickingUp)
 			return false;
 		}
 	}
-	
+
 	Logger.Debug("ShouldCloseSaferoomDoor - userid: " + userid + " - TRUE");
 	return true;
 }
@@ -3531,9 +3531,9 @@ if (activator && isWorthPickingUp)
 	local ammoType = NetProps.GetPropInt(weapon, "m_iPrimaryAmmoType");
 	local extraAmmo = NetProps.GetPropIntArray(player, "m_iAmmo", ammoType);
 	//printl(extraAmmo);
-	
+
 	player.DropItem(weaponClass);
-	
+
 	//'DropItem()' not set these steps
 	NetProps.SetPropInt(weapon, "m_iExtraPrimaryAmmo", extraAmmo); //set weapon's backup ammo
 	NetProps.SetPropIntArray(player, "m_iAmmo", 0, ammoType); //without this, if the player picks up the weapon again, will get more backup ammo
@@ -3548,7 +3548,7 @@ if (activator && isWorthPickingUp)
 ::Left4Bots.HandleAntiPipebombBug <- function ()
 {
 	Logger.Debug("HandleAntiPipebombBug");
-	
+
 	if (!::Left4Bots.Settings.anti_pipebomb_bug || !::Left4Bots.OtherSurvivorsInCheckpoint(-1)) // -1 is like: is everyone in checkpoint?
 		return;
 
@@ -3577,7 +3577,7 @@ if (activator && isWorthPickingUp)
 		Logger.Debug("HandleCloseDoor - No door!");
 		return;
 	}
-	
+
 	if (!area)
 		area = NavMesh.GetNearestNavArea(door.GetOrigin(), 200, false, false);
 
@@ -3593,7 +3593,7 @@ if (activator && isWorthPickingUp)
 	if (area)
 	{
 		doorZ = area.GetCenter().z;
-			
+
 		Left4Bots.Logger.Debug("OnGameEvent_player_entered_checkpoint - area: " + area.GetID() + " - DoorZ: " + doorZ);
 	}
 	else
@@ -3651,14 +3651,14 @@ if (activator && isWorthPickingUp)
 	{
 		local field1 = "";
 		local field2 = "";
-		
+
 		local txt = "";
 		for (local i = 0; i < cmdHelpText.len(); i++)
 		{
 			if (cmdHelpText[i] > 5)
 				txt += cmdHelpText[i].tochar();
 		}
-		
+
 		txt = Left4Utils.StringReplace(txt, "<", "\\<");
 		txt = Left4Utils.StringReplace(txt, ">", "\\>");
 		txt = split(txt, "\n");
@@ -3676,18 +3676,18 @@ if (activator && isWorthPickingUp)
 			else
 				field2 += "<br />" + txt[j];
 		}
-		
+
 		return "| " + field1 + " | " + field2 + " |";
 	}
-	
+
 	printl("--- ADMIN COMMANDS -------------------------");
 	for (local i = 0; i < AdminCommands.len(); i++)
 		printl(CommandToMarkdown(Left4Bots["CmdHelp_" + AdminCommands[i]]()));
-	
+
 	printl("--- USER COMMANDS --------------------------");
 	for (local i = 0; i < UserCommands.len(); i++)
 		printl(CommandToMarkdown(Left4Bots["CmdHelp_" + UserCommands[i]]()));
-	
+
 	printl("--------------------------------------------");
 }
 

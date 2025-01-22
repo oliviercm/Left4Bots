@@ -65,7 +65,7 @@
 
 	// [1/0] Enable/Disable bots being able to set the barricade gascans on fire (NOTE: if this is 0, 'destroy' and 'use' orders on the barricade gascans will not work)
 	damage_barricade = 1
-	
+
 	// [1/0] Enable/Disable bots being able to ignite gascans and other items
 	damage_other = 0
 
@@ -152,7 +152,7 @@
 
 	// [1/0] Should the bots give their upgrade packs to human players?
 	give_bots_upgrades = 1
-	
+
 	// [1/0] Should the bots give their weapons to human players?
 	give_bots_weapons = 1
 
@@ -264,7 +264,7 @@
 
 	// While executing MOVE commands (or always if manual_attack_always = 1), this is the max distance of the enemies that the bot will shoot
 	manual_attack_radius = 950
-	
+
 	// Smooth camera rotation, turn a part of angles at a time instead of looking at the target immediately, only apply to shoot command.
 	// Depending on the set value, can easily adjust the bot's aiming speed, observer the bots at first person to check the difference.
 	// Valve use these Cvars 'sb_normal_saccade_speed = 350', 'sb_combat_saccade_speed = 1000' to contronl the default AI.
@@ -318,7 +318,7 @@
 
 	// >0 = BotMoveTo area and move pos are drawn on screen for this amount of time (only the host can see it). 0 = Disable
 	moveto_debug_duration = 0
-	
+
 	// [1/0] Enable/Disable using the nearest nav area to the destination item as the MOVE destination instead of the item itself. Solves some issues on some maps (like ) but
 	moveto_nav = 1
 
@@ -587,7 +587,7 @@
 
 	// TraceLine mask used to look for pick-up items
 	tracemask_pickups = 134242379 // 0x1 | 0x2 | 0x8 | 0x40 | 0x2000 | 0x4000 | 0x8000000 (CONTENTS_SOLID | CONTENTS_WINDOW | CONTENTS_GRATE | CONTENTS_BLOCKLOS | CONTENTS_IGNORE_NODRAW_OPAQUE | CONTENTS_MOVEABLE | CONTENTS_DETAIL)
-	
+
 	// TraceLine mask used for other traces
 	tracemask_others = 1174421507 // TRACE_MASK_DEFAULT from left4lib_consts.nut
 

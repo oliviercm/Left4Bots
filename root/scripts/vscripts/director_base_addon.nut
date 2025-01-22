@@ -9,7 +9,7 @@ IncludeScript("left4bots");
 			if (classname.find(item) != null)
 				return !Left4Bots.Settings.items_not_to_avoid;
 		}
-		
+
 		return Left4Bots.Settings.items_not_to_avoid;
 	}
 }

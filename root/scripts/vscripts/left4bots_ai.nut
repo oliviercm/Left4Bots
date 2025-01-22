@@ -156,12 +156,12 @@ enum AI_AIM_TYPE {
 	scope.OrderHuman <- null;
 	scope.OrderTarget <- null;
 	scope["BotLockShoot"] <- AIFuncs.LockShoot;
-	
+
 	//lxc add
 	scope.LastFireTime <- 0;
 	scope.Airborne <- false;
 	scope.AttackButtonForced <- false;
-	
+
 	AddThinkToEnt(bot, "BotThink_Main");
 }
 
@@ -240,12 +240,12 @@ enum AI_AIM_TYPE {
 	scope["BotLookAt"] <- AIFuncs.BotLookAt;
 	//lxc don't send move command until
 	scope.NextMoveTime <- 0;
-	
+
 	//lxc add
 	scope.LastFireTime <- 0;
 	scope.Airborne <- false;
 	scope.AttackButtonForced <- false;
-	
+
 	AddThinkToEnt(bot, "BotThink_Main");
 }
 
@@ -582,12 +582,12 @@ enum AI_AIM_TYPE {
 {
 	local isBot = IsHandledBot(bot);
 	local isL4D1Bot = IsHandledL4D1Bot(bot);
-	
+
 	if (!isBot && !isL4D1Bot)
 		return "[null]";
 
 	local ret = "--------------------------------------------------------------------- L4B2 AI DUMP ---------------------------------------------------------------------\n";
-	
+
 	local scope = bot.GetScriptScope();
 	if (isL4D1Bot)
 	{
@@ -694,10 +694,10 @@ enum AI_AIM_TYPE {
 		}
 		ret += "\n- Num. WeaponsToSearch: " + scope.WeaponsToSearch.len() + "\n";
 		ret += "- Num. UpgradesToSearch: " + scope.UpgradesToSearch.len() + "\n";
-		
+
 		// TODO: print buttons disabled/forced, movetype etc.
 	}
-	
+
 	ret += "--------------------------------------------------------------------------------------------------------------------------------------------------------";
 	return ret;
 }
@@ -931,10 +931,10 @@ enum AI_AIM_TYPE {
 			if (ActiveWeaponSlot == 5)
 			{
 				L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Carry item changed: " + CarryItem + " -> " + ActiveWeapon);
-				
+
 				if (L4B.Settings.carry_debug)
 					Say(self, "Carry item changed: " + CarryItem + " -> " + ActiveWeapon, false);
-				
+
 				local isCarryOrder = false;
 				local ordersToUpdate = BotGetOrders(null, null, ActiveWeaponId);
 				foreach (orderToUpdate in ordersToUpdate)
@@ -956,22 +956,22 @@ enum AI_AIM_TYPE {
 						isCarryOrder = isCarryOrder || orderToUpdate.OrderType == "carry";
 					}
 				}
-				
+
 				if (isCarryOrder)
 					L4B.CarryItemStart(self);
-				
+
 				CarryItem = ActiveWeapon;
 				CarryItemWeaponId = ActiveWeaponId;
 			}
 			else
 			{
 				L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Carry item dropped: " + CarryItem);
-				
+
 				if (L4B.Settings.carry_debug)
 					Say(self, "Carry item dropped: " + CarryItem, false);
-				
+
 				L4B.CarryItemStop(self);
-				
+
 				local ordersToUpdate = BotGetOrders(null, CarryItem, CarryItemWeaponId);
 				foreach (orderToUpdate in ordersToUpdate)
 				{
@@ -980,7 +980,7 @@ enum AI_AIM_TYPE {
 						orderToUpdate.DestPos = null;
 						L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Order's " + orderToUpdate.OrderType + " DestPos has been reset: " + L4B.BotOrderToString(orderToUpdate));
 					}
-					
+
 					if (CarryItem.IsValid())
 						L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Order's " + orderToUpdate.OrderType + " dropped DestEnt is still valid: " + L4B.BotOrderToString(orderToUpdate));
 					else
@@ -1002,7 +1002,7 @@ enum AI_AIM_TYPE {
 						}
 					}
 				}
-				
+
 				CarryItem = null;
 				CarryItemWeaponId = 0;
 			}
@@ -1014,12 +1014,12 @@ enum AI_AIM_TYPE {
 		{
 			CarryItem = ActiveWeapon;
 			CarryItemWeaponId = ActiveWeaponId;
-			
+
 			L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Carry item picked up: " + CarryItem);
-			
+
 			if (L4B.Settings.carry_debug)
 				Say(self, "Carry item picked up: " + CarryItem, false);
-			
+
 			local isCarryOrder = false;
 			local ordersToUpdate = BotGetOrders(null, null, CarryItemWeaponId);
 			foreach (orderToUpdate in ordersToUpdate)
@@ -1041,7 +1041,7 @@ enum AI_AIM_TYPE {
 					isCarryOrder = isCarryOrder || orderToUpdate.OrderType == "carry";
 				}
 			}
-			
+
 			if (isCarryOrder)
 				L4B.CarryItemStart(self);
 		}
@@ -1062,10 +1062,10 @@ enum AI_AIM_TYPE {
 		}
 		if (AimType != AI_AIM_TYPE.None)
 			BotUnSetAim();
-		
+
 		return L4B.Settings.bot_think_interval;
 	}
-	
+
 	if (Airborne) // look at foot, simple way to fix the not fire bug
 	{
 		if (NetProps.GetPropEntity(self, "m_hGroundEntity"))
@@ -1075,14 +1075,14 @@ enum AI_AIM_TYPE {
 		}
 		return L4B.Settings.bot_think_interval;
 	}
-	
+
 	// Don't do anything if the bot is on a ladder or the mode hasn't started yet
 	if (NetProps.GetPropInt(self, "movetype") == 9 /* MOVETYPE_LADDER */ || !L4B.ModeStarted)
 		return L4B.Settings.bot_think_interval;
 
 	//lxc exec here
 	BotAim();
-	
+
 	// Don't do anything while frozen
 	if ((NetProps.GetPropInt(self, "m_fFlags") & (1 << 5)))
 	{
@@ -1197,7 +1197,7 @@ enum AI_AIM_TYPE {
 			break;
 		}
 	}
-	
+
 	return L4B.Settings.bot_think_interval;
 }
 
@@ -1234,10 +1234,10 @@ enum AI_AIM_TYPE {
 		}
 		if (AimType != AI_AIM_TYPE.None)
 			BotUnSetAim();
-		
+
 		return L4B.Settings.bot_think_interval;
 	}
-	
+
 	if (Airborne) // look at foot, simple way to fix the not fire bug
 	{
 		if (NetProps.GetPropEntity(self, "m_hGroundEntity"))
@@ -1247,14 +1247,14 @@ enum AI_AIM_TYPE {
 		}
 		return L4B.Settings.bot_think_interval;
 	}
-	
+
 	// Don't do anything if the bot is on a ladder or the mode hasn't started yet
 	if (NetProps.GetPropInt(self, "movetype") == 9 /* MOVETYPE_LADDER */ || !L4B.ModeStarted)
 		return L4B.Settings.bot_think_interval;
-	
+
 	//lxc exec here
 	BotAim();
-	
+
 	// Don't do anything while frozen
 	if ((NetProps.GetPropInt(self, "m_fFlags") & (1 << 5)))
 	{
@@ -1289,7 +1289,7 @@ enum AI_AIM_TYPE {
 			break;
 		}
 	}
-	
+
 	return L4B.Settings.bot_think_interval;
 }
 
@@ -1331,7 +1331,7 @@ enum AI_AIM_TYPE {
 		WeaponsToSearch.clear();
 
 		TimePickup = CurTime;
-		
+
 		L4B.PickupFailsafe(self, pickup);
 		L4B.PlayerPressButton(self, BUTTON_USE, 0.0, pickup, 0, 0, true);
 
@@ -1378,7 +1378,7 @@ enum AI_AIM_TYPE {
 
 		MoveType = AI_MOVE_TYPE.Pickup;
 		MoveEnt = pickup;
-		
+
 		if (L4B.Settings.moveto_nav)
 			BotMoveToNav(MoveEnt.GetOrigin(), true);
 		else
@@ -1436,7 +1436,7 @@ enum AI_AIM_TYPE {
 
 		MoveType = AI_MOVE_TYPE.Defib;
 		MoveEnt = death;
-		
+
 		if (L4B.Settings.moveto_nav)
 			BotMoveToNav(MoveEnt.GetOrigin(), true);
 		else
@@ -1642,36 +1642,36 @@ enum AI_AIM_TYPE {
 {
 	if (MoveType > AI_MOVE_TYPE.Order)
 		return; // Do nothing if there is an ongoing MOVE with higher priority
-	
+
 	if (!CurrentOrder && Orders.len() > 0)
 	{
 		CurrentOrder = Orders.remove(0); // Get the next order to execute and remove it from the FIFO queue
-		
+
 		L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - New CurrentOrder: " + L4B.BotOrderToString(CurrentOrder));
 	}
-	
+
 	if (!CurrentOrder)
 		return; // Nothing to do
-	
+
 	if (CurrentOrder.OrderType == "carry" && CarryItem == CurrentOrder.DestEnt)
 	{
 		// We're holding our carry item. Do nothing but handle the pauses
 		BotIsInPause(CurrentOrder.CanPause, false, false, CurrentOrder.MaxSeparation);
 		return;
 	}
-	
+
 	if (CurrentOrder.DestEnt && !L4B.IsValidUseItem(CurrentOrder.DestEnt, (CurrentOrder.OrderType == "scavenge" || CurrentOrder.OrderType == "carry") ? self : null))
 	{
 		// Order's DestEnt is no longer valid or it was picked up by someone. Cancel this order
 		L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - CurrentOrder's DestEnt is no longer valid: " + L4B.BotOrderToString(CurrentOrder));
-		
+
 		BotCancelCurrentOrder();
 
 		return;
 	}
-	
+
 	// Execute CurrentOrder
-	
+
 	if (CurrentOrder.OrderType == "follow")
 	{
 		if (CurrentOrder.DestEnt.IsDead())
@@ -1680,7 +1680,7 @@ enum AI_AIM_TYPE {
 			BotCancelCurrentOrder();
 			return;
 		}
-		
+
 		if (BotIsInPause(CurrentOrder.CanPause, false, false, CurrentOrder.MaxSeparation, CurrentOrder.DestEnt, L4B.Settings.follow_pause_radius))
 			return;
 	}
@@ -1689,11 +1689,11 @@ enum AI_AIM_TYPE {
 		if (BotIsInPause(CurrentOrder.CanPause, CurrentOrder.OrderType == "heal", CurrentOrder.OrderType == "lead", CurrentOrder.MaxSeparation))
 			return;
 	}
-	
+
 	// BotIsInPause can call BotFinalizeCurrentOrder, so CurrentOrder can also be null here. Let's check it again...
 	if (!CurrentOrder)
 		return;
-	
+
 	if (!MovePos || MoveType != AI_MOVE_TYPE.Order)
 	{
 		// We also get here when we were already executing the order but an higher priority MOVE took over and now it's finished
@@ -1702,7 +1702,7 @@ enum AI_AIM_TYPE {
 	else
 	{
 		// Already moving for the current order
-		
+
 		// Lets see if we reached the order's destination...
 		local destPos = CurrentOrder.DestPos;
 		if (!destPos && CurrentOrder.DestEnt)
@@ -1714,7 +1714,7 @@ enum AI_AIM_TYPE {
 		{
 			// Yes, we did
 			// BotReset(); // No longer needed if we set sb_debug_apoproach_wait_time to something like 0.5 or even 0
-			
+
 			BotFinalizeCurrentOrder();
 		}
 		else
@@ -1839,7 +1839,7 @@ enum AI_AIM_TYPE {
 		if (nearestTank)
 			Left4Utils.BotCmdRetreat(self, nearestTank);
 	}
-	
+
 	// Handling car alarms
 	if (L4B.Settings.trigger_caralarm)
 	{
@@ -1847,10 +1847,10 @@ enum AI_AIM_TYPE {
 		if (groundEnt && groundEnt.IsValid() && groundEnt.GetClassname() == "prop_car_alarm")
 			L4B.TriggerCarAlarm(self, groundEnt);
 	}
-	
+
 	//lxc Move from BotThink_Main to here, almost no difference about kill infected, and it can also save performance
 	BotManualAttack();
-	
+
 	//lxc lock func
 	BotLockShoot();
 }
@@ -1862,7 +1862,7 @@ enum AI_AIM_TYPE {
 	//lxc skip if has higher type
 	if (AimType >= AI_AIM_TYPE.Melee)
 		return;
-	
+
 	local canMelee = ActiveWeapon && ActiveWeapon.GetClassname() == "weapon_melee" && CurTime >= NetProps.GetPropFloat(ActiveWeapon, "m_flNextPrimaryAttack");
 											//lxc chainsaw won't set 'IsFiringWeapon()' to true
 	local canShove = !self.IsFiringWeapon() && ActiveWeaponId != Left4Utils.WeaponId.weapon_chainsaw && CurTime >= NetProps.GetPropFloat(self, "m_flNextShoveTime"); // TODO: add shove penalty?
@@ -1891,7 +1891,7 @@ enum AI_AIM_TYPE {
 	// If we have a close target that we can either melee or shove then melee/shove it
 	if (target && canMelee && dot >= 0.6)
 	{
-		//lxc 
+		//lxc
 		BotSetAim(AI_AIM_TYPE.Melee, target, 0.3);
 		L4B.PlayerPressButton(self, BUTTON_ATTACK);
 	}
@@ -2018,7 +2018,7 @@ enum AI_AIM_TYPE {
 
 	if (force || !MovePos)
 		NeedMove = 2;	// For some reason, sometimes, the first MOVE does nothing so let's send at least 2
-	
+
 	//lxc fix bot moved hard beacuse of send move cmd too quickly. found this bug when I test "follow" order
 	//lxc don't send move command in short time
 	if (NeedMove <= 0 && ((dest - MovePos).Length() <= 5 || CurTime < NextMoveTime)) // <- This checks if the destination entity moved after the bot started moving towards it and forces a move command to the new entity position if the entity moved
@@ -2035,7 +2035,7 @@ enum AI_AIM_TYPE {
 
 	MovePos = dest;
 	MovePosReal = MovePos;
-	
+
 	//lxc don't send move command in short time
 	NextMoveTime = CurTime + 0.5;
 
@@ -2060,7 +2060,7 @@ enum AI_AIM_TYPE {
 
 	if (force || !MovePos)
 		NeedMove = 2;	// For some reason, sometimes, the first MOVE does nothing so let's send at least 2
-	
+
 	//lxc fix bot moved hard beacuse of send move cmd too quickly. found this bug when I test "follow" order
 	//lxc don't send move command in short time
 	if (NeedMove <= 0 && ((dest - MovePos).Length() <= 5 || CurTime < NextMoveTime)) // <- This checks if the destination entity moved after the bot started moving towards it and forces a move command to the new entity position if the entity moved
@@ -2107,10 +2107,10 @@ enum AI_AIM_TYPE {
 		L4B.Logger.Warning("[AI]" + self.GetPlayerName() + " - BotMoveToNav -> " + MovePos + " - No NavArea found nearby; using the dest pos");
 		MovePosReal = MovePos;
 	}
-	
+
 	//lxc don't send move command in short time
 	NextMoveTime = CurTime + 0.5;
-	
+
 	if (L4B.Settings.moveto_debug_duration > 0)
 		DebugDrawCircle(MovePosReal, Vector(255, 0, 0), 255, 6, true, L4B.Settings.moveto_debug_duration);
 
@@ -2222,7 +2222,7 @@ enum AI_AIM_TYPE {
 					hasLaserSight = (NetProps.GetPropInt(inv[slot], "m_upgradeBitVec") & 4) != 0;
 
 					break;
-					
+
 				case 1:
 					hasChainsaw = currWeps[i] == Left4Utils.WeaponId.weapon_chainsaw;
 					hasPistol = currWeps[i] == Left4Utils.WeaponId.weapon_pistol;
@@ -2232,20 +2232,20 @@ enum AI_AIM_TYPE {
 					hasMelee = currWeps[i] > Left4Utils.MeleeWeaponId.none;
 
 					break;
-					
+
 				case 2:
 					hasMolotov = currWeps[i] == Left4Utils.WeaponId.weapon_molotov;
 					hasPipeBomb = currWeps[i] == Left4Utils.WeaponId.weapon_pipe_bomb;
 					hasVomitJar = currWeps[i] == Left4Utils.WeaponId.weapon_vomitjar;
-					
+
 					break;
-					
+
 				case 3:
 					hasMedkit = currWeps[i] == Left4Utils.WeaponId.weapon_first_aid_kit;
 					hasDefib = currWeps[i] == Left4Utils.WeaponId.weapon_defibrillator;
 					hasUpgdInc = currWeps[i] == Left4Utils.WeaponId.weapon_upgradepack_incendiary;
 					hasUpgdExp = currWeps[i] == Left4Utils.WeaponId.weapon_upgradepack_explosive;
-					
+
 					break;
 			}
 		}
@@ -2265,7 +2265,7 @@ enum AI_AIM_TYPE {
 		{
 			if (useWeapon != 0)
 				WeaponsToSearch[useWeapon] <- 0; // Always add the "use" weapon, if any
-			
+
 			if (L4B.TeamShotguns <= L4B.Settings.team_min_shotguns && (hasT1Shotgun || hasT2Shotgun))
 			{
 				// We have a shotgun but TeamShotguns <= team_min_shotguns so we need to make sure to keep it. Just upgrade it if needed
@@ -2330,7 +2330,7 @@ enum AI_AIM_TYPE {
 		{
 			if (useWeapon != 0)
 				WeaponsToSearch[useWeapon] <- 0; // Always add the "use" weapon, if any
-			
+
 			for (local x = 0; x < WeapPref[slotIdx].len(); x++)
 			{
 				local prefId = WeapPref[slotIdx][x];
@@ -2403,7 +2403,7 @@ enum AI_AIM_TYPE {
 	{
 		if (useWeapon != 0)
 			WeaponsToSearch[useWeapon] <- 0; // Always add the "use" weapon, if any
-		
+
 		if (noPref)
 		{
 			// If noPref and slot is currently empty, add all the listed items. Order doesn't matter
@@ -2441,7 +2441,7 @@ enum AI_AIM_TYPE {
 					break;
 			}
 		}
-		
+
 		// TODO: This IF nesting is ugly af. I'm sure there is a better way to write this
 		if (!hasMolotov && !hasPipeBomb && !hasVomitJar)
 		{
@@ -2532,7 +2532,7 @@ enum AI_AIM_TYPE {
 	{
 		if (useWeapon != 0)
 			WeaponsToSearch[useWeapon] <- 0; // Always add the "use" weapon, if any
-		
+
 		if (noPref)
 		{
 			// If noPref and slot is currently empty, add all the listed items. Order doesn't matter
@@ -2574,7 +2574,7 @@ enum AI_AIM_TYPE {
 					break;
 			}
 		}
-		
+
 		if (!hasMedkit && !hasDefib && !hasUpgdInc && !hasUpgdExp)
 		{
 			// If the slot is empty we'll pick up anything that is in our assigned priority list
@@ -2663,7 +2663,7 @@ enum AI_AIM_TYPE {
 	{
 		if (useWeapon != 0)
 			WeaponsToSearch[useWeapon] <- 0; // Always add the "use" weapon, if any
-		
+
 		if (noPref)
 		{
 			// If priority must be ignored, add all the listed weapons for this slot. Order doesn't matter
@@ -2975,7 +2975,7 @@ enum AI_AIM_TYPE {
 				Left4Timers.AddTimer(null, 0.01, @(params) ::Left4Bots.BotShootAtEntityAttachment.bindenv(::Left4Bots)(params.bot, params.entity, params.attachmentid ), { bot = self, entity = CurrentOrder.DestEnt, attachmentid = attachId });
 				Left4Timers.AddTimer(null, 0.5, @(params) ::Left4Bots.BotShootAtEntityAttachment.bindenv(::Left4Bots)(params.bot, params.entity, params.attachmentid ), { bot = self, entity = CurrentOrder.DestEnt, attachmentid = attachId });
 				Left4Timers.AddTimer(null, 0.9, @(params) ::Left4Bots.BotShootAtEntityAttachment.bindenv(::Left4Bots)(params.bot, params.entity, params.attachmentid, true ), { bot = self, entity = CurrentOrder.DestEnt, attachmentid = attachId }); // this will unset FL_FROZEN at the end*/
-				
+
 				//lxc no need freeze bot anymore
 				BotSetAim(AI_AIM_TYPE.Witch, CurrentOrder.DestEnt, 1); //if witch death, will auto release attack button
 				Left4Utils.PlayerForceButton(self, BUTTON_ATTACK);
@@ -3052,7 +3052,7 @@ enum AI_AIM_TYPE {
 
 				// Do not complete the order, we need to carry this item to the pour target
 				orderComplete = false;
-			}			
+			}
 
 			break;
 		}
@@ -3200,7 +3200,7 @@ enum AI_AIM_TYPE {
 					Left4Timers.AddTimer(null, 0.01, @(params) ::Left4Bots.BotShootAtEntity.bindenv(::Left4Bots)(params.bot, params.entity ), { bot = self, entity = CurrentOrder.DestEnt });
 					Left4Timers.AddTimer(null, 0.5, @(params) ::Left4Bots.BotShootAtEntity.bindenv(::Left4Bots)(params.bot, params.entity ), { bot = self, entity = CurrentOrder.DestEnt });
 					Left4Timers.AddTimer(null, 0.9, @(params) ::Left4Bots.BotShootAtEntity.bindenv(::Left4Bots)(params.bot, params.entity, true ), { bot = self, entity = CurrentOrder.DestEnt }); // this will unset FL_FROZEN at the end*/
-					
+
 					//lxc no need freeze bot anymore
 					BotSetAim(AI_AIM_TYPE.Shoot, CurrentOrder.DestEnt.GetCenter(), 0.2); //The time for a complete cycle is 1.6667s
 					Left4Utils.PlayerForceButton(self, BUTTON_ATTACK);
@@ -3224,7 +3224,7 @@ enum AI_AIM_TYPE {
 		//lxc reset bot
 		if (MovePos)
 			BotReset();
-		
+
 		NeedMove = 0;
 		MovePos = null;
 		MovePosReal = null;
@@ -3251,7 +3251,7 @@ enum AI_AIM_TYPE {
 		if ((!orderType || Orders[i].OrderType == orderType) && (!destEnt || Orders[i].DestEnt == destEnt) && (!param1 || Orders[i].Param1 == param1))
 			ret[idx++] <- Orders[i];
 	}
-	
+
 	return ret;
 }
 
@@ -3266,7 +3266,7 @@ enum AI_AIM_TYPE {
 	if (MoveType == AI_MOVE_TYPE.Order)
 		BotMoveReset();
 
-	
+
 	if (CurrentOrder.OrderType == "scavenge" || CurrentOrder.OrderType == "carry")
 	{
 		L4B.CarryItemStop(self);
@@ -3281,7 +3281,7 @@ enum AI_AIM_TYPE {
 {
 	if (!order)
 		return;
-	
+
 	L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Cancelling the order: " + L4B.BotOrderToString(order));
 
 	for (local i = Orders.len() - 1; i >= 0; i--)
@@ -3380,7 +3380,7 @@ enum AI_AIM_TYPE {
 	CarryItem = null;
 	CarryItemWeaponId = 0;
 	*/
-	
+
 	//lxc apply changes
 	BotUnSetAim();
 	OrderHuman = null;
@@ -3409,7 +3409,7 @@ enum AI_AIM_TYPE {
 	else if (followEnt || (CurTime - Paused) >= L4B.Settings.pause_min_time) // Only stop the pause if at least pause_min_time seconds passed, or we are following someone
 	{
 		// Should we stop the pause?
-		
+
 		//if ((!followEnt || (L4B.FlowDistance(UserId, followEnt.GetPlayerUserId()) > followRange) && L4B.BotShouldStopPause(self, UserId, Origin, SM_IsStuck, isHealOrder, isLeadOrder, maxSeparation))
 		if ((!followEnt || (followEnt.GetOrigin() - Origin).Length() > followRange) && L4B.BotShouldStopPause(self, UserId, Origin, SM_IsStuck, isHealOrder, isLeadOrder, maxSeparation))
 			BotUnPause(); // Yes, unpause and refresh the last MOVE if needed
@@ -3614,7 +3614,7 @@ enum AI_AIM_TYPE {
 		{
 			return;
 		}
-		
+
 		if (OrderTarget)
 		{
 			if (OrderTarget.IsValid() && NetProps.GetPropInt(OrderTarget, "m_lifeState") <= 0)
@@ -3654,7 +3654,7 @@ enum AI_AIM_TYPE {
 							return;
 					}
 				}
-				
+
 				if (Left4Utils.CanTraceToPos(self, t.pos, L4B.Settings.tracemask_others))
 				{
 					BotSetAim(AI_AIM_TYPE.Low, t.pos, 0.2);
@@ -3683,7 +3683,7 @@ enum AI_AIM_TYPE {
 		AimYaw = yaw;
 		if (LastAimTime != CurTime)
 			LastAimAngles = null;
-		
+
 		if (typeof(target) == "instance")
 		{
 			AimEnt = target;
@@ -3709,7 +3709,7 @@ enum AI_AIM_TYPE {
 	AimPos = null;
 	AimPitch = 0;
 	AimYaw = 0;
-	
+
 	//lxc release attack button and don't stop other order //TODO find a better way to do this
 	if (Left4Utils.IsButtonForced(self, BUTTON_ATTACK))
 	{
@@ -3754,7 +3754,7 @@ enum AI_AIM_TYPE {
 		{
 			close = true;
 		}
-		
+
 		if (close)
 		{
 			BotUnSetAim();
@@ -3772,7 +3772,7 @@ enum AI_AIM_TYPE {
 						NetProps.SetPropFloat(ActiveWeapon, "m_flNextPrimaryAttack", NextFireTime + 0.1);
 				}
 			}
-			
+
 			// Full Automatic Weapon, so we don't need release attack button
 			NetProps.SetPropInt(ActiveWeapon, "m_isHoldingFireButton", 0);
 		}
@@ -3790,7 +3790,7 @@ enum AI_AIM_TYPE {
 		else if ((typeof target) == "Vector")
 			position = target;
 	}
-	
+
 	local dist = 0;
 	if (position != null)
 	{
@@ -3798,14 +3798,14 @@ enum AI_AIM_TYPE {
 		dist = v.Norm();
 		angles = Left4Utils.VectorAngles(v);
 	}
-	
+
 	if (deltaPitch != 0 || deltaYaw != 0)
 		angles = RotateOrientation(angles, QAngle(deltaPitch, deltaYaw, 0));
-	
+
 	local OpenFire = Left4Utils.IsButtonForced(self, BUTTON_ATTACK);
 	if (OpenFire) // allow bots fire
 		NetProps.SetPropInt(ActiveWeapon, "m_releasedFireButton", 1);
-	
+
 	// don't smooth the camera if bot is not aiming at an entity
 	if ((AimType == AI_AIM_TYPE.Shoot || AimType == AI_AIM_TYPE.Rock) && AimEnt && L4B.Settings.manual_attack_saccade_speed > 0)
 	{
@@ -3814,18 +3814,18 @@ enum AI_AIM_TYPE {
 			v.x = Angle.x;
 			v.y = Angle.y;
 			v.z = 0;
-			
+
 			// Calculate the minimum diffs
 			while (v.x <= -180) v.x += 360;
 			while (v.x > 180) v.x -= 360;
 			while (v.y <= -180) v.y += 360;
 			while (v.y > 180) v.y -= 360;
-			
+
 			local Pitch = Vector(v.x, 0, 0);
 			local PitchDiff = Pitch.Norm();
 			local Yaw = Vector(0, v.y, 0);
 			local YawDiff = Yaw.Norm();
-			
+
 			local degrees = v.Norm();
 			//calculate arc length
 			local l = degrees * dist * Deg2Rad;
@@ -3834,36 +3834,36 @@ enum AI_AIM_TYPE {
 			{
 				return QAngle();
 			}
-			
+
 			// These code is deduced based on the test results, I don't know how the Valve's code is
-			
+
 			local function SmoothStep(start, end, x)
 			{
 				x = (x - start) / (end - start);
 				x = x < 0 ? 0 : (x > 1 ? 1 : x);
 				return x*x*(3 - 2*x);
 			}
-			
+
 			local deltaTime = LastAimAngles ? CurTime - LastAimTime : tick;
 			local pastTime = CurTime - Aim_StartTime;
-			
+
 			local max = L4B.Settings.manual_attack_saccade_speed * deltaTime;
 			local min = max * deltaTime;
-			
+
 			// gradually increase to the maximum value
 			local saccade_speed = max * (pastTime * 4.0);
 			if (saccade_speed > max)
 				saccade_speed = max;
-			
+
 			// Slow down the speed when approaching the target
 			local easeOut = 45;
 			local t = SmoothStep(0, easeOut, YawDiff);
 			local decayY = YawDiff > easeOut ? saccade_speed : saccade_speed * t + min * (1-t); // make sure the speed is not too low
 			if (decayY > saccade_speed)
 				decayY = saccade_speed;
-			
+
 			local decayP = PitchDiff > saccade_speed ? saccade_speed : PitchDiff;
-			
+
 			local decay = Vector(decayP, decayY, 0).Norm();
 			degrees -= decay;
 			// calculate arc length after rotated
@@ -3871,14 +3871,14 @@ enum AI_AIM_TYPE {
 			// don't fire until the target is aimed
 			if (l > 16 && OpenFire)
 				NetProps.SetPropInt(ActiveWeapon, "m_releasedFireButton", 0);
-			
+
 			// Smoother when stop
 			if (degrees <= L4B.Settings.manual_attack_saccade_speed * 0.001)
 				return Angle;
-			
+
 			return QAngle(Pitch.x * decayP, Yaw.y * decayY, 0);
 		}
-		
+
 		// keep eye angles if already rotated
 		if (LastAimTime == CurTime)
 			angles = LastAimAngles;
@@ -3890,10 +3890,10 @@ enum AI_AIM_TYPE {
 			angles = eyeang + SmoothEyeAngle(diff);
 		}
 	}
-	
+
 	LastAimTime = CurTime;
 	LastAimAngles = angles;
-	
+
 	self.SnapEyeAngles(angles);
 }
 

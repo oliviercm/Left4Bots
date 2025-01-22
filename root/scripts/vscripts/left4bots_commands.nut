@@ -42,7 +42,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_die <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_die - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (!Settings.die_humans_alive && Survivors.len() > Bots.len())
 		return; // Can't use this command with human survivors alive if "die_humans_alive" setting is 0
 
@@ -75,7 +75,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_dump <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_dump - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (allBots)
 	{
 		foreach (bot in Bots)
@@ -105,7 +105,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_pause <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_pause - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (allBots)
 	{
 		foreach (bot in Bots)
@@ -137,7 +137,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_automation <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_automation - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (!allBots && !tgtBot)
 	{
 		Logger.Warning("Can't use the 'bot' keyword with the 'automation' command");
@@ -150,7 +150,7 @@ Msg("Including left4bots_commands...\n");
 	// - "stop" to stop the current task(s) and the automatic execution of the next ones (if 'all' was used)
 	if (param)
 		param = param.tolower();
-	
+
 	if (!param || param == "current")
 	{
 		if (Automation.CurrentTasks.len() > 0)
@@ -158,14 +158,14 @@ Msg("Including left4bots_commands...\n");
 			foreach (bot in Bots)
 				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.5, 1.0));
 		}
-		
+
 		Automation.StartTasks(false);
 	}
 	else if (param == "all")
 	{
 		foreach (bot in Bots)
 			SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.5, 1.0));
-		
+
 		Automation.StartTasks(true);
 	}
 	else if (param == "stop")
@@ -187,7 +187,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_cancel <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_cancel - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (!allBots && !tgtBot)
 	{
 		Logger.Warning("Can't use the 'bot' keyword with the 'cancel' command");
@@ -257,7 +257,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_carry <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_carry - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local tTable = Left4Utils.GetLookingTargetEx(player, TRACE_MASK_NPC_SOLID);
 	if (!tTable)
 		return;
@@ -298,7 +298,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_come <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_come - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (allBots)
 	{
 		foreach (bot in Bots)
@@ -326,7 +326,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_deploy <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_deploy - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local tTable = Left4Utils.GetLookingTargetEx(player, TRACE_MASK_NPC_SOLID);
 	if (!tTable)
 		return;
@@ -409,7 +409,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_destroy <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_destroy - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local tTable = Left4Utils.GetLookingTargetEx(player, TRACE_MASK_NPC_SOLID);
 	if (!tTable)
 		return;
@@ -463,7 +463,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_follow <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_follow - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local followEnt = null;
 	if (param)
 	{
@@ -512,7 +512,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_give <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_give - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local lvl = Left4Users.GetOnlineUserLevel(player.GetPlayerUserId());
 	if (lvl < Settings.userlevel_give_others)
 		return; // Player's user level is too low for any item, no point continuing
@@ -559,7 +559,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_goto <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_goto - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local gotoPos = null;
 	if (param)
 	{
@@ -612,7 +612,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_heal <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_heal - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local healTgt = null;
 	if (param)
 	{
@@ -661,7 +661,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_hurry <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_hurry - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (allBots)
 	{
 		local hurryUntil = Time() + Settings.hurry_time;
@@ -703,7 +703,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_lead <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_lead - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (allBots)
 	{
 		foreach (bot in Bots)
@@ -737,7 +737,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_lock <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_lock - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (allBots)
 	{
 		foreach (bot in Bots)
@@ -751,7 +751,7 @@ Msg("Including left4bots_commands...\n");
 	{
 		if (!tgtBot)
 			tgtBot = GetFirstAvailableBotForOrder("lock"); // not a real order but we still handle the "bot" botsource version of the command
-		
+
 		if (tgtBot)
 		{
 			local scope = tgtBot.GetScriptScope();
@@ -775,7 +775,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_move <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_move - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	// Alias of "cancel all"
 	if (!allBots && !tgtBot)
 	{
@@ -804,17 +804,17 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_scavenge <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_scavenge - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (param)
 	{
 		if (param.tolower() == "start")
 			ScavengeStart();
 		else if (param.tolower() == "stop")
 			ScavengeStop();
-		
+
 		return;
 	}
-	
+
 	local tTable = Left4Utils.GetLookingTargetEx(player, TRACE_MASK_NPC_SOLID);
 	if (!tTable)
 		return;
@@ -860,7 +860,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_swap <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_swap - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local lvl = Left4Users.GetOnlineUserLevel(player.GetPlayerUserId());
 	if (lvl < Settings.userlevel_give_others)
 		return; // Player's user level is too low for any item, no point continuing
@@ -873,11 +873,11 @@ Msg("Including left4bots_commands...\n");
 		Logger.Warning("No available bot for order of type: swap");
 		return;
 	}
-	
+
 	local held = player.GetActiveWeapon();
 	if (!held || !held.IsValid())
 		return;
-	
+
 	local heldClass = held.GetClassname();
 //	local heldSkin = NetProps.GetPropInt(held, "m_nSkin");
 	local slot = Left4Utils.FindSlotForItemClass(player, heldClass);
@@ -896,7 +896,7 @@ Msg("Including left4bots_commands...\n");
 	// tgtBot has a valid swappable item
 	if (slot == INV_SLOT_MEDKIT && (botItemClass == "weapon_first_aid_kit" || botItemClass == "weapon_defibrillator") && (!Settings.give_bots_medkits || lvl < Settings.userlevel_give_medkit))
 		return;
-					
+
 	if ((slot == INV_SLOT_PRIMARY || slot == INV_SLOT_SECONDARY) && (!Settings.give_bots_weapons || lvl < Settings.userlevel_give_weapons))
 		return;
 
@@ -932,7 +932,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_tempheal <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_tempheal - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (allBots)
 	{
 		foreach (bot in Bots)
@@ -978,7 +978,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_throw <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_throw - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local destination = Left4Utils.GetLookingTarget(player, Settings.tracemask_others);
 	if (!destination)
 		return; // Invalid destination
@@ -1037,7 +1037,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_use <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_use - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local tTable = Left4Utils.GetLookingTargetEx(player, TRACE_MASK_NPC_SOLID);
 	if (!tTable)
 		return;
@@ -1182,7 +1182,7 @@ Msg("Including left4bots_commands...\n");
 		foreach (bot in Bots)
 		{
 			BotOrderAdd(bot, "use", player, target, targetPos, null, holdTime);
-			
+
 			if (wSlot >= 0 && wSlot <= 4)
 				bot.GetScriptScope().UseWeapons[wSlot] <- wId;
 		}
@@ -1195,7 +1195,7 @@ Msg("Including left4bots_commands...\n");
 		if (tgtBot)
 		{
 			BotOrderAdd(tgtBot, "use", player, target, targetPos, null, holdTime);
-			
+
 			if (wSlot >= 0 && wSlot <= 4)
 				tgtBot.GetScriptScope().UseWeapons[wSlot] <- wId;
 		}
@@ -1214,7 +1214,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_usereset <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_usereset - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	if (allBots)
 	{
 		foreach (bot in Bots)
@@ -1242,7 +1242,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_wait <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_wait - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local waitPos = null;
 	if (param)
 	{
@@ -1287,7 +1287,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_warp <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_warp - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local warpPos = null;
 	if (param)
 	{
@@ -1355,7 +1355,7 @@ Msg("Including left4bots_commands...\n");
 ::Left4Bots.Cmd_witch <- function (player, allBots = false, tgtBot = null, param = null)
 {
 	Logger.Debug("Cmd_witch - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
-	
+
 	local witch = GetPickerWitch(player); // TODO: Shouldn't just pick the one with the best dot, distance should also be taken into account
 	if (!witch)
 	{
