@@ -1082,7 +1082,7 @@ enum AI_AIM_TYPE {
 			local tgt = L4B.FindBotNearestEnemy(self, Origin, L4B.Settings.manual_attack_radius, L4B.Settings.manual_attack_mindot);
 			if (tgt)
 			{
-				BotSetAim(AI_AIM_TYPE.Shoot, tgt.ent, 0.2, 0, 0, tgt.head);
+				BotSetAim(AI_AIM_TYPE.Shoot, tgt.ent, 0.01, 0, 0, tgt.head);
 				BotAim();
 
 				Left4Utils.PlayerForceButton(self, BUTTON_ATTACK);
@@ -1974,7 +1974,7 @@ enum AI_AIM_TYPE {
 	if (target && canMelee && dot >= L4B.Settings.manual_attack_mindot)
 	{
 		//lxc
-		BotSetAim(AI_AIM_TYPE.Melee, L4B.GetHitPos(target), 0.3);
+		BotSetAim(AI_AIM_TYPE.Melee, L4B.GetHitPos(target), 0.01);
 		L4B.PlayerPressButton(self, BUTTON_ATTACK);
 	}
 	else if (target && canShove) // TODO: add dot?
@@ -1983,7 +1983,7 @@ enum AI_AIM_TYPE {
 			L4B.PlayerPressButton(self, BUTTON_RELOAD);
 
 		//lxc z_gun_swing_duration: 0.2 ** How long shove attack is active (can shove an entities)
-		BotSetAim(AI_AIM_TYPE.Shove, L4B.GetHitPos(target), 0.3);
+		BotSetAim(AI_AIM_TYPE.Shove, L4B.GetHitPos(target), 0.01);
 		L4B.PlayerPressButton(self, BUTTON_SHOVE);
 	}												// depending on manual_attack_mindot, the desired FOV might be larger than the m_hasVisibleThreats FOV, so this condition has to be removed (thx MutinCholer)
 	else if (((MovePos && Paused == 0) || L4B.Settings.manual_attack_always) /*&& NetProps.GetPropInt(self, "m_hasVisibleThreats")*/) // m_hasVisibleThreats indicates that a threat is in the bot's current field of view. An infected behind the bot won't set this
@@ -2004,7 +2004,7 @@ enum AI_AIM_TYPE {
 					// grenade launcher may fly overhead, so aim the foot
 					if (ActiveWeaponId == Left4Utils.WeaponId.weapon_grenade_launcher)
 						tgt.head = null;
-					BotSetAim(AI_AIM_TYPE.Shoot, tgt.ent, 0.2, 0, 0, tgt.head); //need refresh target next time
+					BotSetAim(AI_AIM_TYPE.Shoot, tgt.ent, 0.01, 0, 0, tgt.head); //need refresh target next time
 					Left4Utils.PlayerForceButton(self, BUTTON_ATTACK);
 				}
 				// Bots always reload for no reason while executing a MOVE command. Don't let them if there are visible threats and still rounds in the magazine
