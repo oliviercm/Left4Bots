@@ -971,7 +971,7 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 	Automation.PrevFlow = newFlow;
 
 	// Automatically start the current tasks if AutoStart is true or there is no human survivor in the team
-	if (Automation.AutoStart || Bots.len() == Survivors.len())
+	if (Automation.AutoStart)
 	{
 		foreach (task in Automation.CurrentTasks)
 		{
