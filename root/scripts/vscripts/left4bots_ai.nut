@@ -1553,20 +1553,22 @@ enum AI_AIM_TYPE {
 ::Left4Bots.AIFuncs.BotThink_Throw <- function ()
 {
 	// Handle give items
-	local lookAtHuman = NetProps.GetPropEntity(self, "m_lookatPlayer");
-	if (lookAtHuman && lookAtHuman.IsValid() && !IsPlayerABot(lookAtHuman) && NetProps.GetPropInt(lookAtHuman, "m_iTeamNum") == TEAM_SURVIVORS && !L4B.SurvivorCantMove(lookAtHuman, Waiting) && (Origin - lookAtHuman.GetOrigin()).Length() <= L4B.Settings.give_max_range)
+	foreach (surv in L4B.GetOtherAliveSurvivors(UserId))
 	{
-		// Then try with pills and adrenaline
-		if (L4B.GiveInventoryItem(self, lookAtHuman, INV_SLOT_PILLS))
-			return; // Don't do anything else if the give succedes
+		if (surv && surv.IsValid() && !IsPlayerABot(surv) && NetProps.GetPropInt(surv, "m_iTeamNum") == TEAM_SURVIVORS && !L4B.SurvivorCantMove(surv, Waiting) && (Origin - surv.GetOrigin()).Length() <= L4B.Settings.give_max_range)
+		{
+			// Then try with pills and adrenaline
+			if (L4B.GiveInventoryItem(self, surv, INV_SLOT_PILLS))
+				return; // Don't do anything else if the give succedes
 
-		// Try give a throwable
-		if (L4B.GiveInventoryItem(self, lookAtHuman, INV_SLOT_THROW))
-			return; // Don't do anything else if the give succedes
+			// Try give a throwable
+			if (L4B.GiveInventoryItem(self, surv, INV_SLOT_THROW))
+				return; // Don't do anything else if the give succedes
 
-		// Last try with medkits / defib / upgrade packs
-		if (L4B.GiveInventoryItem(self, lookAtHuman, INV_SLOT_MEDKIT))
-			return; // Don't do anything else if the give succedes
+			// Last try with medkits / defib / upgrade packs
+			if (L4B.GiveInventoryItem(self, surv, INV_SLOT_MEDKIT))
+				return; // Don't do anything else if the give succedes
+		}
 	}
 
 	// Handle throw nades
