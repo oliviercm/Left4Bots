@@ -1238,7 +1238,7 @@ Msg("Including left4bots_events...\n");
 	if (((attackerItemClass == "weapon_pipe_bomb" || attackerItemClass == "weapon_vomitjar") && (t - LastNadeTime) < 1.5) || (attackerItemClass == "weapon_molotov" && (t - LastMolotovTime) < 1.5))
 		return; // Preventing an exploit that allows you to give the item you just threw away. Throw the nade and press RMB immediately, the item is still seen in the players inventory (Drop event comes after a second), so the item was duplicated.
 
-	local victim = Left4Utils.GetPickerEntity(attacker, L4B.Settings.give_max_range, 0.95, true, null, Settings.tracemask_others);
+	local victim = Left4Utils.GetPickerEntity(attacker, Settings.give_max_range, 0.95, true, null, Settings.tracemask_others);
 	if (!victim || !victim.IsValid() || victim.GetClassname() != "player" || !victim.IsSurvivor())
 		return;
 
