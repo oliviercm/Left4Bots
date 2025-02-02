@@ -3745,7 +3745,7 @@ if (activator && isWorthPickingUp)
 
 ::Left4Bots.ItemSwappedUseWeapon <- function (params)
 {
-	if (params.bot && params.wSlot && params.wId && params.bot.IsValid() && (params.wId == 13 || params.wId == 14 || params.wId == 25))
+	if (params.bot && params.wSlot && params.wId && params.bot.IsValid() && (params.wId == 12 || params.wId == 13 || params.wId == 14 || params.wId == 24 || params.wId == 25))
 	{
 		params.bot.GetScriptScope().UseWeapons[params.wSlot] <- params.wId;
 	}
