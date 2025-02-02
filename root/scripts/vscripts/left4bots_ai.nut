@@ -1887,39 +1887,70 @@ enum AI_AIM_TYPE {
 	//lxc lock func
 	BotLockShoot();
 
-	if (self.GetHealth() < 40 && Left4Utils.HasMedkit(self))
+	if (self.GetHealth() < 40)
 	{
 		local availableMedkits = 0;
 		local requiredMedkits = 1;
+		local teamDefibs = 0;
+
+		local item = Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_MEDKIT);
+		if (!item || item.GetClassname() != "weapon_first_aid_kit")
+			requiredMedkits++;
+
+		if (item && item.GetClassname() == "weapon_defibrillator")
+			teamDefibs++;
 
 		foreach (surv in Left4Bots.GetOtherAliveSurvivors(self.GetPlayerUserId()))
 		{
 			local holding = surv.GetActiveWeapon();
 			if ((holding && holding.IsValid() && holding.GetClassname() == "weapon_first_aid_kit") || !::Left4Utils.HasMedkit(surv) || surv.GetHealth() < self.GetHealth() || (!IsPlayerABot(surv) && surv.GetHealth() < 40))
-			{
 				requiredMedkits++;
-			}
+
+			local survitem = Left4Utils.GetInventoryItemInSlot(surv, INV_SLOT_MEDKIT);
+			if (survitem && survitem.GetClassname() == "weapon_defibrillator")
+				teamDefibs++;
 		}
 
+		local defibsToKeep = teamDefibs < Left4Bots.Settings.team_min_defibs ? teamDefibs : Left4Bots.Settings.team_min_defibs;
+		requiredMedkits -= defibsToKeep;
+
 		local ent = null;
+		local medkit = null;
 		while (ent = Entities.FindByClassnameWithin(ent, "weapon_first_aid_kit*", self.GetOrigin(), 500))
 		{
 			if (Left4Bots.IsValidPickup(ent))
 			{
 				availableMedkits++;
+				medkit = ent;
 			}
 		}
 		if (availableMedkits >= requiredMedkits && !NetProps.GetPropInt(self, "m_hasVisibleThreats") && !Left4Bots.HasAngryCommonsWithin(Origin, 1, 400, 100) && !Left4Bots.SurvivorsHeldOrIncapped() && !Left4Bots.HasVisibleSpecialInfectedWithin(self, Origin, 400) && !Left4Bots.HasTanksWithin(Origin, 800) && !Left4Bots.HasWitchesWithin(Origin, 300, 100) && (GetCurrentFlowPercentForPlayer(self) < 90 || Left4Bots.IsSurvivorInCheckpoint(self)))
 		{
-			local holding = self.GetActiveWeapon();
-			local holdingKit = holding && holding.IsValid() && holding.GetClassname() == "weapon_first_aid_kit";
-			if (!holdingKit)
+			if (item && item.GetClassname() == "weapon_first_aid_kit")
 			{
-				self.SwitchToItem("weapon_first_aid_kit");
+				local holding = self.GetActiveWeapon();
+				local holdingKit = holding && holding.IsValid() && holding.GetClassname() == "weapon_first_aid_kit";
+				if (!holdingKit)
+				{
+					self.SwitchToItem("weapon_first_aid_kit");
+				}
+				else
+				{
+					Left4Timers.AddTimer(null, 0.2, ::Left4Bots.ExtraMedkitBotHeal.bindenv(::Left4Bots), { bot = self });
+				}
 			}
 			else
 			{
-				Left4Timers.AddTimer(null, 0.2, ::Left4Bots.ExtraMedkitBotHeal.bindenv(::Left4Bots), { bot = self });
+				if (!MovePos || MoveType < AI_MOVE_TYPE.Pickup || !L4B.IsValidPickup(MoveEnt) || MoveEnt != medkit)
+				{
+					MoveType = AI_MOVE_TYPE.Pickup;
+					MoveEnt = medkit;
+			
+					if (L4B.Settings.moveto_nav)
+						BotMoveToNav(MoveEnt.GetOrigin(), true);
+					else
+						BotMoveTo(MoveEnt.GetOrigin(), true);
+				}
 			}
 		}
 	}
