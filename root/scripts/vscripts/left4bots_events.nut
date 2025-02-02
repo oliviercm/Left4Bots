@@ -2181,7 +2181,7 @@ settings
 
 		if (Settings.vocalizer_commands && lvl >= Settings.userlevel_orders)
 		{
-			if (concept == "iMT_PlayerSuggestHealth")
+			if (VocalizerCommands[concept] && VocalizerCommands[concept].all == "bots heal" || VocalizerCommands[concept].all == "bots tempheal")
 			{
 				// Bot selection
 				if (subjectid != null)
