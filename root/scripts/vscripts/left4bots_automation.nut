@@ -1056,7 +1056,7 @@ if (!IncludeScript(path + ::Left4Bots.MapName))
 
 	local mapAreas = {};
 	::Left4Utils.FindMapAreas(mapAreas);
-	if (mapAreas["checkpointB_in"])
+	if ("checkpointB_in" in mapAreas)
 	{
 		::Left4Bots.Settings.move_end_radius_wait = 30;
 		::Left4Bots.Automation.DoWait("bots", mapAreas["checkpointB_in"].GetCenter());
