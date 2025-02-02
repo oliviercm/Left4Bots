@@ -1311,6 +1311,9 @@ Msg("Including left4bots_commands...\n");
 	{
 		foreach (bot in Bots)
 		{
+			if (NetProps.GetPropInt(bot, "m_iTeamNum") == TEAM_L4D1_SURVIVORS)
+				continue;
+
 			if (warpPos == "move")
 			{
 				local movepos = bot.GetScriptScope().MovePos;
@@ -1326,7 +1329,7 @@ Msg("Including left4bots_commands...\n");
 		if (!tgtBot)
 			tgtBot = GetPickerBot(player); // player, radius = 999999, threshold = 0.95, visibleOnly = false
 
-		if (tgtBot)
+		if (tgtBot && NetProps.GetPropInt(tgtBot, "m_iTeamNum") != TEAM_L4D1_SURVIVORS)
 		{
 			if (warpPos == "move")
 			{
