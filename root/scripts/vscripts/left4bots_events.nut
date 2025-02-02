@@ -830,9 +830,9 @@ Msg("Including left4bots_events...\n");
 		if ("weapon" in params)
 			weapon = params["weapon"];
 
-		if (weapon == "insect_swarm" || weapon == "inferno")
+		if (weapon == "inferno")
 		{
-			// Pause the 'wait' order if the bot is being damaged by the spitter's spit or the fire
+			// Pause the 'wait' order if the bot is being damaged by the fire
 			local scope = player.GetScriptScope();
 			if (scope.Waiting && !scope.Paused)
 				scope.BotPause();
