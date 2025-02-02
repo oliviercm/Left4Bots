@@ -1243,35 +1243,51 @@ Msg("Including left4bots_commands...\n");
 {
 	Logger.Debug("Cmd_wait - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
 
-	local waitPos = null;
-	if (param)
+	if (Left4Bots.Settings.wait_use_v1_behavior)
 	{
-		if (param.tolower() == "here")
-			waitPos = player.GetOrigin();
-		else if (param.tolower() == "there")
-			waitPos = Left4Utils.GetLookingPosition(player, Settings.tracemask_others);
-
-		if (!waitPos)
+		if (Convars.GetFloat("sb_hold_position") == 0)
 		{
-			Logger.Warning("Invalid wait position: " + param);
-			return;
-		}
-	}
+			Convars.SetValue("sb_hold_position", 1);
+			Convars.SetValue("sb_enforce_proximity_range", 20000);
+			if (Left4Bots.Settings.wait_crouch)
+				Convars.SetValue("sb_crouch", 1);
 
-	if (allBots)
-	{
-		foreach (bot in Bots)
-			BotOrderAdd(bot, "wait", player, null, waitPos != null ? waitPos : bot.GetOrigin(), null, 0, !Settings.wait_nopause);
+			foreach (bot in Bots)
+				SpeakRandomVocalize(bot, VocalizerYes, RandomFloat(0.2, 0.5));
+		}
 	}
 	else
 	{
-		if (!tgtBot)
-			tgtBot = GetFirstAvailableBotForOrder("wait");
+		local waitPos = null;
+		if (param)
+		{
+			if (param.tolower() == "here")
+				waitPos = player.GetOrigin();
+			else if (param.tolower() == "there")
+				waitPos = Left4Utils.GetLookingPosition(player, Settings.tracemask_others);
 
-		if (tgtBot)
-			BotOrderAdd(tgtBot, "wait", player, null, waitPos != null ? waitPos : tgtBot.GetOrigin(), null, 0, !Settings.wait_nopause);
+			if (!waitPos)
+			{
+				Logger.Warning("Invalid wait position: " + param);
+				return;
+			}
+		}
+
+		if (allBots)
+		{
+			foreach (bot in Bots)
+				BotOrderAdd(bot, "wait", player, null, waitPos != null ? waitPos : bot.GetOrigin(), null, 0, !Settings.wait_nopause);
+		}
 		else
-			Logger.Warning("No available bot for order of type: wait");
+		{
+			if (!tgtBot)
+				tgtBot = GetFirstAvailableBotForOrder("wait");
+
+			if (tgtBot)
+				BotOrderAdd(tgtBot, "wait", player, null, waitPos != null ? waitPos : tgtBot.GetOrigin(), null, 0, !Settings.wait_nopause);
+			else
+				Logger.Warning("No available bot for order of type: wait");
+		}
 	}
 }
 

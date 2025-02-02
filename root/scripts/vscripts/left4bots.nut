@@ -106,6 +106,7 @@ IncludeScript("left4bots_requirements");
 	OnTankCvars = {}
 	OnTankCvarsBak = {}
 	AIFuncs = {}
+	Old_sb_enforce_proximity_range = 0
 
 	//lxc check infected's status, is there a better way?
 	InfectedCalmAct =

@@ -41,6 +41,8 @@ Msg("Including left4bots_events...\n");
 
 	if (::Left4Bots.Settings.automation && ::Left4Bots.Settings.automation_autostart)
 		::Left4Bots.Automation.StartTasks(true);
+
+	Left4Bots.Old_sb_enforce_proximity_range = Convars.GetFloat("sb_enforce_proximity_range");
 }
 
 ::Left4Bots.Events.OnGameEvent_round_end <- function (params)
@@ -54,6 +56,14 @@ Msg("Including left4bots_events...\n");
 
 	if (Left4Bots.Settings.anti_pipebomb_bug)
 		Left4Bots.ClearPipeBombs();
+
+	if (Left4Bots.Settings.wait_use_v1_behavior && Convars.GetFloat("sb_hold_position") != 0)
+	{
+		Convars.SetValue("sb_hold_position", 0);
+		Convars.SetValue("sb_enforce_proximity_range", Left4Bots.Old_sb_enforce_proximity_range);
+		if (Left4Bots.Settings.wait_crouch)
+			Convars.SetValue("sb_crouch", 0);
+	}
 
 	Left4Bots.AddonStop();
 }
@@ -1984,6 +1994,16 @@ settings
 				return false; // Not an admin
 
 			// Call the cmd function (Cmd_command)
+			if (Left4Bots.Settings.wait_use_v1_behavior && (arg2 == "automation" || arg2 == "cancel" || arg2 == "carry" || arg2 == "come" || arg2 == "follow" || arg2 == "goto" || arg2 == "hurry" || arg2 == "lead" || arg2 == "move" || arg2 == "scavenge" || arg2 == "use" || arg2 == "witch"))
+			{
+				if (Convars.GetFloat("sb_hold_position") != 0)
+				{
+					Convars.SetValue("sb_hold_position", 0);
+					Convars.SetValue("sb_enforce_proximity_range", Left4Bots.Old_sb_enforce_proximity_range);
+					if (Left4Bots.Settings.wait_crouch)
+						Convars.SetValue("sb_crouch", 0);
+				}
+			}
 			Left4Bots["Cmd_" + arg2](player, allBots, tgtBot, arg3);
 
 			break;

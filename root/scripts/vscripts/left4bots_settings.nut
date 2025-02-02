@@ -661,6 +661,9 @@
 	// This means that they will keep holding their positions even if there are special infected around, teammates who need help etc. But they will still move to do higher priority tasks (like charger/spit dodging, defib, etc.)
 	wait_nopause = 0
 
+	// [1/0] The bots will use the old wait behavior from Left4BotsV1 (1) or the new behavior (0)
+	wait_use_v1_behavior = 0
+
 	// [1/0] 1 = If the bot pauses an order due to a nearby witch and the bot is holding a shotgun, he will automatically get ordered to crown that witch
 	witch_autocrown = 1
 }
