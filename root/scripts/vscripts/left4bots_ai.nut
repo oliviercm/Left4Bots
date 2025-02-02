@@ -1387,7 +1387,7 @@ enum AI_AIM_TYPE {
 
 	// Don't move for the item if finale escape started, there are teammates who need help or we are too far from the human survivors
 	// if (BotIsInPause()) // TODO: Should we?
-	if (L4B.EscapeStarted || L4B.SurvivorsHeldOrIncapped() || L4B.CheckSeparation_Pickup(UserId))
+	if (L4B.EscapeStarted || L4B.SurvivorsHeldOrIncapped() || L4B.CheckSeparation_Pickup(UserId) || L4B.BotShouldStartPause(self, UserId, Origin, SM_IsStuck, false, false, 0))
 	{
 		if (MoveType == AI_MOVE_TYPE.Pickup)
 		{
