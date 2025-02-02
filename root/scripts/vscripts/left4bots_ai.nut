@@ -9,9 +9,9 @@ Msg("Including left4bots_ai...\n");
 // HighPriority is used in spit/charger dodging and other high priority MOVEs
 enum AI_MOVE_TYPE {
 	None,
-	Order,
 	Pickup,
 	Defib,
+	Order,
 	Door, // This is used for saferoom doors only (other doors are handled as orders and so with Order priority)
 	HighPriority
 }
