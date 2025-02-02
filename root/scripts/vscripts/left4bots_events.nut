@@ -830,7 +830,7 @@ Msg("Including left4bots_events...\n");
 		if ("weapon" in params)
 			weapon = params["weapon"];
 
-		if (weapon == "inferno")
+		if ((weapon == "insect_swarm" && Left4Bots.Bots.len() >= Left4Bots.Survivors.len()) || weapon == "inferno")
 		{
 			// Pause the 'wait' order if the bot is being damaged by the fire
 			local scope = player.GetScriptScope();
