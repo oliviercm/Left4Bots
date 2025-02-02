@@ -1281,7 +1281,7 @@ Msg("Including left4bots_events...\n");
 			local victimItemClass = victimItem.GetClassname();
 			local victimItemSkin = NetProps.GetPropInt(victimItem, "m_nSkin");
 
-			if ((victimItemClass != attackerItemClass || slot == INV_SLOT_PRIMARY) || victimItemSkin != attackerItemSkin || (victimItemClass == "weapon_pistol" && attackerItemClass == "weapon_pistol" && (NetProps.GetPropInt(victimItem, "m_isDualWielding") != NetProps.GetPropInt(attackerItem, "m_isDualWielding"))))
+			if ((victimItemClass != attackerItemClass || slot == INV_SLOT_PRIMARY) || victimItemSkin != attackerItemSkin || (victimItemClass == "weapon_melee" && attackerItemClass == "weapon_melee") || (victimItemClass == "weapon_pistol" && attackerItemClass == "weapon_pistol" && (NetProps.GetPropInt(victimItem, "m_isDualWielding") != NetProps.GetPropInt(attackerItem, "m_isDualWielding"))))
 			{
 				DoEntFire("!self", "SpeakResponseConcept", "PlayerAlertGiveItem", 0, null, attacker);
 				DoEntFire("!self", "SpeakResponseConcept", "PlayerAlertGiveItem", 0, null, victim);
