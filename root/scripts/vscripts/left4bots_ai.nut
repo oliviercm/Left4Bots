@@ -10,8 +10,8 @@ Msg("Including left4bots_ai...\n");
 enum AI_MOVE_TYPE {
 	None,
 	Pickup,
-	Defib,
 	Order,
+	Defib,
 	Door, // This is used for saferoom doors only (other doors are handled as orders and so with Order priority)
 	HighPriority
 }
