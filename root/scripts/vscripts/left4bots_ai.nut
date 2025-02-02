@@ -3248,8 +3248,8 @@ enum AI_AIM_TYPE {
 			L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Followed ent is in range");
 
 			// Start the Pause if needed
-			BotPause();
-			orderComplete = false;
+			// BotPause();
+			// orderComplete = false;
 
 			break;
 		}
@@ -3499,12 +3499,12 @@ enum AI_AIM_TYPE {
 	if (Paused == 0)
 	{
 		// Should we start the pause?
-		if (canStartPause)
-		{
-			local r = L4B.BotShouldStartPause(self, UserId, Origin, SM_IsStuck, isHealOrder, isLeadOrder, maxSeparation);
-			if (r)
-				BotPause(r); // Yes, let's give control back to the vanilla AI
-		}
+		// if (canStartPause)
+		// {
+		// 	local r = L4B.BotShouldStartPause(self, UserId, Origin, SM_IsStuck, isHealOrder, isLeadOrder, maxSeparation);
+		// 	if (r)
+		// 		BotPause(r); // Yes, let's give control back to the vanilla AI
+		// }
 	}
 	else if (followEnt || (CurTime - Paused) >= L4B.Settings.pause_min_time) // Only stop the pause if at least pause_min_time seconds passed, or we are following someone
 	{
