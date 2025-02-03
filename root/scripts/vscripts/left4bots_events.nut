@@ -1166,6 +1166,28 @@ Msg("Including left4bots_events...\n");
 			player.PrecacheScriptSound("BaseCombatCharacter.AmmoPickup");
 		}
 
+		if (Settings.new_chapter_min_health > 0 && NetProps.GetPropInt(player, "m_iTeamNum") == TEAM_SURVIVORS)
+		{
+			local charName = Left4Utils.GetCharacterName(player);
+			if (charName && charName != "" && !(charName in ::Left4Bots.SurvivorsSpawned))
+			{
+				Left4Bots.SurvivorsSpawned[charName] <- true;
+
+				if (Left4Bots.SurvivorsSpawned.len() == 4)
+				{
+					foreach (survivor in ::Left4Utils.GetAliveSurvivors())
+					{
+						if (survivor.GetHealth() < Settings.new_chapter_min_health)
+						{
+							survivor.GiveItem("health");
+							survivor.SetHealthBuffer(0);
+							survivor.SetHealth(Settings.new_chapter_min_health);
+						}
+					}
+				}
+			}
+		}
+
 		PrintSurvivorsCount();
 		return;
 	}

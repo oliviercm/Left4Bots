@@ -322,6 +322,9 @@
 	// [1/0] Enable/Disable using the nearest nav area to the destination item as the MOVE destination instead of the item itself. Solves some issues on some maps (like ) but
 	moveto_nav = 1
 
+	// Survivors spawn with at least this much health on new chapters (0 = disabled)
+	new_chapter_min_health = 0
+
 	// [1/0] Enable/Disable orders debug text overlays (only visible to the host)
 	orders_debug = 0
 
