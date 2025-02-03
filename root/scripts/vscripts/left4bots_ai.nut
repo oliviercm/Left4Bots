@@ -1973,7 +1973,7 @@ enum AI_AIM_TYPE {
 		if ((itemClass == "weapon_upgradepack_incendiary" || itemClass == "weapon_upgradepack_explosive") && !Left4Bots.BotShouldStartPause(self, UserId, Origin, SM_IsStuck, false, false, 0))
 		{
 			self.SwitchToItem(itemClass);
-			Left4Timers.AddTimer(null, 1, @(params) ::Left4Bots.DoDeployUpgrade.bindenv(::Left4Bots)(params.player), { player = self });
+			Left4Timers.AddTimer(null, 0.1, @(params) ::Left4Bots.DoDeployUpgrade.bindenv(::Left4Bots)(params.player), { player = self });
 		}
 	}
 }
