@@ -11,6 +11,7 @@ enum AI_MOVE_TYPE {
 	None,
 	Pickup,
 	Order,
+	PickupHigh,
 	Defib,
 	Door, // This is used for saferoom doors only (other doors are handled as orders and so with Order priority)
 	HighPriority
@@ -1331,15 +1332,17 @@ enum AI_AIM_TYPE {
 	//if (MoveType > AI_MOVE_TYPE.Pickup)
 	//	return; // Do nothing if there is an ongoing MOVE with higher priority
 
+	local pickupMovetype = Left4Bots.Bots.len() >= Left4Bots.Survivors.len() ? AI_MOVE_TYPE.PickupHigh : AI_MOVE_TYPE.Pickup;
+
 	local pickup = BotGetNearestPickupWithin(L4B.Settings.pickups_scan_radius);
-	if (!pickup && MoveType == AI_MOVE_TYPE.Pickup && L4B.IsValidPickup(MoveEnt))
+	if (!pickup && MoveType == pickupMovetype && L4B.IsValidPickup(MoveEnt))
 		pickup = MoveEnt; // We have no visible pickup nearby at the moment but, if we already got a MoveEnt we are moving to and it's still valid, we'll stick to it even if we can't see it
 
 	if (!pickup)
 	{
 		// No item to pick up
 
-		if (MoveType == AI_MOVE_TYPE.Pickup)
+		if (MoveType == pickupMovetype)
 		{
 			L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - No item to pick up; resetting previous pick-up MOVE");
 
@@ -1363,7 +1366,7 @@ enum AI_AIM_TYPE {
 		L4B.PickupFailsafe(self, pickup);
 		L4B.PlayerPressButton(self, BUTTON_USE, 0.0, pickup, 0, 0, true);
 
-		if (MoveType == AI_MOVE_TYPE.Pickup)
+		if (MoveType == pickupMovetype)
 		{
 			L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Item picked up: resetting MOVE");
 
@@ -1382,14 +1385,14 @@ enum AI_AIM_TYPE {
 		return;
 
 	// Do it here
-	if (MoveType > AI_MOVE_TYPE.Pickup)
+	if (MoveType > pickupMovetype)
 		return; // Do not move for the item if there is an ongoing MOVE with higher priority
 
 	// Don't move for the item if finale escape started, there are teammates who need help or we are too far from the human survivors
 	// if (BotIsInPause()) // TODO: Should we?
 	if (L4B.EscapeStarted || L4B.SurvivorsHeldOrIncapped() || L4B.CheckSeparation_Pickup(UserId) || L4B.BotShouldStartPause(self, UserId, Origin, SM_IsStuck, false, false, 0))
 	{
-		if (MoveType == AI_MOVE_TYPE.Pickup)
+		if (MoveType == pickupMovetype)
 		{
 			L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Teammates need help or too far: resetting MOVE");
 
@@ -1399,7 +1402,7 @@ enum AI_AIM_TYPE {
 		return;
 	}
 
-	if (!MovePos || MoveType != AI_MOVE_TYPE.Pickup || !L4B.IsValidPickup(MoveEnt) || /*MoveEnt.GetEntityIndex() != pickup.GetEntityIndex()*/ MoveEnt != pickup)
+	if (!MovePos || MoveType != pickupMovetype || !L4B.IsValidPickup(MoveEnt) || /*MoveEnt.GetEntityIndex() != pickup.GetEntityIndex()*/ MoveEnt != pickup)
 	{
 		// We start a MOVE if at least one of these conditions is met:
 		// 1. There is no previous MOVE
@@ -1407,7 +1410,7 @@ enum AI_AIM_TYPE {
 		// 3. Our destination item (MoveEnt) wasn't set or is no longer valid
 		// 4. Our destination item (MoveEnt) changed
 
-		MoveType = AI_MOVE_TYPE.Pickup;
+		MoveType = pickupMovetype;
 		MoveEnt = pickup;
 
 		if (L4B.Settings.moveto_nav)
@@ -1941,9 +1944,9 @@ enum AI_AIM_TYPE {
 			}
 			else
 			{
-				if (!MovePos || MoveType < AI_MOVE_TYPE.Pickup || !L4B.IsValidPickup(MoveEnt) || MoveEnt != medkit)
+				if (!MovePos || MoveType < (Left4Bots.Bots.len() >= Left4Bots.Survivors.len() ? AI_MOVE_TYPE.PickupHigh : AI_MOVE_TYPE.Pickup) || !L4B.IsValidPickup(MoveEnt) || MoveEnt != medkit)
 				{
-					MoveType = AI_MOVE_TYPE.Pickup;
+					MoveType = (Left4Bots.Bots.len() >= Left4Bots.Survivors.len() ? AI_MOVE_TYPE.PickupHigh : AI_MOVE_TYPE.Pickup);
 					MoveEnt = medkit;
 
 					if (L4B.Settings.moveto_nav)
