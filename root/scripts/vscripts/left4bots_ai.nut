@@ -1924,7 +1924,7 @@ enum AI_AIM_TYPE {
 				medkit = ent;
 			}
 		}
-		if (availableMedkits >= requiredMedkits && !NetProps.GetPropInt(self, "m_hasVisibleThreats") && !Left4Bots.HasAngryCommonsWithin(Origin, 1, 400, 100) && !Left4Bots.SurvivorsHeldOrIncapped() && !Left4Bots.HasVisibleSpecialInfectedWithin(self, Origin, 400) && !Left4Bots.HasTanksWithin(Origin, 800) && !Left4Bots.HasWitchesWithin(Origin, 300, 100) && (GetCurrentFlowPercentForPlayer(self) < 90 || Left4Bots.IsSurvivorInCheckpoint(self)))
+		if (availableMedkits >= requiredMedkits && !NetProps.GetPropInt(self, "m_hasVisibleThreats") && !Left4Bots.HasAngryCommonsWithin(Origin, 1, 400, 100) && !Left4Bots.SurvivorsHeldOrIncapped() && !Left4Bots.HasVisibleSpecialInfectedWithin(self, Origin, 400) && !Left4Bots.HasTanksWithin(Origin, 800) && !Left4Bots.HasWitchesWithin(Origin, 300, 100) && (GetCurrentFlowPercentForPlayer(self) < 90 || (Left4Bots.IsSurvivorInCheckpoint(self) && Left4Bots.Settings.new_chapter_min_health == 0)))
 		{
 			if (item && item.GetClassname() == "weapon_first_aid_kit")
 			{
