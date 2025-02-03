@@ -1945,7 +1945,7 @@ enum AI_AIM_TYPE {
 				{
 					MoveType = AI_MOVE_TYPE.Pickup;
 					MoveEnt = medkit;
-			
+
 					if (L4B.Settings.moveto_nav)
 						BotMoveToNav(MoveEnt.GetOrigin(), true);
 					else
@@ -2724,7 +2724,7 @@ enum AI_AIM_TYPE {
 		else
 		{
 			// Otherwise...
-			if (L4B.HasDeathModelWithin(Origin, L4B.Settings.deads_scan_radius))
+			if (L4B.GetNearestDeathModelWithDefibWithin(self, Origin, L4B.Settings.deads_scan_radius))
 			{
 				// If there is a dead survivor to defib, our top priority is the defibrillator
 				if (!hasDefib)
