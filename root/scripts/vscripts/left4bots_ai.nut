@@ -2732,48 +2732,56 @@ enum AI_AIM_TYPE {
 			}
 			else
 			{
-				// Otherwise...
-				if (L4B.TeamMedkits < L4B.Settings.team_min_medkits || (self.GetHealth() + self.GetHealthBuffer()) < 30)
+				if (wantsUpgdInc && !hasUpgdInc)
+					WeaponsToSearch[Left4Utils.WeaponId.weapon_upgradepack_incendiary] <- 0;
+
+				if (wantsUpgdExp && !hasUpgdExp)
+					WeaponsToSearch[Left4Utils.WeaponId.weapon_upgradepack_explosive] <- 0;
+
+				if (!hasUpgdInc && !hasUpgdExp)
 				{
-					// If we need to heal or there are not enough team medkits, we'll go for the medkit
-					if (!hasMedkit)
-						WeaponsToSearch[Left4Utils.WeaponId.weapon_first_aid_kit] <- 0;
-				}
-				else
-				{
-					// Otherwise...
-					if (L4B.TeamMedkits == L4B.Settings.team_min_medkits && hasMedkit)
+					if (L4B.TeamMedkits < L4B.Settings.team_min_medkits || (self.GetHealth() + self.GetHealthBuffer()) < 30)
 					{
-						// Do nothing or TeamMedkits will drop below team_min_medkits
+						// If we need to heal or there are not enough team medkits, we'll go for the medkit
+						if (!hasMedkit)
+							WeaponsToSearch[Left4Utils.WeaponId.weapon_first_aid_kit] <- 0;
 					}
 					else
 					{
-						if (L4B.TeamDefibs < L4B.Settings.team_min_defibs)
+						// Otherwise...
+						if (L4B.TeamMedkits == L4B.Settings.team_min_medkits && hasMedkit)
 						{
-							// If there are not enough team defibrillators, we'll go for the defibrillator
-							if (!hasDefib)
-								WeaponsToSearch[Left4Utils.WeaponId.weapon_defibrillator] <- 0;
+							// Do nothing or TeamMedkits will drop below team_min_medkits
 						}
 						else
 						{
-							if (L4B.TeamDefibs == L4B.Settings.team_min_defibs && hasDefib)
+							if (L4B.TeamDefibs < L4B.Settings.team_min_defibs)
 							{
-								// Do nothing or TeamDefibs will drop below team_min_defibs
+								// If there are not enough team defibrillators, we'll go for the defibrillator
+								if (!hasDefib)
+									WeaponsToSearch[Left4Utils.WeaponId.weapon_defibrillator] <- 0;
 							}
 							else
 							{
-								// Otherwise we'll just follow our assigned priority list
-								if (wantsMedkit && !hasMedkit)
-									WeaponsToSearch[Left4Utils.WeaponId.weapon_first_aid_kit] <- 0;
+								if (L4B.TeamDefibs == L4B.Settings.team_min_defibs && hasDefib)
+								{
+									// Do nothing or TeamDefibs will drop below team_min_defibs
+								}
+								else
+								{
+									// Otherwise we'll just follow our assigned priority list
+									if (wantsMedkit && !hasMedkit)
+										WeaponsToSearch[Left4Utils.WeaponId.weapon_first_aid_kit] <- 0;
 
-								if (wantsDefib && !hasDefib)
-									WeaponsToSearch[Left4Utils.WeaponId.weapon_defibrillator] <- 0;
+									if (wantsDefib && !hasDefib)
+										WeaponsToSearch[Left4Utils.WeaponId.weapon_defibrillator] <- 0;
 
-								if (wantsUpgdInc && !hasUpgdInc)
-									WeaponsToSearch[Left4Utils.WeaponId.weapon_upgradepack_incendiary] <- 0;
+									if (wantsUpgdInc && !hasUpgdInc)
+										WeaponsToSearch[Left4Utils.WeaponId.weapon_upgradepack_incendiary] <- 0;
 
-								if (wantsUpgdExp && !hasUpgdExp)
-									WeaponsToSearch[Left4Utils.WeaponId.weapon_upgradepack_explosive] <- 0;
+									if (wantsUpgdExp && !hasUpgdExp)
+										WeaponsToSearch[Left4Utils.WeaponId.weapon_upgradepack_explosive] <- 0;
+								}
 							}
 						}
 					}
