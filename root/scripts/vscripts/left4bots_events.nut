@@ -848,7 +848,7 @@ Msg("Including left4bots_events...\n");
 
 				if (hasBlocker)
 				{
-					if (Left4Bots.Settings.inferno_push_force != 0 && IsPlayerABot(player) && !Left4Bots.SurvivorCantMove(player))
+					if (Left4Bots.Settings.inferno_push_force != 0 && IsPlayerABot(player) && NetProps.GetPropInt(player, "m_iTeamNum") == TEAM_SURVIVORS && !Left4Bots.SurvivorCantMove(player))
 					{
 						local v = player.GetOrigin() - inferno.GetOrigin();
 						local l = v.Length();
