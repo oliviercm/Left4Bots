@@ -121,7 +121,7 @@
 	dodge_inferno = 1
 
 	// Approximate radius of the inferno on the ground
-	dodge_inferno_radius = 200
+	dodge_inferno_radius = 250
 
 	// When the addon tells a bot to open/close a door, the bot does it via USE button (in order to do the hand animation)
 	// But if, for some reason, the open/close door fails (too far or something) the door will be forced to open/close by the addon after this delay
