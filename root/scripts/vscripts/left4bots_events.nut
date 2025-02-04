@@ -831,7 +831,7 @@ Msg("Including left4bots_events...\n");
 	if (weapon == "inferno" && Left4Bots.Settings.dodge_inferno)
 	{
 		local inferno = null;
-		while (inferno = Entities.FindByClassnameWithin(inferno, "inferno", player.GetOrigin(), 300))
+		while (inferno = Entities.FindByClassnameWithin(inferno, "inferno", player.GetOrigin(), 500))
 		{
 			if (inferno.IsValid())
 			{
@@ -846,7 +846,16 @@ Msg("Including left4bots_events...\n");
 				}
 
 				if (hasBlocker)
-					continue;
+				{
+					if (Left4Bots.Settings.inferno_push_force != 0)
+					{
+						local v = player.GetOrigin() - inferno.GetOrigin();
+						local l = v.Length();
+						local p = player.GetVelocity();
+						player.SetVelocity(Vector(p.x + (v.x / l * Left4Bots.Settings.inferno_push_force), p.y + (v.y / l * Left4Bots.Settings.inferno_push_force), p.z));
+					}
+					break;
+				}
 
 				foreach (bot in ::Left4Bots.Bots)
 				{

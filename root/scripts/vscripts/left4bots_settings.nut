@@ -206,6 +206,9 @@
 	// When you use the "hurry" command, the bot(s) improved AI will be disabled (they will not pick-up items/execute orders/defib teammates/throw items/scavenge) for this amount of seconds
 	hurry_time = 15
 
+	// Bots taking damage from infernos are pushed out with this much force (0 = disabled)
+	inferno_push_force = 0
+
 	// [1/0] 1 = Reverse itemstoavoid logics (tells the vanilla AI to avoid all the items except the ones in the itemstoavoid.txt file). 0 = Normal logics (vanilla AI should avoid only the items in the file)
 	// NOTE: Itemstoavoid logics only affect the VANILLA items pick-up behavior, it has no effect on the L4B2 items pick-up defined via weapon preference files and team_min* settings.
 	//       An incorrect configuration of itemstoavoid and weapon preference files may result in the bots picking weapons from the ground over and over again.
