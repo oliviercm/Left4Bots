@@ -824,12 +824,47 @@ Msg("Including left4bots_events...\n");
 {
 	local player = g_MapScript.GetPlayerFromUserID(params["userid"]);
 
+	local weapon = "";
+	if ("weapon" in params)
+		weapon = params["weapon"];
+
+	if (weapon == "inferno" && Left4Bots.Settings.dodge_inferno)
+	{
+		local inferno = null;
+		while (inferno = Entities.FindByClassnameWithin(inferno, "inferno", player.GetOrigin(), 300))
+		{
+			if (inferno.IsValid())
+			{
+				local hasBlocker = false;
+				for (local child = inferno.FirstMoveChild(); child != null; child = child.NextMovePeer())
+				{
+					if (child.GetClassname() == "script_nav_blocker")
+					{
+						hasBlocker = true;
+						break;
+					}
+				}
+
+				if (hasBlocker)
+					continue;
+
+				foreach (bot in ::Left4Bots.Bots)
+				{
+					if (bot.IsValid() && !Left4Bots.SurvivorCantMove(bot, bot.GetScriptScope().Waiting))
+						Left4Bots.TryDodgeInferno(bot, inferno);
+				}
+				local kvs = { classname = "script_nav_blocker", origin = inferno.GetOrigin(), extent = Vector(Left4Bots.Settings.dodge_inferno_radius, Left4Bots.Settings.dodge_inferno_radius, Left4Bots.Settings.dodge_inferno_radius), teamToBlock = "2", affectsFlow = "0" };
+				local ent = g_ModeScript.CreateSingleSimpleEntityFromTable(kvs);
+				ent.ValidateScriptScope();
+
+				DoEntFire("!self", "SetParent", "!activator", 0, inferno, ent); // parent the nav blocker to the inferno entity so it is automatically killed when the inferno is gone
+				DoEntFire("!self", "BlockNav", "", 0, null, ent);
+			}
+		}
+	}
+
 	if (Left4Bots.IsHandledBot(player))
 	{
-		local weapon = "";
-		if ("weapon" in params)
-			weapon = params["weapon"];
-
 		if ((weapon == "insect_swarm" && Left4Bots.Bots.len() >= Left4Bots.Survivors.len()) || weapon == "inferno")
 		{
 			// Pause the 'wait' order if the bot is being damaged by the fire
@@ -1132,6 +1167,50 @@ Msg("Including left4bots_events...\n");
 	if (allBots)
 	{
 		Left4Bots.Automation.StartTasks(true);
+	}
+}
+
+::Left4Bots.Events.OnGameEvent_hegrenade_detonate <- function (params)
+{
+	Left4Timers.AddTimer(null, 0.01, ::Left4Bots.PostOnGameEvent_hegrenade_detonate.bindenv(::Left4Bots), params);
+}
+
+::Left4Bots.PostOnGameEvent_hegrenade_detonate <- function (params)
+{
+	if (!Left4Bots.Settings.dodge_inferno)
+		return;
+
+	local inferno = null;
+	while (inferno = Entities.FindByClassnameWithin(inferno, "inferno", Vector(params.x, params.y, params.z), 50))
+	{
+		if (inferno.IsValid())
+		{
+			local hasBlocker = false;
+			for (local child = inferno.FirstMoveChild(); child != null; child = child.NextMovePeer())
+			{
+				if (child.GetClassname() == "script_nav_blocker")
+				{
+					hasBlocker = true;
+					break;
+				}
+			}
+
+			if (hasBlocker)
+				continue;
+
+			foreach (bot in ::Left4Bots.Bots)
+			{
+				if (bot.IsValid() && !Left4Bots.SurvivorCantMove(bot, bot.GetScriptScope().Waiting))
+					Left4Bots.TryDodgeInferno(bot, inferno);
+			}
+			local kvs = { classname = "script_nav_blocker", origin = inferno.GetOrigin(), extent = Vector(Settings.dodge_inferno_radius, Settings.dodge_inferno_radius, Settings.dodge_inferno_radius), teamToBlock = "2", affectsFlow = "0" };
+			local ent = g_ModeScript.CreateSingleSimpleEntityFromTable(kvs);
+			ent.ValidateScriptScope();
+
+			DoEntFire("!self", "SetParent", "!activator", 0, inferno, ent); // parent the nav blocker to the inferno entity so it is automatically killed when the inferno is gone
+			DoEntFire("!self", "BlockNav", "", 0, null, ent);
+		}
+
 	}
 }
 

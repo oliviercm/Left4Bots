@@ -117,6 +117,12 @@
 	// Approximate radius of the spitter's spit on the ground
 	dodge_spit_radius = 150
 
+	// [1/0] Enable/Disable inferno dodging
+	dodge_inferno = 1
+
+	// Approximate radius of the inferno on the ground
+	dodge_inferno_radius = 200
+
 	// When the addon tells a bot to open/close a door, the bot does it via USE button (in order to do the hand animation)
 	// But if, for some reason, the open/close door fails (too far or something) the door will be forced to open/close by the addon after this delay
 	door_failsafe_delay = 0.15

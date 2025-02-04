@@ -1979,6 +1979,38 @@ enum AI_AIM_TYPE {
 			Left4Timers.AddTimer(null, 0.1, @(params) ::Left4Bots.DoDeployUpgrade.bindenv(::Left4Bots)(params.player), { player = self });
 		}
 	}
+
+	local inferno = null;
+	while (inferno = Entities.FindByClassnameWithin(inferno, "inferno", self.GetOrigin(), Left4Bots.Settings.dodge_inferno_radius))
+	{
+		if (inferno.IsValid())
+		{
+			local hasBlocker = false;
+			for (local child = inferno.FirstMoveChild(); child != null; child = child.NextMovePeer())
+			{
+				if (child.GetClassname() == "script_nav_blocker")
+				{
+					hasBlocker = true;
+					break;
+				}
+			}
+
+			if (hasBlocker)
+				continue;
+
+			foreach (bot in ::Left4Bots.Bots)
+			{
+				if (bot.IsValid() && !Left4Bots.SurvivorCantMove(bot, bot.GetScriptScope().Waiting))
+					Left4Bots.TryDodgeInferno(bot, inferno);
+			}
+			local kvs = { classname = "script_nav_blocker", origin = inferno.GetOrigin(), extent = Vector(Left4Bots.Settings.dodge_inferno_radius, Left4Bots.Settings.dodge_inferno_radius, Left4Bots.Settings.dodge_inferno_radius), teamToBlock = "2", affectsFlow = "0" };
+			local ent = g_ModeScript.CreateSingleSimpleEntityFromTable(kvs);
+			ent.ValidateScriptScope();
+
+			DoEntFire("!self", "SetParent", "!activator", 0, inferno, ent); // parent the nav blocker to the inferno entity so it is automatically killed when the inferno is gone
+			DoEntFire("!self", "BlockNav", "", 0, null, ent);
+		}
+	}
 }
 
 // Handles the bot's enemy melee/shove/shoot logics

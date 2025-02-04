@@ -1743,6 +1743,26 @@ if (activator && isWorthPickingUp)
 		BotHighPriorityMove(bot, p2);
 }
 
+// 'bot' will try to dodge the 'inferno'
+::Left4Bots.TryDodgeInferno <- function (bot, inferno = null) // TODO: Improve (maybe just move to the position of a teammate who is not in inferno radius)
+{
+	local dodge_inferno_radius = Settings.dodge_inferno_radius;
+	local p2 = bot.GetOrigin();
+	local p1 = p2;
+	if (inferno)
+		p1 = inferno.GetOrigin();
+
+	local i = 0;
+	while ((p1 - p2).Length() <= dodge_inferno_radius && ++i <= 8)
+	{
+		Logger.Debug(bot.GetPlayerName() + ".TryGetPathableLocationWithin - i = " + i);
+		p2 = bot.TryGetPathableLocationWithin(dodge_inferno_radius + 150);
+	}
+
+	if (i > 0 && i <= 8)
+		BotHighPriorityMove(bot, p2);
+}
+
 // Checks whether the given bot is in the direction of the charger's charge and starts the dodge if needed
 ::Left4Bots.CheckShouldDodgeCharger <- function (bot, charger, chargerOrig, chargerLeft, chargerForwardY)
 {
