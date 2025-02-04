@@ -471,6 +471,7 @@ Msg("Including left4bots_events...\n");
 	Left4Bots.Logger.Debug(player.GetPlayerName() + " threw molotov");
 
 	Left4Bots.LastMolotovTime = Time();
+	Left4Bots.LastNadeTime = Time();
 }
 
 ::Left4Bots.Events.OnGameEvent_weapon_fire <- function (params)

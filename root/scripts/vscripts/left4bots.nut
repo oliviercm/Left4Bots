@@ -1508,6 +1508,9 @@ if (activator && isWorthPickingUp)
 		if (!allBots && (RandomInt(1, 100) > Settings.horde_molotov_chance || !NetProps.GetPropInt(bot, "m_hasVisibleThreats"))) // NetProps.GetPropInt(bot, "m_clientIntensity") < 40
 			return null; // No
 
+		if ((Time() - LastNadeTime) < Settings.throw_nade_interval)
+			return null;
+
 		// Is there an actual horde?
 		local common = CheckAngryCommonsWithin(bot, orig, Settings.horde_nades_size, Settings.horde_nades_radius, Settings.horde_nades_maxaltdiff);
 		if (common == false)
@@ -1635,7 +1638,7 @@ if (activator && isWorthPickingUp)
 		if ((throwClass == "weapon_pipe_bomb" && !(Settings.throw_pipebomb || allBots)) || (throwClass == "weapon_vomitjar" && !(Settings.throw_vomitjar || allBots)) || (Time() - LastNadeTime) < Settings.throw_nade_interval)
 			return false; // No
 
-		if ((throwClass == "weapon_molotov" && (!(Settings.throw_molotov || allBots) || (Time() - LastMolotovTime) < Settings.throw_molotov_interval)))
+		if ((throwClass == "weapon_molotov" && (!(Settings.throw_molotov || allBots) || (Time() - LastMolotovTime) < Settings.throw_molotov_interval || (Time() - LastNadeTime) < Settings.throw_nade_interval)))
 			return false;
 
 		// Is there an actual horde?
