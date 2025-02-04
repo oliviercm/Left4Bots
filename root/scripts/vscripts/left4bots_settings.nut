@@ -194,6 +194,9 @@
 	// When scanning for an actual horde, this is the minimum number of common infected to count
 	horde_nades_size = 10
 
+	// Chance that the bot will throw the molotov at the horde (this check runs multiple times in a second, so this chance must be pretty low to have an actual chance of no throw)
+	horde_molotov_chance = 30
+
 	// When you use the "hurry" command, the bot(s) improved AI will be disabled (they will not pick-up items/execute orders/defib teammates/throw items/scavenge) for this amount of seconds
 	hurry_time = 15
 
