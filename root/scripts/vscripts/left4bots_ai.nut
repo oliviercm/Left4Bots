@@ -2778,7 +2778,7 @@ enum AI_AIM_TYPE {
 
 				if (!hasUpgdInc && !hasUpgdExp)
 				{
-					if (L4B.TeamMedkits < L4B.Settings.team_min_medkits || (self.GetHealth() + self.GetHealthBuffer()) < 30)
+					if (L4B.TeamMedkits < L4B.Settings.team_min_medkits || self.GetHealth() < 2 || (self.GetHealth() + self.GetHealthBuffer()) < 40)
 					{
 						// If we need to heal or there are not enough team medkits, we'll go for the medkit
 						if (!hasMedkit)
