@@ -847,11 +847,12 @@ Msg("Including left4bots_events...\n");
 
 				if (hasBlocker)
 				{
-					if (Left4Bots.Settings.inferno_push_force != 0)
+					if (Left4Bots.Settings.inferno_push_force != 0 && IsPlayerABot(player) && !Left4Bots.SurvivorCantMove(player))
 					{
 						local v = player.GetOrigin() - inferno.GetOrigin();
 						local l = v.Length();
 						local p = player.GetVelocity();
+						Left4Bots.PlayerPressButton(player, BUTTON_JUMP);
 						player.SetVelocity(Vector(p.x + (v.x / l * Left4Bots.Settings.inferno_push_force), p.y + (v.y / l * Left4Bots.Settings.inferno_push_force), p.z));
 					}
 					break;
