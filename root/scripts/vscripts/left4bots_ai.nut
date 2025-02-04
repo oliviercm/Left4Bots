@@ -1980,35 +1980,38 @@ enum AI_AIM_TYPE {
 		}
 	}
 
-	local inferno = null;
-	while (inferno = Entities.FindByClassnameWithin(inferno, "inferno", self.GetOrigin(), Left4Bots.Settings.dodge_inferno_radius))
+	if (Left4Bots.Settings.dodge_inferno)
 	{
-		if (inferno.IsValid())
+		local inferno = null;
+		while (inferno = Entities.FindByClassnameWithin(inferno, "inferno", self.GetOrigin(), Left4Bots.Settings.dodge_inferno_radius))
 		{
-			local hasBlocker = false;
-			for (local child = inferno.FirstMoveChild(); child != null; child = child.NextMovePeer())
+			if (inferno.IsValid())
 			{
-				if (child.GetClassname() == "script_nav_blocker")
+				local hasBlocker = false;
+				for (local child = inferno.FirstMoveChild(); child != null; child = child.NextMovePeer())
 				{
-					hasBlocker = true;
-					break;
+					if (child.GetClassname() == "script_nav_blocker")
+					{
+						hasBlocker = true;
+						break;
+					}
 				}
+
+				if (hasBlocker)
+					continue;
+
+				foreach (bot in ::Left4Bots.Bots)
+				{
+					if (bot.IsValid() && !Left4Bots.SurvivorCantMove(bot, bot.GetScriptScope().Waiting))
+						Left4Bots.TryDodgeInferno(bot, inferno);
+				}
+				local kvs = { classname = "script_nav_blocker", origin = inferno.GetOrigin(), extent = Vector(Left4Bots.Settings.dodge_inferno_radius, Left4Bots.Settings.dodge_inferno_radius, Left4Bots.Settings.dodge_inferno_radius), teamToBlock = "2", affectsFlow = "0" };
+				local ent = g_ModeScript.CreateSingleSimpleEntityFromTable(kvs);
+				ent.ValidateScriptScope();
+
+				DoEntFire("!self", "SetParent", "!activator", 0, inferno, ent); // parent the nav blocker to the inferno entity so it is automatically killed when the inferno is gone
+				DoEntFire("!self", "BlockNav", "", 0, null, ent);
 			}
-
-			if (hasBlocker)
-				continue;
-
-			foreach (bot in ::Left4Bots.Bots)
-			{
-				if (bot.IsValid() && !Left4Bots.SurvivorCantMove(bot, bot.GetScriptScope().Waiting))
-					Left4Bots.TryDodgeInferno(bot, inferno);
-			}
-			local kvs = { classname = "script_nav_blocker", origin = inferno.GetOrigin(), extent = Vector(Left4Bots.Settings.dodge_inferno_radius, Left4Bots.Settings.dodge_inferno_radius, Left4Bots.Settings.dodge_inferno_radius), teamToBlock = "2", affectsFlow = "0" };
-			local ent = g_ModeScript.CreateSingleSimpleEntityFromTable(kvs);
-			ent.ValidateScriptScope();
-
-			DoEntFire("!self", "SetParent", "!activator", 0, inferno, ent); // parent the nav blocker to the inferno entity so it is automatically killed when the inferno is gone
-			DoEntFire("!self", "BlockNav", "", 0, null, ent);
 		}
 	}
 }
