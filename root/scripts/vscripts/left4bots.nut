@@ -625,7 +625,7 @@ IncludeScript("left4bots_settings");
 // Will the vanilla AI use meds?
 ::Left4Bots.BotWillUseMeds <- function (bot)
 {
-	return false;
+	return Left4Utils.HasMedkit(bot) && bot.GetHealth() < 2;
 }
 
 // Are there at least 'num' angry commons within 'radius' and 'maxAltDiff' from 'orig'?
