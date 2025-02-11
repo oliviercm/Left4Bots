@@ -206,6 +206,15 @@
 	// When you use the "hurry" command, the bot(s) improved AI will be disabled (they will not pick-up items/execute orders/defib teammates/throw items/scavenge) for this amount of seconds
 	hurry_time = 15
 
+	// When a survivor is incapped a nav_blocker is spawned on his position to block the nav areas in this radius if a tank is whithin incap_block_nav_tank_range from him.
+	// This is used to prevent the survivor bots to go help the downed survivor while the tank is there.
+	// 0 = Disabled
+	incap_block_nav_radius = 100
+
+	// When a survivor is incapped (and incap_block_nav_radius > 0) a nav_blocker is spawned on his position to block the nav areas around him if a tank is whithin this range from him.
+	// This is used to prevent the survivor bots to go help the downed survivor while the tank is there.
+	incap_block_nav_tank_range = 700
+
 	// Bots taking damage from infernos are pushed out with this much force (0 = disabled)
 	inferno_push_force = 0
 
