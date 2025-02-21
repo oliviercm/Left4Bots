@@ -1890,7 +1890,7 @@ enum AI_AIM_TYPE {
 	//lxc lock func
 	BotLockShoot();
 
-	if (self.GetHealth() < 40 || Left4Bots.Bots.len() >= Left4Bots.Survivors.len())
+	if (self.GetHealth() < 40 || (Left4Bots.Bots.len() >= Left4Bots.Survivors.len() && self.GetHealth() < 80))
 	{
 		local availableMedkits = 0;
 		local requiredMedkits = 1;
