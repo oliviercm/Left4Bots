@@ -1254,7 +1254,7 @@ if (activator && isWorthPickingUp)
 	// Ok, we can give the item...
 
 	local survItem = Left4Utils.GetInventoryItemInSlot(survDest, invSlot);
-	if (!survItem)
+	if (!survItem || !survItem.IsValid())
 	{
 		DoEntFire("!self", "SpeakResponseConcept", "PlayerAlertGiveItem", 0, null, bot);
 		DoEntFire("!self", "SpeakResponseConcept", "PlayerThanks", 1, null, survDest);
@@ -1325,13 +1325,16 @@ if (activator && isWorthPickingUp)
 	local item1 = params["item1"];
 	local player1 = params["player1"];
 
+	local item2 = params["item2"];
+	local player2 = params["player2"];
+
 	//if (item1 && item1.IsValid())
 	//	DoEntFire("!self", "Kill", "", 0, null, item1);
 
 	if (item1 && player1 && item1.IsValid() && player1.IsValid())
 	{
 		DoEntFire("!self", "Use", "", 0, player1, item1);
-		if (IsPlayerABot(player1) && !IsPlayerABot(player2))
+		if (player2 && player2.IsValid() && IsPlayerABot(player1) && !IsPlayerABot(player2))
 		{
 			local wId = Left4Utils.GetWeaponId(item1);
 			local wSlot = Left4Utils.GetWeaponSlotById(wId);
@@ -1341,16 +1344,13 @@ if (activator && isWorthPickingUp)
 
 	GiveItemIndex1 = 0;
 
-	local item2 = params["item2"];
-	local player2 = params["player2"];
-
 	//if (item2 && item2.IsValid())
 	//	DoEntFire("!self", "Kill", "", 0, null, item2);
 
 	if (item2 && player2 && item2.IsValid() && player2.IsValid())
 	{
 		DoEntFire("!self", "Use", "", 0, player2, item2);
-		if (!IsPlayerABot(player1) && IsPlayerABot(player2))
+		if (player1 && player1.IsValid() && !IsPlayerABot(player1) && IsPlayerABot(player2))
 		{
 			local wId = Left4Utils.GetWeaponId(item2);
 			local wSlot = Left4Utils.GetWeaponSlotById(wId);
