@@ -511,6 +511,9 @@
 	// The damage received by the bots from the spitter's acid is multiplied by this factor. If you want them to receive the same amount of damage as you, you can set 2
 	spit_damage_multiplier = 1
 
+	// Bots taking damage from spit are pushed out with this much force (0 = disabled)
+	spit_push_force = 0
+
 	// [1/0] Enable/Disable debug chat messages of the L4B2 stuck detection algorithm (NOT the game's detection algorithm)
 	stuck_debug = 0
 

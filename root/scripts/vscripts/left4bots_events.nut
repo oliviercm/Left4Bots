@@ -876,6 +876,22 @@ Msg("Including left4bots_events...\n");
 
 	if (Left4Bots.IsHandledBot(player))
 	{
+		if (weapon == "insect_swarm" && Left4Bots.Settings.spit_push_force != 0 && !Left4Bots.SurvivorCantMove(player))
+		{
+			local scope = player.GetScriptScope();
+			if (!scope.Waiting)
+			{
+				for (local spit; spit = Entities.FindByClassnameWithin(spit, "insect_swarm", player.GetOrigin(), 300); )
+				{
+					local v = player.GetOrigin() - spit.GetOrigin();
+					local l = v.Length();
+					local p = player.GetVelocity();
+					Left4Bots.PlayerPressButton(player, BUTTON_JUMP);
+					player.SetVelocity(Vector(p.x + (v.x / l * Left4Bots.Settings.spit_push_force), p.y + (v.y / l * Left4Bots.Settings.spit_push_force), p.z));
+					break;
+				}
+			}
+		}
 		if ((weapon == "insect_swarm" && Left4Bots.Bots.len() >= Left4Bots.Survivors.len()) || weapon == "inferno")
 		{
 			// Pause the 'wait' order if the bot is being damaged by the fire
