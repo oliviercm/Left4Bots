@@ -1901,7 +1901,20 @@ enum AI_AIM_TYPE {
 	//lxc lock func
 	BotLockShoot();
 
-	if (self.GetHealth() < 40 || (Left4Bots.Bots.len() >= Left4Bots.Survivors.len() && self.GetHealth() < 80))
+	if (self.IsOnThirdStrike() && Left4Utils.HasMedkit(self) && !NetProps.GetPropInt(self, "m_hasVisibleThreats") && !Left4Bots.HasAngryCommonsWithin(Origin, 1, 400, 100) && !Left4Bots.SurvivorsHeldOrIncapped() && !Left4Bots.HasVisibleSpecialInfectedWithin(self, Origin, 400) && !Left4Bots.HasTanksWithin(Origin, 800) && !Left4Bots.HasWitchesWithin(Origin, 300, 100) && (GetCurrentFlowPercentForPlayer(self) < 90 || (Left4Bots.IsSurvivorInCheckpoint(self) && Left4Bots.Settings.new_chapter_min_health == 0)))
+	{
+		local holding = self.GetActiveWeapon();
+		local holdingKit = holding && holding.IsValid() && holding.GetClassname() == "weapon_first_aid_kit";
+		if (!holdingKit)
+		{
+			self.SwitchToItem("weapon_first_aid_kit");
+		}
+		else
+		{
+			Left4Timers.AddTimer(null, 0.2, ::Left4Bots.ExtraMedkitBotHeal.bindenv(::Left4Bots), { bot = self });
+		}
+	}
+	else if (self.GetHealth() < 40 || (Left4Bots.Bots.len() >= Left4Bots.Survivors.len() && self.GetHealth() < 80))
 	{
 		local availableMedkits = 0;
 		local requiredMedkits = 1;
