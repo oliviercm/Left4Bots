@@ -155,6 +155,25 @@ IncludeScript("left4bots_requirements");
 		"ACT_TERROR_IDLE_ALERT_INJURED_RIGHT",
 		"ACT_TERROR_IDLE_ALERT_INJURED_AHEAD"
 	]
+
+	WeaponCategories =
+	{
+		[Left4Utils.WeaponId.weapon_smg] = "smg",
+		[Left4Utils.WeaponId.weapon_smg_silenced] = "smg",
+		[Left4Utils.WeaponId.weapon_smg_mp5] = "smg",
+		[Left4Utils.WeaponId.weapon_rifle] = "rifle",
+		[Left4Utils.WeaponId.weapon_rifle_desert] = "rifle",
+		[Left4Utils.WeaponId.weapon_rifle_ak47] = "rifle",
+		[Left4Utils.WeaponId.weapon_rifle_sg552] = "rifle",
+		[Left4Utils.WeaponId.weapon_pumpshotgun] = "pump",
+		[Left4Utils.WeaponId.weapon_shotgun_chrome] = "pump",
+		[Left4Utils.WeaponId.weapon_autoshotgun] = "auto",
+		[Left4Utils.WeaponId.weapon_shotgun_spas] = "auto",
+		[Left4Utils.WeaponId.weapon_hunting_rifle] = "sniper",
+		[Left4Utils.WeaponId.weapon_sniper_military] = "sniper",
+		[Left4Utils.WeaponId.weapon_sniper_scout] = "sniper",
+		[Left4Utils.WeaponId.weapon_sniper_awp] = "sniper"
+	}
 }
 
 IncludeScript("left4bots_settings");

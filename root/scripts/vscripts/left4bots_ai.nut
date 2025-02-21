@@ -2485,7 +2485,21 @@ enum AI_AIM_TYPE {
 
 		// If ammo percent < 95 and no laser/ammo upgrade, add the current weapon too so we can get one with full ammo
 		if (currWeps[slotIdx] > Left4Utils.WeaponId.none && priAmmoPercent < L4B.Settings.pickups_wep_ammo_replenish && !hasLaserSight && !hasAmmoUpgrade)
-			WeaponsToSearch[currWeps[slotIdx]] <- 0;
+		{
+			if (currWeps[slotIdx] in Left4Bots.WeaponCategories)
+			{
+				local weaponCategory = Left4Bots.WeaponCategories[currWeps[slotIdx]];
+				foreach (weapon, category in Left4Bots.WeaponCategories)
+				{
+					if (weaponCategory == category)
+						WeaponsToSearch[weapon] <- 0;
+				}
+			}
+			else
+			{
+				WeaponsToSearch[currWeps[slotIdx]] <- 0;
+			}
+		}
 
 		// SECONDARY
 		slotIdx = 1;
@@ -2931,7 +2945,18 @@ enum AI_AIM_TYPE {
 
 							// If we are going to pick-up the same weapon, make sure it has more ammo than the current one
 							local ammoPercent = Left4Utils.GetAmmoPercent(ent);
-							if ((weaponId != priWeaponId && ammoPercent >= L4B.Settings.pickups_wep_min_ammo) || (weaponId == priWeaponId && ammoPercent > priAmmoPercent))
+							if (weaponId in Left4Bots.WeaponCategories && priWeaponId in Left4Bots.WeaponCategories)
+							{
+								local weaponCategory = Left4Bots.WeaponCategories[weaponId];
+								local priWeaponCategory = Left4Bots.WeaponCategories[priWeaponId];
+								if ((weaponCategory != priWeaponCategory && ammoPercent >= L4B.Settings.pickups_wep_min_ammo) || (weaponCategory == priWeaponCategory && ammoPercent > priAmmoPercent))
+								{
+									// Any other
+									ret = ent;
+									minDist = dist;
+								}
+							}
+							else if ((weaponId != priWeaponId && ammoPercent >= L4B.Settings.pickups_wep_min_ammo) || (weaponId == priWeaponId && ammoPercent > priAmmoPercent))
 							{
 								// Any other
 								ret = ent;
