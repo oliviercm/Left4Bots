@@ -1230,6 +1230,63 @@ if (activator && isWorthPickingUp)
 	return true;
 }
 
+::Left4Bots.BotTradeInventoryItem <- function (bot, survDest, invSlot)
+{
+	if (GiveItemIndex1 != 0 || GiveItemIndex2 != 0 || (Time() - LastGiveItemTime) < 3)
+		return false; // Another give is already in progress or we must wait 3 seconds between each give
+
+	// Give molotov / pipe bombs / bile jars / pills / adrenaline to all humans
+	if ((invSlot == INV_SLOT_THROW && !Settings.give_bots_nades) || (invSlot == INV_SLOT_PILLS && !Settings.give_bots_pills))
+		return false; // Disabled via settings
+
+	local item = Left4Utils.GetInventoryItemInSlot(bot, invSlot);
+	if (!item || !item.IsValid())
+		return false; // No item in that slot
+
+	local itemClass = item.GetClassname();
+	local aw = bot.GetActiveWeapon();
+	if (aw && aw.IsValid() && aw.GetClassname() == itemClass)
+		return false; // Don't give items that are being held by the bot to avoid giving away a mekit while the bot is trying to heal
+
+	if (invSlot == INV_SLOT_MEDKIT && (itemClass == "weapon_upgradepack_explosive" || itemClass == "weapon_upgradepack_incendiary") && !Settings.give_bots_upgrades)
+		return false; // Disabled via settings
+
+	// Ok, we can give the item...
+
+	local survItem = Left4Utils.GetInventoryItemInSlot(survDest, invSlot);
+	if (!survItem)
+	{
+		DoEntFire("!self", "SpeakResponseConcept", "PlayerAlertGiveItem", 0, null, bot);
+		DoEntFire("!self", "SpeakResponseConcept", "PlayerThanks", 1, null, survDest);
+
+		GiveItemIndex1 = item.GetEntityIndex();
+
+		Left4Bots.DropItem(bot, item, itemClass);
+
+		Left4Bots.ItemSwapped({ item1 = null, player1 = bot, item2 = item, player2 = survDest, });
+
+		LastGiveItemTime = Time();
+	}
+	else
+	{
+		// Swap
+		DoEntFire("!self", "SpeakResponseConcept", "PlayerAlertGiveItem", 0, null, bot);
+		DoEntFire("!self", "SpeakResponseConcept", "PlayerAlertGiveItem", 0, null, survDest);
+
+		GiveItemIndex1 = item.GetEntityIndex();
+		GiveItemIndex2 = survItem.GetEntityIndex();
+
+		Left4Bots.DropItem(bot, item, itemClass);
+		Left4Bots.DropItem(survDest, survItem, survItem.GetClassname());
+
+		Left4Bots.ItemSwapped({ item1 = survItem, player1 = bot, item2 = item, player2 = survDest, });
+
+		LastGiveItemTime = Time();
+	}
+
+	return true;
+}
+
 // Finalize the give item process
 ::Left4Bots.ItemGiven <- function (params)
 {

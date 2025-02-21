@@ -1558,19 +1558,30 @@ enum AI_AIM_TYPE {
 	// Handle give items
 	foreach (surv in L4B.GetOtherAliveSurvivors(UserId))
 	{
-		if (surv && surv.IsValid() && !IsPlayerABot(surv) && NetProps.GetPropInt(surv, "m_iTeamNum") == TEAM_SURVIVORS && !L4B.SurvivorCantMove(surv, Waiting) && (Origin - surv.GetOrigin()).Length() <= L4B.Settings.give_max_range)
+		if (surv && surv.IsValid() && NetProps.GetPropInt(surv, "m_iTeamNum") == TEAM_SURVIVORS && !L4B.SurvivorCantMove(surv, Waiting) && (Origin - surv.GetOrigin()).Length() <= L4B.Settings.give_max_range)
 		{
-			// Then try with pills and adrenaline
-			if (L4B.GiveInventoryItem(self, surv, INV_SLOT_PILLS))
-				return; // Don't do anything else if the give succedes
+			if (!IsPlayerABot(surv))
+			{
+				// Then try with pills and adrenaline
+				if (L4B.GiveInventoryItem(self, surv, INV_SLOT_PILLS))
+					break; // Don't do anything else if the give succedes
 
-			// Try give a throwable
-			if (L4B.GiveInventoryItem(self, surv, INV_SLOT_THROW))
-				return; // Don't do anything else if the give succedes
+				// Try give a throwable
+				if (L4B.GiveInventoryItem(self, surv, INV_SLOT_THROW))
+					break; // Don't do anything else if the give succedes
 
-			// Last try with medkits / defib / upgrade packs
-			if (L4B.GiveInventoryItem(self, surv, INV_SLOT_MEDKIT))
-				return; // Don't do anything else if the give succedes
+				// Last try with medkits / defib / upgrade packs
+				if (L4B.GiveInventoryItem(self, surv, INV_SLOT_MEDKIT))
+					break; // Don't do anything else if the give succedes
+			}
+			else
+			{
+				if (Left4Utils.HasMedkit(self) && !Left4Utils.HasMedkit(surv) && !self.IsOnThirdStrike() && (surv.GetHealth() < self.GetHealth() || surv.IsOnThirdStrike()) && Left4Bots.BotTradeInventoryItem(self, surv, INV_SLOT_MEDKIT))
+					break;
+
+				if (Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_PILLS) && !Left4Utils.GetInventoryItemInSlot(surv, INV_SLOT_PILLS) && surv.GetHealth() + surv.GetHealthBuffer() < self.GetHealth() + self.GetHealthBuffer() && Left4Bots.BotTradeInventoryItem(self, surv, INV_SLOT_PILLS))
+					break;
+			}
 		}
 	}
 
