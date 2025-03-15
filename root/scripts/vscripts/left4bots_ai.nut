@@ -2097,6 +2097,7 @@ enum AI_AIM_TYPE {
 						tgt.head = null;
 					BotSetAim(AI_AIM_TYPE.Shoot, tgt.ent, 0.01, 0, 0, tgt.head); //need refresh target next time
 					Left4Utils.PlayerForceButton(self, BUTTON_ATTACK);
+					Left4Utils.PlayerUnForceButton(self, BUTTON_RELOAD);
 				}
 				// Bots always reload for no reason while executing a MOVE command. Don't let them if there are visible threats and still rounds in the magazine
 				if (tgt && ActiveWeapon.Clip1() > 0)
@@ -2104,7 +2105,7 @@ enum AI_AIM_TYPE {
 					Left4Utils.PlayerDisableButton(self, BUTTON_RELOAD);
 					return;
 				}
-				else if (!tgt && ActiveWeapon.GetMaxClip1() != 0 && ActiveWeapon.Clip1().tofloat() / ActiveWeapon.GetMaxClip1().tofloat() < 0.5)
+				else if (!tgt && ActiveWeapon.GetMaxClip1() != 0 && ActiveWeapon.Clip1().tofloat() / ActiveWeapon.GetMaxClip1().tofloat() < 0.6)
 				{
 					Left4Utils.PlayerEnableButton(self, BUTTON_RELOAD);
 					Left4Utils.PlayerForceButton(self, BUTTON_RELOAD);
