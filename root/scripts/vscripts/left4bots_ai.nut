@@ -2060,6 +2060,12 @@ enum AI_AIM_TYPE {
 		}
 	}
 
+	if (ActiveWeapon && (ActiveWeaponSlot == 0 || ActiveWeaponSlot == 1) && (ActiveWeapon.Clip1() == 0 || ActiveWeapon.GetClassname().find("shotgun")))
+	{
+		Left4Utils.PlayerEnableButton(self, BUTTON_RELOAD);
+		Left4Utils.PlayerForceButton(self, BUTTON_RELOAD);
+	}
+
 	// If we have a close target that we can either melee or shove then melee/shove it
 	if (target && canMelee && dot >= L4B.Settings.manual_attack_mindot)
 	{
@@ -2069,9 +2075,6 @@ enum AI_AIM_TYPE {
 	}
 	else if (target && canShove) // TODO: add dot?
 	{
-		if (ActiveWeapon && (ActiveWeaponSlot == 0 || ActiveWeaponSlot == 1) && ActiveWeapon.Clip1() == 0)
-			L4B.PlayerPressButton(self, BUTTON_RELOAD);
-
 		//lxc z_gun_swing_duration: 0.2 ** How long shove attack is active (can shove an entities)
 		BotSetAim(AI_AIM_TYPE.Shove, L4B.GetHitPos(target), 0.01);
 		L4B.PlayerPressButton(self, BUTTON_SHOVE);
@@ -2081,9 +2084,7 @@ enum AI_AIM_TYPE {
 		// If no close target or we cannot melee or shove it at the moment, then handle manual shooting to targets in our field of view
 		if (ActiveWeapon && (ActiveWeaponSlot == 0 || ActiveWeaponSlot == 1) && !NetProps.GetPropInt(ActiveWeapon, "m_bInReload"))
 		{
-			if (ActiveWeapon.Clip1() == 0 || ActiveWeapon.GetClassname().find("shotgun"))
-				L4B.PlayerPressButton(self, BUTTON_RELOAD);
-			if (ActiveWeaponSlot == 1 && Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_PRIMARY) && Left4Utils.GetAmmoPercent(Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_PRIMARY)) > 0 && !self.IsFiringWeapon() && !(hasMelee && CurTime < NetProps.GetPropFloat(ActiveWeapon, "m_flNextPrimaryAttack")) && !(ActiveWeapon && NetProps.GetPropInt(ActiveWeapon, "m_bInReload")))
+			if (ActiveWeaponSlot == 1 && Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_PRIMARY) && Left4Utils.GetAmmoPercent(Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_PRIMARY)) > 0 && !self.IsFiringWeapon() && !(hasMelee && CurTime < NetProps.GetPropFloat(ActiveWeapon, "m_flNextPrimaryAttack")))
 				self.SwitchToItem(Left4Utils.GetInventoryItemInSlot(self, INV_SLOT_PRIMARY).GetClassname());
 			// This check fixes weapon can't fire when holding the ATTACK btton during deploy, any reason for switching weapons may cause it.
 			if (self.IsFiringWeapon() || CurTime >= NetProps.GetPropFloat(ActiveWeapon, "m_flNextPrimaryAttack"))
@@ -2098,10 +2099,15 @@ enum AI_AIM_TYPE {
 					Left4Utils.PlayerForceButton(self, BUTTON_ATTACK);
 				}
 				// Bots always reload for no reason while executing a MOVE command. Don't let them if there are visible threats and still rounds in the magazine
-				if ((tgt || !NetProps.GetPropInt(self, "m_isCalm")) && ActiveWeapon.Clip1() > 0)
+				if (tgt && ActiveWeapon.Clip1() > 0)
 				{
 					Left4Utils.PlayerDisableButton(self, BUTTON_RELOAD);
 					return;
+				}
+				else if (!tgt && ActiveWeapon.GetMaxClip1() != 0 && ActiveWeapon.Clip1().tofloat() / ActiveWeapon.GetMaxClip1().tofloat() < 0.5)
+				{
+					Left4Utils.PlayerEnableButton(self, BUTTON_RELOAD);
+					Left4Utils.PlayerForceButton(self, BUTTON_RELOAD);
 				}
 			}
 		}
