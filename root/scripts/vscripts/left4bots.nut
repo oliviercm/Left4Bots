@@ -19,6 +19,8 @@ if (!IncludeScript("left4lib_users"))
 	error("[L4B][ERROR] Failed to include 'left4lib_users', please make sure the 'Left 4 Lib' addon is installed and enabled!\n");
 if (!IncludeScript("left4lib_timers"))
 	error("[L4B][ERROR] Failed to include 'left4lib_timers', please make sure the 'Left 4 Lib' addon is installed and enabled!\n");
+if (!IncludeScript("left4lib_timers2"))
+	error("[L4B][ERROR] Failed to include 'left4lib_timers2', please make sure the 'Left 4 Lib' addon is installed and enabled!\n");
 if (!IncludeScript("left4lib_concepts"))
 	error("[L4B][ERROR] Failed to include 'left4lib_concepts', please make sure the 'Left 4 Lib' addon is installed and enabled!\n");
 if (!IncludeScript("left4lib_simplehud"))
@@ -84,7 +86,7 @@ IncludeScript("left4bots_requirements");
 	LastLeadStartVocalize = 0
 	NiceShootSurv = null
 	NiceShootTime = 0
-	IncapBlockNavs = {}
+	//IncapBlockNavs = {}
 	ItemsToAvoid = []
 	TeamShotguns = 0
 	TeamMolotovs = 0
@@ -98,6 +100,7 @@ IncludeScript("left4bots_requirements");
 	ScavengeUseTargetPos = null
 	ScavengeUseType = 0
 	ScavengeBots = {}
+	IncapNavBlockerAreas = {}
 	L4F = false
 	LastSignalType = ""
 	LastSignalTime = 0
@@ -3850,25 +3853,52 @@ Support vanilla weapon preference.
 	return false;
 }
 
-::Left4Bots.IncappedBlockNav <- function (survivor)
+// Enables/Disables bots switching to secondary weapon by setting/unsetting its m_hOwner property
+::Left4Bots.AllowSecondaryWeaponSwitch <- function(bot, allow)
 {
-	local kvs = { classname = "script_nav_blocker", origin = survivor.GetOrigin(), extent = Vector(Settings.incap_block_nav_radius, Settings.incap_block_nav_radius, Settings.incap_block_nav_radius), teamToBlock = "2", affectsFlow = "0" };
-	local ent = g_ModeScript.CreateSingleSimpleEntityFromTable(kvs);
-	ent.ValidateScriptScope();
-	Logger.Debug("Created script_nav_blocker (incapped): " + ent.GetName());
-
-	DoEntFire("!self", "SetParent", "!activator", 0, survivor, ent); // I parent the nav blocker to the survivor entity so it follows him if incap crawling is enabled (not sure the nav areas are updated, though)
-	DoEntFire("!self", "BlockNav", "", 0, null, ent);
-	return ent;
+	local w = Left4Utils.GetInventoryItemInSlot(bot, INV_SLOT_SECONDARY);
+	if (w)
+		NetProps.SetPropEntity(w, "m_hOwner", (allow ? bot : null));
 }
 
-::Left4Bots.IncappedUnblockNav <- function (blocker)
+// Handles the logics for allowing/not allowing to switch to secondary
+::Left4Bots.EnforcePrimaryWeapon <- function(bot, ActiveWeapon)
 {
-	if (!blocker || !blocker.IsValid())
-		return;
-
-	DoEntFire("!self", "UnblockNav", "", 0, null, blocker);
-	DoEntFire("!self", "Kill", "", 0.1, null, blocker);
+	local canSwitch = true;
+	if ((Settings.enforce_shotgun || Settings.enforce_sniper_rifle) && ActiveWeapon && !bot.IsIncapacitated())
+	{
+		local wp = Left4Utils.GetInventoryItemInSlot(bot, INV_SLOT_PRIMARY);
+		local wp2nd = Left4Utils.GetInventoryItemInSlot(bot, INV_SLOT_SECONDARY);
+		if (wp && wp2nd && Left4Utils.GetAmmoPercent(wp) > 0)
+		{
+			local type = Left4Utils.GetWeaponTypeById(Left4Utils.GetWeaponId(wp));
+			if (type == "shotgun" || type == "sniper_rifle")
+			{
+				local type2nd = Left4Utils.GetWeaponTypeById(Left4Utils.GetWeaponId(wp2nd));
+				local flag = type2nd == "pistol" ? (wp2nd.GetClassname() == "weapon_pistol_magnum" ? 2 : 1) : 
+							 type2nd == "melee" ? 4 : 
+							 type2nd == "chainsaw" ? 8 : 
+							 0;
+				
+				if (flag)
+				{
+					if ((Settings["enforce_" + type] & flag) == flag)
+						canSwitch = false;
+					
+					if (!canSwitch && ActiveWeapon == wp2nd)
+					{
+						NetProps.SetPropEntity(wp2nd, "m_hOwner", bot);
+						bot.SwitchToItem(wp.GetClassname());
+						
+						//if can not switch to primary weapon, at least we still have one, also fixed chainsaw smoking when pickup and switch at the same time
+						return;
+					}
+				}
+			}
+		}
+	}
+	
+	AllowSecondaryWeaponSwitch(bot, canSwitch);
 }
 
 // Helps update the COMMANDS.md file on the github repo

@@ -127,6 +127,18 @@
 	// But if, for some reason, the open/close door fails (too far or something) the door will be forced to open/close by the addon after this delay
 	door_failsafe_delay = 0.15
 
+	// Don't switch to the secondary weapon if the primary is a shotgun and the secondary is
+	// 1 = pistol, 2 = magnum, 4 = melee, 8 = chainsaw
+	// 15 = pistol + magnum + melee + chainsaw
+	// 0 = OFF (Vanilla AI logic)
+	enforce_shotgun = 15
+
+	// Don't switch to the secondary weapon if the primary is a sniper rifle and the secondary is
+	// 1 = pistol, 2 = magnum, 4 = melee, 8 = chainsaw
+	// 15 = pistol + magnum + melee + chainsaw
+	// 0 = OFF (Vanilla AI logic)
+	enforce_sniper_rifle = 15
+
 	// If the bot's falling (vertical) velocity is > than this, he will be safely teleported to a random teammate. 0 = disabled
 	// Can be set to the value of one of the game's cvars "fall_speed_fatal" (default val. 720), "fall_speed_safe" (560) to avoid insta-death or any damage at all respectively
 	fall_velocity_warp = 0
@@ -206,13 +218,18 @@
 	// When you use the "hurry" command, the bot(s) improved AI will be disabled (they will not pick-up items/execute orders/defib teammates/throw items/scavenge) for this amount of seconds
 	hurry_time = 15
 
-	// When a survivor is incapped a nav_blocker is spawned on his position to block the nav areas in this radius if a tank is whithin incap_block_nav_tank_range from him.
-	// This is used to prevent the survivor bots to go help the downed survivor while the tank is there.
-	// 0 = Disabled
+	// [1/0] Enable/Disable a debug visualization of the blocked/unblocked nav areas when incap_block_nav_interval is > 0
+	incap_block_nav_debug = 0
+
+	// When a survivor is incapacitated and a tank is incap_block_nav_tank_range units from him, the nav areas whithin incap_block_nav_radius from the incapped survivor are blocked in order to
+	// make the survivor bots not rush to revive him while the tank is there. The areas are automatically unblocked if the tank is out of the range, dies or the survivor is no longer incapacitated.
+	// Setting this to 0 will disable the feature
+	incap_block_nav_interval = 0.5
+
+	// The nav areas whithin this radius from the incapped survivor and a tank nearby will be blocked if incap_block_nav_interval > 0
 	incap_block_nav_radius = 100
 
-	// When a survivor is incapped (and incap_block_nav_radius > 0) a nav_blocker is spawned on his position to block the nav areas around him if a tank is whithin this range from him.
-	// This is used to prevent the survivor bots to go help the downed survivor while the tank is there.
+	// An aggroed tank must be within this radius from the incapped survivor in order to block the nav areas around the survivor
 	incap_block_nav_tank_range = 700
 
 	// Bots taking damage from infernos are pushed out with this much force (0 = disabled)
