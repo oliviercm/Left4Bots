@@ -1944,19 +1944,29 @@ enum AI_AIM_TYPE {
 				medkit = ent;
 			}
 		}
-		if (availableMedkits >= requiredMedkits && !NetProps.GetPropInt(self, "m_hasVisibleThreats") && !Left4Bots.HasAngryCommonsWithin(Origin, 1, 400, 100) && !Left4Bots.SurvivorsHeldOrIncapped() && !Left4Bots.HasVisibleSpecialInfectedWithin(self, Origin, 400) && !Left4Bots.HasTanksWithin(Origin, 800) && !Left4Bots.HasWitchesWithin(Origin, 300, 100) && (GetCurrentFlowPercentForPlayer(self) < 90 || (Left4Bots.IsSurvivorInCheckpoint(self) && Left4Bots.Settings.new_chapter_min_health == 0)))
+		if (medkit && availableMedkits >= requiredMedkits && !NetProps.GetPropInt(self, "m_hasVisibleThreats") && Left4Bots.CanTraceToPickup(self, medkit) && !Left4Bots.HasAngryCommonsWithin(Origin, 1, 400, 100) && !Left4Bots.SurvivorsHeldOrIncapped() && !Left4Bots.HasVisibleSpecialInfectedWithin(self, Origin, 400) && !Left4Bots.HasTanksWithin(Origin, 800) && !Left4Bots.HasWitchesWithin(Origin, 300, 100) && (GetCurrentFlowPercentForPlayer(self) < 90 || (Left4Bots.IsSurvivorInCheckpoint(self) && Left4Bots.Settings.new_chapter_min_health == 0)))
 		{
 			if (item && item.GetClassname() == "weapon_first_aid_kit")
 			{
-				local holding = self.GetActiveWeapon();
-				local holdingKit = holding && holding.IsValid() && holding.GetClassname() == "weapon_first_aid_kit";
-				if (!holdingKit)
+				if ((self.GetOrigin() - medkit.GetOrigin()).Length() > Left4Bots.Settings.pickups_pick_range)
 				{
-					self.SwitchToItem("weapon_first_aid_kit");
+					if (Left4Bots.BotOrdersCount(self) == 0)
+					{
+						Left4Bots.BotOrderAdd(self, "goto", null, null, medkit.GetOrigin());
+					}
 				}
 				else
 				{
-					Left4Timers.AddTimer(null, 0.2, ::Left4Bots.ExtraMedkitBotHeal.bindenv(::Left4Bots), { bot = self });
+					local holding = self.GetActiveWeapon();
+					local holdingKit = holding && holding.IsValid() && holding.GetClassname() == "weapon_first_aid_kit";
+					if (!holdingKit)
+					{
+						self.SwitchToItem("weapon_first_aid_kit");
+					}
+					else
+					{
+						Left4Timers.AddTimer(null, 0.2, ::Left4Bots.ExtraMedkitBotHeal.bindenv(::Left4Bots), { bot = self });
+					}
 				}
 			}
 			else
