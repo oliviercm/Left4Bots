@@ -1948,7 +1948,7 @@ enum AI_AIM_TYPE {
 		{
 			if (item && item.GetClassname() == "weapon_first_aid_kit")
 			{
-				if ((self.GetOrigin() - medkit.GetOrigin()).Length() > Left4Bots.Settings.pickups_pick_range)
+				if (((self.GetOrigin() - medkit.GetOrigin()).Length() > Left4Bots.Settings.pickups_pick_range) && !Left4Bots.IsSurvivorInCheckpoint(self))
 				{
 					if (Left4Bots.BotOrdersCount(self) == 0)
 					{
