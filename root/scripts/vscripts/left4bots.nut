@@ -4091,6 +4091,11 @@ Support vanilla weapon preference.
 ::Left4Bots.ExtraMedkitBotHeal <- function (params)
 {
 	Left4Bots.PlayerPressButton(params.bot, BUTTON_ATTACK, 0, null, 0, 0, true);
+	if (params.medkit)
+	{
+		local scope = params.bot.GetScriptScope();
+		scope.ForcePickup = params.medkit;
+	}
 }
 
 ::Left4Bots.ItemSwappedUseWeapon <- function (params)
