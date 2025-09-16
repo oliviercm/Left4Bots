@@ -4106,6 +4106,47 @@ Support vanilla weapon preference.
 	}
 }
 
+::Left4Bots.TrySpawnJimmyGibbs <- function (params)
+{
+	foreach (surv in Survivors)
+	{
+		if (IsValidSurvivor(surv) && !IsPlayerABot(surv))
+		{
+			surv.PrecacheModel("models/infected/common_male_jimmy.mdl");
+		}
+	}
+	
+	foreach (surv in Survivors)
+	{
+		local areas = {};
+		NavMesh.GetNavAreasInRadius(surv.GetOrigin(), 1024, areas);
+		foreach (area in areas)
+		{
+			local blocked = area.IsBlocked(TEAM_INFECTED, false);
+
+			if (area.IsSpawningAllowed() && !area.IsBlocked(TEAM_INFECTED, false) && !area.IsPotentiallyVisibleToTeam(TEAM_SURVIVORS))
+			{
+				local kvs =
+				{
+					classname = "commentary_zombie_spawner",
+					origin = area.GetCenter(),
+					angles = QAngle(0, RandomFloat(0, 360), 0)
+				};
+				local spawner = g_ModeScript.CreateSingleSimpleEntityFromTable(kvs);
+				if (spawner)
+				{
+					spawner.ValidateScriptScope();
+					DoEntFire("!self", "SpawnZombie", "common_male_jimmy", 0, null, spawner);
+					DoEntFire("!self", "Kill", "", 0, null, spawner);
+					Left4Timers.RemoveTimer("jimmygibbs");
+					return;
+				}
+			}
+		}
+	}
+	Left4Timers.AddTimer("jimmygibbs", 2, ::Left4Bots.TrySpawnJimmyGibbs.bindenv(::Left4Bots), {});
+}
+
 //
 
 ::Left4Bots.ModeName = Director.GetGameMode();

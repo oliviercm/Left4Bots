@@ -127,6 +127,9 @@
 	// But if, for some reason, the open/close door fails (too far or something) the door will be forced to open/close by the addon after this delay
 	door_failsafe_delay = 0.15
 
+	// Force spawn Jimmy Gibbs Jr. in c1m4_atrium after finale start plus a random delay between 1 to 4 minutes
+	enable_jimmy_gibbs = 1
+
 	// Don't switch to the secondary weapon if the primary is a shotgun and the secondary is
 	// 1 = pistol, 2 = magnum, 4 = melee, 8 = chainsaw
 	// 15 = pistol + magnum + melee + chainsaw

@@ -724,6 +724,14 @@ Msg("Including left4bots_events...\n");
 	}
 }
 
+::Left4Bots.Events.OnGameEvent_finale_start <- function (params)
+{
+	if (Left4Bots.MapName == "c1m4_atrium" && Left4Bots.Settings.enable_jimmy_gibbs != 0)
+	{
+		Left4Timers.AddTimer("jimmygibbs", RandomInt(60, 240), ::Left4Bots.TrySpawnJimmyGibbs.bindenv(::Left4Bots), {});
+	}
+}
+
 ::Left4Bots.Events.OnGameEvent_finale_escape_start <- function (params)
 {
 	Left4Bots.Logger.Debug("OnGameEvent_finale_escape_start");
@@ -736,6 +744,11 @@ Msg("Including left4bots_events...\n");
 	Left4Bots.Logger.Debug("OnGameEvent_finale_vehicle_ready");
 
 	Left4Bots.EscapeStarted = true;
+}
+
+::Left4Bots.Events.OnGameEvent_round_end <- function (params)
+{
+	Left4Timers.RemoveTimer("jimmygibbs");
 }
 
 ::Left4Bots.FriendlyFireDebug <- function (attacker, victim, guilty)
@@ -1294,6 +1307,10 @@ Msg("Including left4bots_events...\n");
 			player.PrecacheScriptSound("Hint.BigReward");
 			player.PrecacheScriptSound("Hint.LittleReward");
 			player.PrecacheScriptSound("BaseCombatCharacter.AmmoPickup");
+			if (Left4Bots.MapName == "c1m4_atrium")
+			{
+				player.PrecacheModel("models/infected/common_male_jimmy.mdl");
+			}
 		}
 
 		if (Settings.new_chapter_min_health > 0 && NetProps.GetPropInt(player, "m_iTeamNum") == TEAM_SURVIVORS)
