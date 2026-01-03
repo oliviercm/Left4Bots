@@ -235,6 +235,9 @@
 	// An aggroed tank must be within this radius from the incapped survivor in order to block the nav areas around the survivor
 	incap_block_nav_tank_range = 700
 
+	// The damage received by the bots from molotovs and fire is multiplied by this factor. If you want them to receive the same amount of damage as you, you can set 1
+	inferno_damage_multiplier = 0.2
+
 	// Bots taking damage from infernos are pushed out with this much force (0 = disabled)
 	inferno_push_force = 0
 

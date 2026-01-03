@@ -2678,6 +2678,15 @@ settings
 		return null;
 	}
 
+	if (attackerTeam == TEAM_SURVIVORS || attackerTeam == TEAM_L4D1_SURVIVORS)
+	{
+		if (victim.IsPlayer() && NetProps.GetPropInt(victim, "m_iTeamNum") == TEAM_SURVIVORS && IsPlayerABot(victim) && "Inflictor" in damageTable && damageTable.Inflictor && damageTable.Inflictor.GetClassname() == "inferno")
+		{
+			damageTable.DamageDone = damageTable.DamageDone * Left4Bots.Settings.inferno_damage_multiplier;
+			return (damageTable.DamageDone > 0);
+		}
+	}
+
 	if (!attacker.IsPlayer() || !IsPlayerABot(attacker))
 		return null;
 
