@@ -1393,6 +1393,42 @@ enum AI_AIM_TYPE {
 		return;
 	}
 
+	if (NetProps.GetPropInt(self, "m_hasVisibleThreats") || Left4Bots.HasAngryCommonsWithin(Origin, 3, 400, 100) || Left4Bots.HasVisibleSpecialInfectedWithin(self, Origin, 400) || Left4Bots.HasTanksWithin(Origin, 800) || Left4Bots.HasWitchesWithin(Origin, 300, 100)) {
+		if (MoveType == pickupMovetype)
+		{
+			L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Too much danger to scavenge: resetting MOVE");
+
+			// Reset if we were moving for this item
+			BotMoveReset();
+		}
+		return;
+	}
+
+	local flowDistance = GetFlowDistanceForPosition(pickup.GetOrigin()) - GetFlowDistanceForPosition(self.GetOrigin());
+
+	if (flowDistance < 0) {
+		local allBots = true;
+		foreach (surv in Left4Bots.GetOtherAliveSurvivors(UserId))
+		{
+			if (!IsPlayerABot(surv))
+			{
+				allBots = false;
+				break;
+			}
+		}
+
+		if (allBots || flowDistance < -300) {
+			if (MoveType == pickupMovetype)
+			{
+				L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Pickup is too far backwards");
+
+				// Reset if we were moving for this item
+				BotMoveReset();
+			}
+			return;
+		}
+	}
+	
 	if (!MovePos || MoveType != pickupMovetype || !L4B.IsValidPickup(MoveEnt) || /*MoveEnt.GetEntityIndex() != pickup.GetEntityIndex()*/ MoveEnt != pickup)
 	{
 		// We start a MOVE if at least one of these conditions is met:
