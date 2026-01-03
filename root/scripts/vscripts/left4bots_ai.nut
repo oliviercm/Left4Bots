@@ -1393,7 +1393,17 @@ enum AI_AIM_TYPE {
 		return;
 	}
 
-	if (NetProps.GetPropInt(self, "m_hasVisibleThreats") || Left4Bots.HasAngryCommonsWithin(Origin, 3, 400, 100) || Left4Bots.HasVisibleSpecialInfectedWithin(self, Origin, 400) || Left4Bots.HasTanksWithin(Origin, 800) || Left4Bots.HasWitchesWithin(Origin, 300, 100)) {
+	local allBots = true;
+	foreach (surv in Left4Bots.GetOtherAliveSurvivors(UserId))
+	{
+		if (!IsPlayerABot(surv))
+		{
+			allBots = false;
+			break;
+		}
+	}
+
+	if ((allBots && (NetProps.GetPropInt(self, "m_hasVisibleThreats") || Left4Bots.HasAngryCommonsWithin(Origin, 3, 400, 100))) || Left4Bots.HasVisibleSpecialInfectedWithin(self, Origin, 400) || Left4Bots.HasTanksWithin(Origin, 800) || Left4Bots.HasWitchesWithin(Origin, 300, 100)) {
 		if (MoveType == pickupMovetype)
 		{
 			L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Too much danger to scavenge: resetting MOVE");
@@ -1407,16 +1417,6 @@ enum AI_AIM_TYPE {
 	local flowDistance = GetFlowDistanceForPosition(pickup.GetOrigin()) - GetFlowDistanceForPosition(self.GetOrigin());
 
 	if (flowDistance < 0) {
-		local allBots = true;
-		foreach (surv in Left4Bots.GetOtherAliveSurvivors(UserId))
-		{
-			if (!IsPlayerABot(surv))
-			{
-				allBots = false;
-				break;
-			}
-		}
-
 		if (allBots || flowDistance < -300) {
 			if (MoveType == pickupMovetype)
 			{
