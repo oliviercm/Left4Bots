@@ -631,7 +631,7 @@ class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 		// Make sure that all the bots are in the 'Waiting' status before continuing
 		foreach (bot in _l4b.Bots)
 		{
-			if (!bot.GetScriptScope().Waiting)
+			if (!bot.GetScriptScope().Waiting && (bot.GetOrigin() - _gotoPos).Length() > ::Left4Bots.Settings.move_end_radius_wait * 3)
 				return;
 		}
 
