@@ -1417,7 +1417,7 @@ enum AI_AIM_TYPE {
 	local flowDistance = GetFlowDistanceForPosition(pickup.GetOrigin()) - GetFlowDistanceForPosition(self.GetOrigin());
 
 	if (flowDistance < 0) {
-		if (allBots || flowDistance < -300) {
+		if ((allBots && !L4B.CanTraceToPickup(self, pickup)) || flowDistance < (-300)) {
 			if (MoveType == pickupMovetype)
 			{
 				L4B.Logger.Debug("[AI]" + self.GetPlayerName() + " - Pickup is too far backwards");
