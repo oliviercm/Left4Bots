@@ -193,11 +193,11 @@ IncludeScript("left4bots_settings");
 	Logger.Info("Initializing for game mode: " + ModeName + " (" + BaseModeName + ") - map name: " + MapName + " - difficulty: " + Difficulty);
 
 	Logger.Info("Loading settings...");
-	Left4Utils.LoadSettingsFromFileNew("left4bots2/cfg/settings.txt", "Left4Bots.Settings.", Logger);
+	Left4Utils.LoadSettingsFromFileNew("left4bots2/cfg/settingsxyzzy.txt", "Left4Bots.Settings.", Logger);
 
 	Logger.LogLevel(Settings.loglevel);
 
-	Left4Utils.SaveSettingsToFileNew("left4bots2/cfg/settings.txt", Settings, Logger);
+	Left4Utils.SaveSettingsToFileNew("left4bots2/cfg/settingsxyzzy.txt", Settings, Logger);
 
 	// Create the missing config files with their default values
 	DefaultConfigFiles();
