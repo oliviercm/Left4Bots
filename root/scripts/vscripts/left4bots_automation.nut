@@ -615,7 +615,8 @@ class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 		_waitTimer = null;
 		_ordersSent = false;
 		_gotoPos = pos;
-		_gotoPosFlow = check_ahead ? GetFlowDistanceForPosition(_gotoPos) : null;
+		//_gotoPosFlow = check_ahead ? GetFlowDistanceForPosition(_gotoPos) : null;
+		_gotoPosFlow = check_ahead ? GetMaxFlowDistance() * GetFlowPercentForPosition(_gotoPos, false) * 0.01 : null;
 		
 		_l4b.Logger.Debug("RegroupAt - timeout: " + timeout + ", _gotoPosFlow: " + _gotoPosFlow);
 	}
