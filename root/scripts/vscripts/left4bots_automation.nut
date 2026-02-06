@@ -638,11 +638,11 @@ class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 		}
 		
 		// set timer
-		if (_waitTimer == null)
-			_waitTimer = Time();
+		//if (_waitTimer == null)
+		//	_waitTimer = Time();
 		
 		// only time out if set the _holdTime
-		if (_holdTime <= 0 || (Time() - _waitTimer) < _holdTime)
+		if (_holdTime <= 0 || !_waitTimer || (Time() - _waitTimer) < _holdTime)
 		{
 			// Make sure that all the bots are in the 'Waiting' status before continuing
 			foreach (bot in _l4b.Bots)
@@ -652,6 +652,13 @@ class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 				// If the bot is ahead (flow) of the waiting position, consider it done
 				if (!scope.Waiting && (!_gotoPosFlow || !_l4b.IsBotAheadOfPosition(scope.UserId, _gotoPosFlow)))
 					return;
+					
+				// Let's start the timer after the 1st bot regrouped
+				if (_waitTimer == null)
+				{
+					_waitTimer = Time();
+					_l4b.Logger.Debug("RegroupAt - Timer started");
+				}
 			}
 		}
 		
@@ -926,7 +933,7 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 	return true;
 }
 
-::Left4Bots.Automation.DoRegroupAt <- function (pos, timeout = 90, check_ahead = true)
+::Left4Bots.Automation.DoRegroupAt <- function (pos, timeout = 0, check_ahead = true)
 {
 	if (TaskExists("bots", "RegroupAt"))
 		return false;
