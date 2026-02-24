@@ -71,6 +71,7 @@ Msg("Including " + ::Left4Bots.BaseModeName + "/l4b_c13m4_cutthroatcreek automat
 		case 4:
 			// *** TASK 5. Door open, regroup just before the 1st drop
 			
+			EntFire("door_wait_navblocker", "UnblockNav");
 			::Left4Bots.Automation.DoRegroupAt(Vector(-3807.154053, -5786.145020, 322.953735), 60);
 			::Left4Bots.Automation.step++;
 			
@@ -121,3 +122,8 @@ Msg("Including " + ::Left4Bots.BaseModeName + "/l4b_c13m4_cutthroatcreek automat
 
 // Proceed to the next step when the finale door opens
 EntityOutputs.AddOutput(Entities.FindByName(null, "startbldg_door"), "OnFullyOpen", "worldspawn", "RunScriptCode", "if (::Left4Bots.Automation.step < 4) ::Left4Bots.Automation.step = 4", 0, -1);
+
+// Apparently the vanilla AI likes to teleport through the door. Block the path until the door fully opens
+local name = "door_wait_navblocker";
+if (Entities.FindByName(null, name) == null)
+	::Left4Utils.SpawnNavBlocker(name, Vector(-4025.000000, -7787.500000, 371.031250), "-5 -5 -5", "5 5 5", 2, 0);
