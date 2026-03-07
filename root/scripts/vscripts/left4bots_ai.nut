@@ -1326,7 +1326,7 @@ enum AI_AIM_TYPE {
 	local pickupMovetype = Left4Bots.Bots.len() >= Left4Bots.Survivors.len() ? AI_MOVE_TYPE.PickupHigh : AI_MOVE_TYPE.Pickup;
 
 	local pickup = BotGetNearestPickupWithin(L4B.Settings.pickups_scan_radius);
-	if (!pickup && MoveType == pickupMovetype && L4B.IsValidPickup(MoveEnt))
+	if (!pickup && MoveType == pickupMovetype && L4B.IsValidPickup(MoveEnt) && (self.GetCenter() - MoveEnt.GetCenter()).Length() <= L4B.Settings.pickups_scan_radius)
 		pickup = MoveEnt; // We have no visible pickup nearby at the moment but, if we already got a MoveEnt we are moving to and it's still valid, we'll stick to it even if we can't see it
 
 	if (!pickup)

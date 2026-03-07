@@ -601,15 +601,24 @@ class ::Left4Bots.Automation.HealAndGoto extends ::Left4Bots.Automation.Task
 }
 
 // Gives all the bots a 'wait' order at the specified location and automatically cancels it (and removes its task from CurrentTasks) when all the bots are in their 'Waiting' status
+/*
+	Set a timer for Automation.RegroupAt, so bots won't get stuck forever if someone cannot get there for some reason.
+	only for test, the timer is set to 90 seconds and can't changed in settings.
+*/
 class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 {
-	constructor(pos)
+	constructor(pos, timeout, check_ahead)
 	{
 		// 'target' and 'order' are only used for the task identification (GetTaskId), not for the actual orders
-		base.constructor("bots", "RegroupAt", null, null, null, 0.0, true, null, false, false);
-
+		base.constructor("bots", "RegroupAt", null, null, null, timeout, true, null, false, false);
+		
+		_waitTimer = null;
 		_ordersSent = false;
 		_gotoPos = pos;
+		//_gotoPosFlow = check_ahead ? GetFlowDistanceForPosition(_gotoPos) : null;
+		_gotoPosFlow = check_ahead ? GetMaxFlowDistance() * GetFlowPercentForPosition(_gotoPos, false) * 0.01 : null;
+		
+		_l4b.Logger.Debug("RegroupAt - timeout: " + timeout + ", _gotoPosFlow: " + _gotoPosFlow);
 	}
 
 	function Think()
@@ -627,12 +636,30 @@ class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 			_ordersSent = true;
 			return;
 		}
-
-		// Make sure that all the bots are in the 'Waiting' status before continuing
-		foreach (bot in _l4b.Bots)
+		
+		// set timer
+		//if (_waitTimer == null)
+		//	_waitTimer = Time();
+		
+		// only time out if set the _holdTime
+		if (_holdTime <= 0 || !_waitTimer || (Time() - _waitTimer) < _holdTime)
 		{
-			if (!bot.GetScriptScope().Waiting && (bot.GetOrigin() - _gotoPos).Length() > ::Left4Bots.Settings.move_end_radius_wait * 3)
-				return;
+			// Make sure that all the bots are in the 'Waiting' status before continuing
+			foreach (bot in _l4b.Bots)
+			{
+				local scope = bot.GetScriptScope();
+				
+				// If the bot is ahead (flow) of the waiting position, consider it done
+				if (!scope.Waiting && (!_gotoPosFlow || !_l4b.IsBotAheadOfPosition(scope.UserId, _gotoPosFlow) || ((bot.GetOrigin() - _gotoPos).Length() > ::Left4Bots.Settings.move_end_radius_wait * 3)))
+					return;
+					
+				// Let's start the timer after the 1st bot regrouped
+				if (_waitTimer == null)
+				{
+					_waitTimer = Time();
+					_l4b.Logger.Debug("RegroupAt - Timer started");
+				}
+			}
 		}
 
 		// Task is complete. Cancel the 'wait' order and remove the task from CurrentTasks
@@ -642,9 +669,11 @@ class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 		_l4b.Automation.DeleteTasks(_target, _order, _destEnt, _destPos, _destLookAtPos);
 		_l4b.Logger.Debug("Task complete");
 	}
-
+	
+	_waitTimer = null;
 	_ordersSent = false;
 	_gotoPos = null;
+	_gotoPosFlow = null;
 }
 
 // Gives all the bots a 'wait' order at the specified location and automatically cancels it (and removes its task from CurrentTasks) after the given amount of 'time' elapsed
@@ -904,14 +933,14 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 	return true;
 }
 
-::Left4Bots.Automation.DoRegroupAt <- function (pos)
+::Left4Bots.Automation.DoRegroupAt <- function (pos, timeout = 0, check_ahead = true)
 {
 	if (TaskExists("bots", "RegroupAt"))
 		return false;
 
 	ResetTasks();
-	AddCustomTask(RegroupAt(pos));
-
+	AddCustomTask(RegroupAt(pos, timeout, check_ahead));
+		
 	return true;
 }
 

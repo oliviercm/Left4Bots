@@ -1259,12 +1259,19 @@ Msg("Including left4bots_commands...\n");
 	else
 	{
 		local waitPos = null;
+		local waitSurv = null;
 		if (param)
 		{
 			if (param.tolower() == "here")
 				waitPos = player.GetOrigin();
 			else if (param.tolower() == "there")
 				waitPos = Left4Utils.GetLookingPosition(player, Settings.tracemask_others);
+			else
+				waitSurv = GetBotByName(param);
+				if (waitSurv)
+				{
+					waitPos = waitSurv.GetOrigin();
+				}
 
 			if (!waitPos)
 			{
@@ -1305,6 +1312,7 @@ Msg("Including left4bots_commands...\n");
 	Logger.Debug("Cmd_warp - player: " + player.GetPlayerName() + " - allBots: " + allBots + " - tgtBot: " + tgtBot + " - param: " + param);
 
 	local warpPos = null;
+	local warpSurv = null;
 	if (param)
 	{
 		if (param.tolower() == "here") //lxc fix "warp" pos
@@ -1313,6 +1321,12 @@ Msg("Including left4bots_commands...\n");
 			warpPos = Left4Utils.GetLookingPosition(player, Settings.tracemask_others);
 		else if (param.tolower() == "move")
 			warpPos = "move";
+		else
+			warpSurv = GetBotByName(param);
+			if (warpSurv)
+			{
+				warpPos = warpSurv.IsHangingFromLedge() ? NetProps.GetPropVector(warpSurv, "m_hangStandPos") : warpSurv.GetOrigin();
+			}
 
 		if (!warpPos)
 		{
