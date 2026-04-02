@@ -48,10 +48,10 @@ PlayerImWithYou = bots automation all,botname automation all";
 
 	// -------------------------------------------------------
 
-	defaults["terminatorbots/cfg/weapons/preferences.txt"] <- @"rifle_ak47,rifle_sg552,rifle_desert,rifle,autoshotgun,shotgun_spas,sniper_military,hunting_rifle,rifle_m60,grenade_launcher,sniper_scout,sniper_awp,smg_mp5,smg_silenced,shotgun_chrome,smg,pumpshotgun
-*,machete,golfclub,katana,fireaxe,crowbar,cricket_bat,baseball_bat,tonfa,riotshield,shovel,electric_guitar,knife,frying_pan,pitchfork,pistol_magnum,pistol,chainsaw
-pipe_bomb,molotov,vomitjar
-first_aid_kit,defibrillator,upgradepack_explosive,upgradepack_incendiary
+	defaults["terminatorbots/cfg/weapons/preferences.txt"] <- @"rifle_desert,rifle_ak47,rifle,rifle_sg552,smg_silenced,smg,smg_mp5,shotgun_spas,autoshotgun,sniper_military,hunting_rifle,shotgun_chrome,pumpshotgun,sniper_scout,sniper_awp,rifle_m60,grenade_launcher
+pistol_magnum,katana,machete,fireaxe,knife,crowbar,tonfa,frying_pan,golfclub,electric_guitar,shovel,cricket_bat,baseball_bat,pitchfork,riotshield,pistol,chainsaw
+vomitjar,pipe_bomb,molotov
+upgradepack_explosive,upgradepack_incendiary,first_aid_kit,defibrillator
 pain_pills,adrenaline";
 
 	// -------------------------------------------------------
