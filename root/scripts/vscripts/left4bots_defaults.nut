@@ -4,7 +4,6 @@
 
 	// Default convars.txt file
 	defaults["terminatorbots/cfg/convars.txt"] <- @"allow_all_bot_survivor_team 1
-sb_all_bot_game 1
 sb_max_team_melee_weapons 4
 sb_temp_health_consider_factor 1
 sb_friend_immobilized_reaction_time_expert 0
@@ -13,8 +12,7 @@ sb_friend_immobilized_reaction_time_normal 0
 sb_friend_immobilized_reaction_time_vs 0
 sb_melee_approach_victim 0
 sb_sidestep_for_horde 1
-sb_vomit_blind_time 0
-sb_enforce_proximity_range 20000"; // "sb_unstick 0" // TODO: unstick logic
+sb_vomit_blind_time 0"; // "sb_unstick 0" // TODO: unstick logic
 
 	// Default itemstoavoid.txt file
 	defaults["terminatorbots/cfg/itemstoavoid.txt"] <- @"weapon_ammo
