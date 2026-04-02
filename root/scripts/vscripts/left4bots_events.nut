@@ -517,7 +517,7 @@ Msg("Including left4bots_events...\n");
 		if (scope.ActiveWeaponSlot == 0 || scope.ActiveWeaponSlot == 1)
 		{
 			scope.BotAim();
-			
+
 			// Increased dual pistol cycle time
 			if (weapon == "pistol" && scope.AimType != AI_AIM_TYPE.None && Left4Bots.Settings.manual_attack_dual_pistol_nerf)
 			{
@@ -1293,7 +1293,7 @@ Msg("Including left4bots_events...\n");
 			SurvivorFlow[userid].isBot = true;
 
 			AddBotThink(player);
-			
+
 			// fixed new bot ignore exists custom automation task
 			foreach (task in Automation.CurrentTasks)
 			{
@@ -2102,9 +2102,9 @@ settings
 
 						// Probably not the best way to do this but at least we aren't saving the settings override to the settings.txt file and we don't need to worry about the OnTankSettings
 						SettingsTmp <- {};
-						Left4Utils.LoadSettingsFromFileNew("left4bots2/cfg/settings.txt", "::Left4Bots.SettingsTmp.", Logger, true);
+						Left4Utils.LoadSettingsFromFileNew("terminatorbots/cfg/settings.txt", "::Left4Bots.SettingsTmp.", Logger, true);
 						SettingsTmp[arg2] <- Settings[arg2];
-						Left4Utils.SaveSettingsToFileNew("left4bots2/cfg/settings.txt", SettingsTmp, Logger);
+						Left4Utils.SaveSettingsToFileNew("terminatorbots/cfg/settings.txt", SettingsTmp, Logger);
 
 						// Maybe we can just keep this in memory and avoid to reload it every time?
 						delete SettingsTmp;

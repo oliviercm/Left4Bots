@@ -148,7 +148,7 @@ Hurry | PlayerHurryUp | bots hurry | botname hurry |
 I'm with you | PlayerImWithYou | bots automation all | botname automation all |
 
 
-You can change these bindings by editing the file `ems/left4bots2/cfg/vocalizer.txt`.
+You can change these bindings by editing the file `ems/terminatorbots/cfg/vocalizer.txt`.
 
 Each line in the file is in the format: <_vocalizer command_> = <_l4b2 command1_>,<_l4b2 command2_>
 

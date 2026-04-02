@@ -17,7 +17,7 @@ For more details, please check the videos i made about L4B2 on my [Youtube Chann
 ### Addon settings
 The list of L4B2 settings can be found [HERE](https://github.com/smilz0/Left4Bots/blob/main/root/scripts/vscripts/left4bots_settings.nut).
 
-You can change the settings by editing the file `ems/left4bots2/cfg/settings.txt` or directly ingame with the following commands:
+You can change the settings by editing the file `ems/terminatorbots/cfg/settings.txt` or directly ingame with the following commands:
 - Via chat: `!l4b settings [setting] [value]`
 - Via console: `scripted_user_func l4b,settings,[setting],[value]`
 

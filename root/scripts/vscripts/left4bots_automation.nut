@@ -611,13 +611,13 @@ class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 	{
 		// 'target' and 'order' are only used for the task identification (GetTaskId), not for the actual orders
 		base.constructor("bots", "RegroupAt", null, null, null, timeout, true, null, false, false);
-		
+
 		_waitTimer = null;
 		_ordersSent = false;
 		_gotoPos = pos;
 		//_gotoPosFlow = check_ahead ? GetFlowDistanceForPosition(_gotoPos) : null;
 		_gotoPosFlow = check_ahead ? GetMaxFlowDistance() * GetFlowPercentForPosition(_gotoPos, false) * 0.01 : null;
-		
+
 		_l4b.Logger.Debug("RegroupAt - timeout: " + timeout + ", _gotoPosFlow: " + _gotoPosFlow);
 	}
 
@@ -636,11 +636,11 @@ class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 			_ordersSent = true;
 			return;
 		}
-		
+
 		// set timer
 		//if (_waitTimer == null)
 		//	_waitTimer = Time();
-		
+
 		// only time out if set the _holdTime
 		if (_holdTime <= 0 || !_waitTimer || (Time() - _waitTimer) < _holdTime)
 		{
@@ -648,11 +648,11 @@ class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 			foreach (bot in _l4b.Bots)
 			{
 				local scope = bot.GetScriptScope();
-				
+
 				// If the bot is ahead (flow) of the waiting position, consider it done
 				if (!scope.Waiting && (!_gotoPosFlow || !_l4b.IsBotAheadOfPosition(scope.UserId, _gotoPosFlow) || ((bot.GetOrigin() - _gotoPos).Length() > ::Left4Bots.Settings.move_end_radius_wait * 3)))
 					return;
-					
+
 				// Let's start the timer after the 1st bot regrouped
 				if (_waitTimer == null)
 				{
@@ -669,7 +669,7 @@ class ::Left4Bots.Automation.RegroupAt extends ::Left4Bots.Automation.Task
 		_l4b.Automation.DeleteTasks(_target, _order, _destEnt, _destPos, _destLookAtPos);
 		_l4b.Logger.Debug("Task complete");
 	}
-	
+
 	_waitTimer = null;
 	_ordersSent = false;
 	_gotoPos = null;
@@ -940,7 +940,7 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 
 	ResetTasks();
 	AddCustomTask(RegroupAt(pos, timeout, check_ahead));
-		
+
 	return true;
 }
 
@@ -1015,34 +1015,34 @@ class ::Left4Bots.Automation.GotoAndIdle extends ::Left4Bots.Automation.Task
 
 ::Left4Bots.Automation.OnConcept <- function(who, subject, concept, query)
 {
-	// Override in "left4bots2/automation/mapname.nut"
+	// Override in "terminatorbots/automation/mapname.nut"
 }
 
 ::Left4Bots.Automation.OnFlow <- function(prevFlowPercent, curFlowPercent)
 {
-	// Override in "left4bots2/automation/mapname.nut"
+	// Override in "terminatorbots/automation/mapname.nut"
 }
 
 /*
 if (::Left4Bots.BaseModeName == "coop" || ::Left4Bots.BaseModeName == "versus" || ::Left4Bots.BaseModeName == "realism") // TODO: are there other campaign based modes?
 {
-	if (!IncludeScript("left4bots2/automation/" + ::Left4Bots.MapName))
+	if (!IncludeScript("terminatorbots/automation/" + ::Left4Bots.MapName))
 	{
-		if (!IncludeScript("left4bots2/automation/l4b_" + ::Left4Bots.MapName))
+		if (!IncludeScript("terminatorbots/automation/l4b_" + ::Left4Bots.MapName))
 		{
-			if (!IncludeScript("left4bots2/automation/automation_default"))
-				IncludeScript("left4bots2/automation/l4b_automation_default");
+			if (!IncludeScript("terminatorbots/automation/automation_default"))
+				IncludeScript("terminatorbots/automation/l4b_automation_default");
 		}
 	}
 }
 else
 {
-	if (!IncludeScript("left4bots2/automation/automation_" + ::Left4Bots.BaseModeName))
+	if (!IncludeScript("terminatorbots/automation/automation_" + ::Left4Bots.BaseModeName))
 	{
-		if (!IncludeScript("left4bots2/automation/l4b_automation_" + ::Left4Bots.BaseModeName))
+		if (!IncludeScript("terminatorbots/automation/l4b_automation_" + ::Left4Bots.BaseModeName))
 		{
-			if (!IncludeScript("left4bots2/automation/automation_default"))
-				IncludeScript("left4bots2/automation/l4b_automation_default");
+			if (!IncludeScript("terminatorbots/automation/automation_default"))
+				IncludeScript("terminatorbots/automation/l4b_automation_default");
 		}
 	}
 }
@@ -1050,12 +1050,12 @@ else
 
 /*
 Search path order:
-1. left4bots2/automation/[base mode name]/[map name].nut
-2. left4bots2/automation/[base mode name]/l4b_[map name].nut
-3. left4bots2/automation/[base mode name]/automation_map_default.nut
-4. left4bots2/automation/[base mode name]/l4b_automation_map_default.nut
+1. terminatorbots/automation/[base mode name]/[map name].nut
+2. terminatorbots/automation/[base mode name]/l4b_[map name].nut
+3. terminatorbots/automation/[base mode name]/automation_map_default.nut
+4. terminatorbots/automation/[base mode name]/l4b_automation_map_default.nut
 */
-local path = "left4bots2/automation/" + ::Left4Bots.BaseModeName + "/";
+local path = "terminatorbots/automation/" + ::Left4Bots.BaseModeName + "/";
 if (!IncludeScript(path + ::Left4Bots.MapName))
 {
 	if (!IncludeScript(path + "l4b_" + ::Left4Bots.MapName))

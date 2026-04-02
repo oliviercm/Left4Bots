@@ -147,16 +147,16 @@
 	fall_velocity_warp = 0
 
 	// Name of the file with the convar changes to load (empty = don't load the convar changes)
-	file_convars = "left4bots2/cfg/convars.txt"
+	file_convars = "terminatorbots/cfg/convars.txt"
 
 	// Name of the file containing the items that the vanilla AI should/should not pickup (empty = don't load the items)
-	file_itemstoavoid = "left4bots2/cfg/itemstoavoid.txt"
+	file_itemstoavoid = "terminatorbots/cfg/itemstoavoid.txt"
 
 	// Name of the file with the vocalizer/command mapping (empty = don't load the mapping)
-	file_vocalizer = "left4bots2/cfg/vocalizer.txt"
+	file_vocalizer = "terminatorbots/cfg/vocalizer.txt"
 
 	// Prefix of the name of the files with the weapon preferences (file name will be "file_weapons_prefix" + "bot name lowercase" + ".txt")
-	file_weapons_prefix = "left4bots2/cfg/weapons/"
+	file_weapons_prefix = "terminatorbots/cfg/weapons/"
 
 	// When executing a 'follow' order, the bot will start pause when within move_end_radius_follow from the followed entity,
 	// but will only resume when farther than follow_pause_radius, so this has to be > than move_end_radius_follow

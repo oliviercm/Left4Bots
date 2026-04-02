@@ -193,11 +193,11 @@ IncludeScript("left4bots_settings");
 	Logger.Info("Initializing for game mode: " + ModeName + " (" + BaseModeName + ") - map name: " + MapName + " - difficulty: " + Difficulty);
 
 	Logger.Info("Loading settings...");
-	Left4Utils.LoadSettingsFromFileNew("left4bots2/cfg/settings_terminatorbots.txt", "Left4Bots.Settings.", Logger);
+	Left4Utils.LoadSettingsFromFileNew("terminatorbots/cfg/settings.txt", "Left4Bots.Settings.", Logger);
 
 	Logger.LogLevel(Settings.loglevel);
 
-	Left4Utils.SaveSettingsToFileNew("left4bots2/cfg/settings_terminatorbots.txt", Settings, Logger);
+	Left4Utils.SaveSettingsToFileNew("terminatorbots/cfg/settings.txt", Settings, Logger);
 
 	// Create the missing config files with their default values
 	DefaultConfigFiles();
@@ -240,17 +240,17 @@ IncludeScript("left4bots_settings");
 	else
 		Logger.Info("Vocalizer file was not loaded (settings.file_vocalizer is empty)");
 
-	if (Left4Utils.FileExists("left4bots2/cfg/ontank_settings.txt"))
+	if (Left4Utils.FileExists("terminatorbots/cfg/ontank_settings.txt"))
 	{
 		Logger.Info("Loading OnTank settings...");
-		Left4Utils.LoadSettingsFromFileNew("left4bots2/cfg/ontank_settings.txt", "Left4Bots.OnTankSettings.", Logger, true);
+		Left4Utils.LoadSettingsFromFileNew("terminatorbots/cfg/ontank_settings.txt", "Left4Bots.OnTankSettings.", Logger, true);
 	}
 	Left4Utils.PrintSettingsNew(OnTankSettings, Logger, "[OnTank Settings] ");
 
-	if (Left4Utils.FileExists("left4bots2/cfg/ontank_convars.txt"))
+	if (Left4Utils.FileExists("terminatorbots/cfg/ontank_convars.txt"))
 	{
 		Logger.Info("Loading OnTank convars...");
-		local c = LoadOnTankCvarsFromFile("left4bots2/cfg/ontank_convars.txt");
+		local c = LoadOnTankCvarsFromFile("terminatorbots/cfg/ontank_convars.txt");
 		Logger.Info("Loaded " + c + " OnTank convars");
 	}
 
@@ -311,7 +311,7 @@ IncludeScript("left4bots_settings");
 ::Left4Bots.LoadSettingsOverride <- function ()
 {
 	// 1. settings_[map]_[difficulty]_[mode].txt
-	local fileName = "left4bots2/cfg/settings_" + MapName + "_" + Difficulty + "_" + ModeName + ".txt"
+	local fileName = "terminatorbots/cfg/settings_" + MapName + "_" + Difficulty + "_" + ModeName + ".txt"
 	if (Left4Utils.LoadSettingsFromFileNew(fileName, "Left4Bots.Settings.", Logger))
 	{
 		Logger.Info("Loaded settings overrides from: " + fileName);
@@ -319,7 +319,7 @@ IncludeScript("left4bots_settings");
 	}
 
 	// 2. settings_[difficulty]_[mode].txt
-	fileName = "left4bots2/cfg/settings_" + Difficulty + "_" + ModeName + ".txt"
+	fileName = "terminatorbots/cfg/settings_" + Difficulty + "_" + ModeName + ".txt"
 	if (Left4Utils.LoadSettingsFromFileNew(fileName, "Left4Bots.Settings.", Logger))
 	{
 		Logger.Info("Loaded settings overrides from: " + fileName);
@@ -327,7 +327,7 @@ IncludeScript("left4bots_settings");
 	}
 
 	// 3. settings_[map]_[mode].txt
-	fileName = "left4bots2/cfg/settings_" + MapName + "_" + ModeName + ".txt"
+	fileName = "terminatorbots/cfg/settings_" + MapName + "_" + ModeName + ".txt"
 	if (Left4Utils.LoadSettingsFromFileNew(fileName, "Left4Bots.Settings.", Logger))
 	{
 		Logger.Info("Loaded settings overrides from: " + fileName);
@@ -335,7 +335,7 @@ IncludeScript("left4bots_settings");
 	}
 
 	// 4. settings_[mode].txt
-	fileName = "left4bots2/cfg/settings_" + ModeName + ".txt"
+	fileName = "terminatorbots/cfg/settings_" + ModeName + ".txt"
 	if (Left4Utils.LoadSettingsFromFileNew(fileName, "Left4Bots.Settings.", Logger))
 	{
 		Logger.Info("Loaded settings overrides from: " + fileName);
@@ -343,7 +343,7 @@ IncludeScript("left4bots_settings");
 	}
 
 	// 5. settings_[map]_[difficulty].txt
-	fileName = "left4bots2/cfg/settings_" + MapName + "_" + Difficulty + ".txt"
+	fileName = "terminatorbots/cfg/settings_" + MapName + "_" + Difficulty + ".txt"
 	if (Left4Utils.LoadSettingsFromFileNew(fileName, "Left4Bots.Settings.", Logger))
 	{
 		Logger.Info("Loaded settings overrides from: " + fileName);
@@ -351,7 +351,7 @@ IncludeScript("left4bots_settings");
 	}
 
 	// 6. settings_[difficulty].txt
-	fileName = "left4bots2/cfg/settings_" + Difficulty + ".txt"
+	fileName = "terminatorbots/cfg/settings_" + Difficulty + ".txt"
 	if (Left4Utils.LoadSettingsFromFileNew(fileName, "Left4Bots.Settings.", Logger))
 	{
 		Logger.Info("Loaded settings overrides from: " + fileName);
@@ -359,7 +359,7 @@ IncludeScript("left4bots_settings");
 	}
 
 	// 7. settings_[map].txt
-	fileName = "left4bots2/cfg/settings_" + MapName + ".txt"
+	fileName = "terminatorbots/cfg/settings_" + MapName + ".txt"
 	if (Left4Utils.LoadSettingsFromFileNew(fileName, "Left4Bots.Settings.", Logger))
 	{
 		Logger.Info("Loaded settings overrides from: " + fileName);
@@ -895,7 +895,7 @@ IncludeScript("left4bots_settings");
 		{
 			local toEnt = ent.GetOrigin() - orig;
 			local dist = toEnt.Norm();
-			
+
 			if (dist < radius && botFacing.Dot(toEnt) >= minDot && (ent.GetZombieType() != Z_BOOMER || !IsBoomerNearToSurvivors(ent)))
 			{
 				ret_array.append([dist, ent]);
@@ -2337,7 +2337,7 @@ if (activator && isWorthPickingUp)
 							// don't waste bullets if the rock is unbreakable
 							if (self.GetHealth() > 0)
 								Left4Utils.PlayerForceButton(bot, BUTTON_ATTACK);
-							
+
 							l4b.Logger.Debug(bot.GetPlayerName() + " shooting at rock " + self.GetEntityIndex());
 						}
 					}
@@ -2378,7 +2378,7 @@ Support vanilla weapon preference.
 	// if (filename == null || filename == "")
 	// 	filename = survivor.GetPlayerName(); // Apparently the L4D1 survivors in The Passing 3 don't have a CharacterDisplayName
 	// filename = Settings.file_weapons_prefix + filename.tolower() + ".txt";
-	local filename = Settings.file_weapons_prefix + "all.txt";
+	local filename = Settings.file_weapons_prefix + "preferences.txt";
 	local lines = Left4Utils.FileToStringList(filename);
 	if (!lines)
 		return;
@@ -3713,11 +3713,11 @@ Support vanilla weapon preference.
 {
 	if (!(userid in SurvivorFlow))
 		return false;
-	
+
 	local myFlow = SurvivorFlow[userid].flow + threshold;
 	if (myFlow >= flowpos)
 		return true;
-	
+
 	return false;
 }
 
@@ -3902,21 +3902,21 @@ Support vanilla weapon preference.
 			if (type == "shotgun" || type == "sniper_rifle")
 			{
 				local type2nd = Left4Utils.GetWeaponTypeById(Left4Utils.GetWeaponId(wp2nd));
-				local flag = type2nd == "pistol" ? (wp2nd.GetClassname() == "weapon_pistol_magnum" ? 2 : 1) : 
-							 type2nd == "melee" ? 4 : 
-							 type2nd == "chainsaw" ? 8 : 
+				local flag = type2nd == "pistol" ? (wp2nd.GetClassname() == "weapon_pistol_magnum" ? 2 : 1) :
+							 type2nd == "melee" ? 4 :
+							 type2nd == "chainsaw" ? 8 :
 							 0;
-				
+
 				if (flag)
 				{
 					if ((Settings["enforce_" + type] & flag) == flag)
 						canSwitch = false;
-					
+
 					if (!canSwitch && ActiveWeapon == wp2nd)
 					{
 						NetProps.SetPropEntity(wp2nd, "m_hOwner", bot);
 						bot.SwitchToItem(wp.GetClassname());
-						
+
 						//if can not switch to primary weapon, at least we still have one, also fixed chainsaw smoking when pickup and switch at the same time
 						return;
 					}
@@ -3924,7 +3924,7 @@ Support vanilla weapon preference.
 			}
 		}
 	}
-	
+
 	AllowSecondaryWeaponSwitch(bot, canSwitch);
 }
 
@@ -3948,9 +3948,9 @@ Support vanilla weapon preference.
 			NetProps.SetPropEntity(surv, "m_hOwnerEntity", player);
 		}
 	}
-	
+
 	TraceLine(traceTable);
-	
+
 	foreach (surv, owner in Owners)
 	{
 		NetProps.SetPropEntity(surv, "m_hOwnerEntity", owner);
@@ -3965,19 +3965,19 @@ Support vanilla weapon preference.
 	local entAngles = ent.GetClassname() == "player" ? QAngle() : ent.GetAngles(); // always 0 degrees if target is "player" //TODO Test infected
 	local mins = NetProps.GetPropVector(ent, "m_Collision.m_vecMins");
 	local maxs = NetProps.GetPropVector(ent, "m_Collision.m_vecMaxs");
-	
+
 	// aligns to the ent's axis-aligned bounding box
 	local point = worldPt - entOrigin;
 	if (entAngles.y != 0) point = RotatePosition(entOrigin, QAngle(0, entAngles.y * -1.0, 0), point);
 	if (entAngles.x != 0) point = RotatePosition(entOrigin, QAngle(entAngles.x * -1.0, 0, 0), point);
 	if (entAngles.z != 0) point = RotatePosition(entOrigin, QAngle(0, 0, entAngles.z * -1.0), point);
-	
+
 	// calc closest point on AABB
 	local closestPt = Vector();
 	closestPt.x = point.x < mins.x ? mins.x : (point.x > maxs.x ? maxs.x : point.x);
 	closestPt.y = point.y < mins.y ? mins.y : (point.y > maxs.y ? maxs.y : point.y);
 	closestPt.z = point.z < mins.z ? mins.z : (point.z > maxs.z ? maxs.z : point.z);
-	
+
 	return (closestPt - point).Length();
 }
 
@@ -3988,17 +3988,17 @@ Support vanilla weapon preference.
 {
 	local eyePos = bot.EyePosition();
 	local useRadius = Convars.GetFloat("player_use_radius");
-	
+
 	if (GetDistanceToEntityAABB(eyePos, ent) > useRadius)
 		return false;
-	
+
 	if (!trace)
 		return true;
-	
+
 	//mask = CONTENTS_SOLID | CONTENTS_MOVEABLE | CONTENTS_MONSTER | CONTENTS_WINDOW | CONTENTS_GRATE
 	local traceTable = { start = eyePos, end = ent.GetCenter(), ignore = bot, mask = 33570827 };
 	TraceLineIgnoreSurvivors(bot, traceTable);
-	
+
 	return traceTable.fraction == 1 || traceTable.enthit == ent;
 }
 
@@ -4007,17 +4007,17 @@ Support vanilla weapon preference.
 ::Left4Bots.CanPourTo <- function (bot, ent)
 {
 	local eyePos = bot.EyePosition();
-	local useRange = ScavengeUseType == SCAV_TYPE_GASCAN ? Convars.GetFloat("gascan_use_range") : 
-					 ScavengeUseType == SCAV_TYPE_COLA ? Convars.GetFloat("cola_bottles_use_range") : 
+	local useRange = ScavengeUseType == SCAV_TYPE_GASCAN ? Convars.GetFloat("gascan_use_range") :
+					 ScavengeUseType == SCAV_TYPE_COLA ? Convars.GetFloat("cola_bottles_use_range") :
 					 0;
-	
+
 	if (GetDistanceToEntityAABB(eyePos, ent) > useRange)
 		return false;
-	
+
 	//mask = CONTENTS_SOLID | CONTENTS_MOVEABLE | CONTENTS_WINDOW | CONTENTS_GRATE
 	local traceTable = { start = eyePos, end = ent.GetCenter(), ignore = bot, mask = 16395 };
 	TraceLine(traceTable);
-	
+
 	return traceTable.fraction == 1 || traceTable.enthit == ent;
 }
 
@@ -4029,19 +4029,19 @@ Support vanilla weapon preference.
 	// return true if target is me
 	if (bot == ent)
 		return true;
-	
+
 	local eyePos = bot.EyePosition();
 	local useRadius = Convars.GetFloat("player_use_radius");
 	if (useRadius > 96)
 		useRadius = 96;
-	
+
 	if (GetDistanceToEntityAABB(eyePos, ent) > useRadius)
 		return false;
-	
+
 	//mask = CONTENTS_SOLID | CONTENTS_MOVEABLE | CONTENTS_MONSTER | CONTENTS_WINDOW | CONTENTS_GRATE
 	local traceTable = { start = eyePos, end = ent.GetCenter(), ignore = bot, mask = 33570827 };
 	TraceLine(traceTable);
-	
+
 	return traceTable.fraction == 1 || traceTable.enthit == ent;
 }
 
@@ -4053,18 +4053,18 @@ Support vanilla weapon preference.
 		case "carry":
 		case "deploy":
 			return CanUseTo(bot, CurrentOrder.DestEnt);
-		
+
 		case "scavenge":
 			if (!CurrentOrder.DestPos) // we are going to pickup gascan/cola
 				return CanUseTo(bot, CurrentOrder.DestEnt);
 			else if (Settings.scavenge_pour) // now if we need pour it
 				return CanPourTo(bot, ScavengeUseTarget);
 			break;
-		
+
 		case "heal":
 			return CanHealTo(bot, CurrentOrder.DestEnt);
 	}
-	
+
 	return false;
 }
 
@@ -4142,7 +4142,7 @@ Support vanilla weapon preference.
 			surv.PrecacheModel("models/infected/common_male_jimmy.mdl");
 		}
 	}
-	
+
 	foreach (surv in Survivors)
 	{
 		local areas = {};
